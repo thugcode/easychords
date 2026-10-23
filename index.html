@@ -177,7 +177,9 @@ figure.cd .approx{font-size:.68rem;color:var(--muted);line-height:1.3}
 .help-grid p{margin:0;color:var(--muted);font-size:.86rem}
 .empty{padding:26px;text-align:center;color:var(--muted);display:grid;gap:8px;justify-items:center}
 .empty .i{width:28px;height:28px}
-footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center}
+footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;display:grid;gap:6px}
+.foot-nav{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.foot-nav a{color:var(--muted)}
 @media (max-width:520px){.play{margin-left:0;width:100%;justify-content:center}.keybig .k{font-size:2.2rem}}
 @media (prefers-reduced-motion:no-preference){.pick,.chip,.step,.neck button{transition:border-color .15s,background .15s,box-shadow .15s}}
 </style>
@@ -223,7 +225,7 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center}
       <div><i data-ic="clipboard"></i><h3 data-i18n="g4h"></h3><p data-i18n="g4p"></p></div>
     </div>
   </details>
-  <footer data-i18n="footer"></footer>
+  <footer><nav class="foot-nav"><a href="guide/" data-i18n="navGuide">기타 가이드</a><a href="about.html" data-i18n="navAbout">소개·문의</a><a href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a></nav><div data-i18n="footer"></div></footer>
 </div>
 
 <script>
@@ -274,6 +276,7 @@ const I18N={
   brand:'쉬운<span>코드</span>', tagline:'키는 내 목소리에, 코드는 쉽게', langAria:'언어',
   inputLabel:'원곡 코드', lyricsOk:'가사 섞여도 OK', lyricsTip:'코드만 바뀌고 가사·줄바꿈은 그대로예요. 카포 표시도 자동 반영돼요.',
   placeholder:'[Verse]\nG          D/F#\n코드 사이트에서 복사한 악보를\n그대로 붙여 넣으세요',
+  navGuide:'기타 가이드', navAbout:'소개·문의', navPrivacy:'개인정보처리방침',
   srcTip:'어느 사이트의 악보든 붙여 넣을 수 있어요 · 추천 ', srcHow:'',
   paste:'붙여넣기', pasteTip:'코드 악보 사이트에서 복사한 악보를 붙여 넣어요', clear:'지우기', pasteFail:'Ctrl+V(휴대폰은 길게 눌러 붙여넣기)로 넣어 주세요', srcCapo:c=>`악보의 카포 ${c} 반영됨`,
   photo:'악보 사진', photoTip:'사진·캡처에서 코드와 가사(한국어·영어)를 읽어요. Ctrl+V로 붙여넣어도 돼요.',
@@ -312,6 +315,7 @@ const I18N={
   brand:'Easy<span>Chord</span>', tagline:'Your key. Easier chords.', langAria:'Language',
   inputLabel:'Original chords', lyricsOk:'Lyrics OK', lyricsTip:'Only chords change; lyrics and line breaks stay. A capo note on the sheet is applied automatically.',
   placeholder:'[Verse]\nG          D/F#\nPaste a chord sheet copied\nfrom any chord site',
+  navGuide:'Guitar guides (Korean)', navAbout:'About', navPrivacy:'Privacy',
   srcTip:'Sheets from any site work · Recommended: ', srcHow:'',
   paste:'Paste', pasteTip:'Paste a chord sheet copied from a chord site', clear:'Clear', pasteFail:'Press Ctrl+V (or long-press → Paste on mobile)', srcCapo:c=>`Sheet capo ${c} applied`,
   photo:'Sheet photo', photoTip:'Reads chords and lyrics (English, Korean) from a photo or screenshot. Ctrl+V works too.',
