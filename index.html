@@ -1,0 +1,879 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>쉬운코드</title>
+<meta name="description" content="기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 앱처럼 카드 단위. 왼쪽 입력 카드, 오른쪽 결과(키 → 추천 → 악보 → 운지 → 카포별). 좁은 화면은 한 줄 */
+:root{
+  --bg:#f3f4f6; --surface:#ffffff; --ink:#111318; --muted:#6b7280; --line:#e4e6eb;
+  --accent:#2f5bea; --accent-soft:#e8eeff; --accent-ink:#ffffff;
+  --good:#16865a; --good-soft:#e3f5ec; --warn:#d1461f; --warn-soft:#fde9e2;
+  --neck:#1b1e26; --neck-ink:#e9ebf0; --fret:#9aa1ae;
+  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
+  --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
+  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14;
+  --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
+  --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
+  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14;
+  --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.page{max-width:1100px;margin:0 auto;padding-block:20px 48px}
+.i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:none}
+button{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible,label:focus-within,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* 상단 */
+.top{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:18px}
+.logo{display:flex;align-items:center;gap:8px;font-size:1.35rem;font-weight:700;letter-spacing:-.4px}
+.logo svg{width:30px;height:30px}
+.logo span{color:var(--accent)}
+.tag{margin:0;color:var(--muted);font-size:.92rem;flex:1 1 200px}
+.lang{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 3px 3px 10px;color:var(--muted)}
+.lang button{border:0;background:none;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.grid{display:grid;gap:16px}
+@media (min-width:900px){.grid{grid-template-columns:350px minmax(0,1fr);align-items:start}.input{position:sticky;top:max(16px,env(safe-area-inset-top,0px))}}
+.input,.results{min-width:0}
+.results{display:grid;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+
+/* 입력 카드 */
+.card-h,.sec-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.card-h label{font-weight:700}
+.sec-h h2{display:flex;align-items:center;gap:8px;font-size:1rem;margin:0}
+.sec-h > :last-child{margin-left:auto}
+.pill{font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--good-soft);color:var(--good);margin-left:auto;display:inline-flex;gap:4px;align-items:center}
+textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f-mono);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.input.over{outline:2px dashed var(--accent);outline-offset:3px}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.tool{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem;cursor:pointer}
+.switch{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:.9rem;font-weight:600;user-select:none}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{width:30px;height:18px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);transition:transform .15s}
+.switch input:checked + .track{background:var(--accent)}
+.switch input:checked + .track::after{transform:translateX(12px)}
+.ocr-status{font-size:.84rem;margin:10px 0 0;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
+.ocr-status.ok{color:var(--good)} .ocr-status.err{color:var(--warn)}
+.input details summary{cursor:pointer;font-size:.84rem;color:var(--accent);margin-top:6px}
+.input details img{margin-top:8px;border-radius:8px;border:1px solid var(--line);max-width:100%}
+.samples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.samples .lbl{display:inline-flex;gap:5px;align-items:center;font-size:.8rem;color:var(--muted);margin-right:2px}
+.chip{font-size:.82rem;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:inline-flex;gap:5px;align-items:center}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+
+/* 키 카드 */
+.keyrow{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+.keybig{display:flex;align-items:center;gap:12px}
+.keybig .k{font:600 2.6rem/1 var(--f-mono);letter-spacing:-1px}
+.keybig .k .acc{font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",var(--f-body);font-size:.7em;vertical-align:.35em;margin-left:1px}
+.kmeta{display:grid;gap:2px;font-size:.84rem}
+.kmeta .orig{color:var(--muted)}
+.delta{font-weight:700;display:inline-flex;gap:3px;align-items:center}
+.delta.dn{color:var(--accent)} .delta.upc{color:var(--warn)} .delta.same{color:var(--muted)}
+.stepper{display:flex;align-items:center;gap:6px}
+.step,.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);cursor:pointer;display:grid;place-items:center}
+.step .i{width:22px;height:22px}
+.icon-btn{width:36px;height:36px;border-radius:10px;color:var(--muted)}
+.step:hover:not(:disabled),.icon-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.step:disabled,.icon-btn:disabled{opacity:.35;cursor:not-allowed}
+.stepval{font:600 1.15rem var(--f-mono);min-width:3ch;text-align:center;font-variant-numeric:tabular-nums}
+.play{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font-weight:700;cursor:pointer}
+.play .i{fill:currentColor;stroke:none}
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.presets .chip b{font-family:var(--f-mono)}
+.hint-i{color:var(--muted);display:inline-flex;cursor:help}
+
+/* 추천 카드 */
+.picks{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.pick{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;gap:12px;align-items:center}
+.pick:hover{border-color:var(--accent)}
+.pick[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.pk-ic{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
+.pk-ic .i{width:24px;height:24px}
+.pk-body{display:grid;gap:4px;min-width:0}
+.pk-body .eb{font-size:.75rem;font-weight:700;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
+.pick.best .eb{color:var(--accent)}
+.pk-body .main{font-size:1.45rem;font-weight:700;line-height:1.15}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--bg);display:inline-flex;gap:4px;align-items:center}
+.badge.good{background:var(--good-soft);color:var(--good)} .badge.warn{background:var(--warn-soft);color:var(--warn)}
+.badge .i{width:13px;height:13px}
+
+/* 악보 */
+.btn{font-size:.85rem;font-weight:700;padding:7px 13px;border-radius:10px;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.sheet{margin:0;padding:14px 16px;border-radius:10px;background:var(--bg);font:500 1rem/1.9 var(--f-mono);white-space:pre-wrap;overflow-x:auto;color:var(--muted)}
+.sheet .ch{color:var(--ink);font-weight:600}
+.sheet .ch.hard,.sheet .cp b.hard{color:var(--warn)}
+.sheet .capo{display:inline-flex;gap:6px;align-items:center;color:var(--accent);font-weight:600;margin-bottom:4px}
+.sheet .cp{display:inline-flex;flex-direction:column;vertical-align:bottom;margin-bottom:6px}
+.sheet .cp b{font-weight:600;color:var(--accent);min-height:1.55em;line-height:1.55;padding-right:.6ch;white-space:pre}
+.sheet .cp .ly{font-family:var(--f-body);line-height:1.55;white-space:pre;color:var(--ink)}
+.real{font-size:.82rem;color:var(--muted);margin:8px 0 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.real b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+.count{font:600 .8rem var(--f-mono);color:var(--muted);background:var(--bg);border-radius:999px;padding:1px 8px}
+
+/* 운지 */
+.diagrams{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+figure.cd{margin:0;padding:8px 6px;border:1px solid var(--line);border-radius:12px;text-align:center;display:grid;gap:2px;justify-items:center}
+figure.cd .nm{font:600 1.05rem var(--f-mono)}
+figure.cd svg{width:100%;max-width:100px;height:auto}
+.lv{font-size:.72rem;font-weight:700;display:inline-flex;gap:4px;align-items:center;color:var(--muted)}
+.lv::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.t-easy{color:var(--good)} .t-mid{color:var(--accent)} .t-hard{color:var(--warn)}
+figure.cd .approx{font-size:.68rem;color:var(--muted);line-height:1.3}
+
+/* 카포별 */
+.neck{border-radius:12px;overflow:hidden;background:var(--neck);color:var(--neck-ink)}
+.neck button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:70px 64px 1fr 58px;align-items:center;gap:10px;width:100%;padding:8px 14px;cursor:pointer;border-bottom:2px solid var(--fret);font-size:.88rem}
+.neck button:last-child{border-bottom:0}
+.neck button:hover{background:rgba(255,255,255,.06)}
+.neck button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.neck button[aria-pressed="true"]{background:rgba(123,151,255,.22)}
+.neck .fr{font:600 .82rem var(--f-mono);display:flex;align-items:center;gap:6px}
+.neck .inlay{width:7px;height:7px;border-radius:50%;background:var(--neck-ink);opacity:.7}
+.neck .shape{font:600 .95rem var(--f-mono);display:flex;align-items:center;gap:5px}
+.neck .shape .i{width:14px;height:14px;color:#ffd166;fill:#ffd166;stroke:none}
+.neck .bar{height:8px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
+.neck .bar i{display:block;height:100%;background:var(--fret)}
+.neck .bc{text-align:right;font-variant-numeric:tabular-nums;font-size:.8rem;display:flex;gap:4px;justify-content:flex-end;align-items:center}
+
+/* 도움말·하단 */
+.help{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px}
+.help summary{cursor:pointer;font-weight:700;display:flex;gap:8px;align-items:center;list-style:none}
+.help summary::-webkit-details-marker{display:none}
+.help-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:14px}
+.help-grid > div{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:start}
+.help-grid .i{width:22px;height:22px;color:var(--accent);grid-row:span 2;margin-top:2px}
+.help-grid h3{font-size:.92rem;margin:0}
+.help-grid p{margin:0;color:var(--muted);font-size:.86rem}
+.empty{padding:26px;text-align:center;color:var(--muted);display:grid;gap:8px;justify-items:center}
+.empty .i{width:28px;height:28px}
+footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center}
+@media (max-width:520px){.play{margin-left:0;width:100%;justify-content:center}.keybig .k{font-size:2.2rem}}
+@media (prefers-reduced-motion:no-preference){.pick,.chip,.step,.neck button{transition:border-color .15s,background .15s,box-shadow .15s}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="top">
+    <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2c6.6 0 12 2.6 12 7.6 0 6.7-6.4 16.4-9.6 20.3a3 3 0 0 1-4.8 0C10.4 26 4 16.3 4 9.6 4 4.6 9.4 2 16 2Z" fill="var(--accent)"/><path d="M11 10v9M16 10v9M21 10v9M9 14h14" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"/></svg><b data-i18n-html="brand">쉬운<span>코드</span></b></div>
+    <p class="tag" data-i18n="tagline">키는 내 목소리에, 코드는 쉽게</p>
+    <div class="lang" role="group" data-i18n-aria="langAria" aria-label="언어 선택"><i data-ic="globe"></i><button type="button" data-lang="ko" aria-pressed="true">KO</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  </header>
+
+  <div class="grid">
+    <section class="input card" id="drop">
+      <div class="card-h"><i data-ic="music"></i><label for="src" data-i18n="inputLabel">원곡 코드</label><span class="pill" data-i18n-title="lyricsTip"><i data-ic="check"></i><span data-i18n="lyricsOk">가사 섞여도 OK</span></span></div>
+      <textarea id="src" spellcheck="false" autocomplete="off" data-i18n-ph="placeholder"></textarea>
+      <div class="tools">
+        <label class="tool" for="img" data-i18n-title="photoTip"><i data-ic="photo"></i><span data-i18n="photo">악보 사진</span><input type="file" id="img" accept="image/*" hidden></label>
+        <label class="switch" for="simp" data-i18n-title="simpTip"><input type="checkbox" id="simp" checked><span class="track"></span><i data-ic="wand"></i><span data-i18n="simpTitle">쉬운 코드로</span></label>
+      </div>
+      <p class="ocr-status" id="ocrStatus" hidden></p>
+      <details id="ocrPrev" hidden><summary data-i18n="compare">원본 이미지 보기</summary><img id="ocrImg" alt="" data-i18n-alt="imgAlt"></details>
+      <div class="samples" role="group" data-i18n-aria="samplesAria" aria-label="예시">
+        <span class="lbl"><i data-ic="list"></i><span data-i18n="samples">예시</span></span>
+        <button class="chip" type="button" data-sample="0" data-i18n="s0">여자 발라드</button>
+        <button class="chip" type="button" data-sample="3" data-i18n="s3">가사 포함</button>
+        <button class="chip" type="button" data-sample="1" data-i18n="s1">남자 발라드</button>
+        <button class="chip" type="button" data-sample="2" data-i18n="s2">마이너</button>
+      </div>
+    </section>
+
+    <div class="results" id="out" aria-live="polite"></div>
+  </div>
+
+  <details class="help">
+    <summary><i data-ic="help"></i><span data-i18n="help">도움말</span></summary>
+    <div class="help-grid">
+      <div><i data-ic="mic"></i><h3 data-i18n="g1h"></h3><p data-i18n="g1p"></p></div>
+      <div><i data-ic="capo"></i><h3 data-i18n="g2h"></h3><p data-i18n="g2p"></p></div>
+      <div><i data-ic="barre"></i><h3 data-i18n="g3h"></h3><p data-i18n="g3p"></p></div>
+      <div><i data-ic="photo"></i><h3 data-i18n="g4h"></h3><p data-i18n="g4p"></p></div>
+    </div>
+  </details>
+  <footer data-i18n="footer"></footer>
+</div>
+
+<script>
+(()=>{
+const SH=['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const FL=['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B'];
+const FLATKEYS=new Set([1,3,5,6,8,10]);
+const mod=n=>((n%12)+12)%12;
+const pcName=(pc,flat)=>(flat?FL:SH)[mod(pc)];
+const pretty=s=>s.replace(/([A-G])#/g,'$1♯').replace(/([A-G])b/g,'$1♭');
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const MIN=-6, MAX=6;
+// ── 아이콘(인라인 SVG) ──
+const IC={
+ photo:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
+ music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+ wand:'<path d="m21.6 3.6-1.2-1.2a1.2 1.2 0 0 0-1.7 0L2.4 18.6a1.2 1.2 0 0 0 0 1.7l1.2 1.2a1.2 1.2 0 0 0 1.7 0L21.6 5.4a1.2 1.2 0 0 0 0-1.8"/><path d="m14 7 3 3"/><path d="M5 6v4M19 14v4M10 2v2M7 8H3M21 16h-4"/>',
+ list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+ help:'<circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+ mic:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
+ capo:'<path d="M5 3v18M10 3v18M15 3v18M20 3v18"/><rect x="2" y="9.5" width="20" height="5" rx="2.5" fill="currentColor" stroke="none"/>',
+ barre:'<path d="M5 3v18M10 3v18M15 3v18M20 3v18"/><rect x="3" y="6" width="19" height="4" rx="2" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="2.2" fill="currentColor" stroke="none"/><circle cx="10" cy="18" r="2.2" fill="currentColor" stroke="none"/>',
+ globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
+ up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
+ reset:'<path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/>',
+ play:'<path d="M7 4v16l13-8z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+ info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+ copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+ check:'<path d="M20 6 9 17l-5-5"/>',
+ alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+ star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
+ guitar:'<path d="m20 4-6.5 6.5"/><path d="m18 2 4 4"/><circle cx="9" cy="15" r="5.5"/><circle cx="9" cy="15" r="1.3"/>',
+ sheet:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>',
+ grid:'<rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M4 8h16M4 13h16M9.3 3v18M14.7 3v18"/>',
+ sound:'<path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/>',
+ arrowDown:'<path d="M12 5v14M19 12l-7 7-7-7"/>', arrowUp:'<path d="M12 19V5M5 12l7-7 7 7"/>'
+};
+const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}</svg>`;
+
+// ── 언어(한국어/영어) ──
+const I18N={
+ ko:{
+  title:'쉬운코드', desc:'기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.',
+  brand:'쉬운<span>코드</span>', tagline:'키는 내 목소리에, 코드는 쉽게', langAria:'언어',
+  inputLabel:'원곡 코드', lyricsOk:'가사 섞여도 OK', lyricsTip:'코드만 바뀌고 가사·줄바꿈은 그대로. [Am]가사 형식도 돼요.',
+  placeholder:'Bb   F   Gm   Eb\n가사가 섞여 있어도 괜찮아요',
+  photo:'악보 사진', photoTip:'사진·캡처에서 코드와 가사(한국어·영어)를 읽어요. Ctrl+V로 붙여넣어도 돼요.',
+  simpTitle:'쉬운 코드로', simpTip:'더 쉬운 모양이 있으면 바꿔요 (Cmaj7 → C, Bb7sus4 → Bb7)',
+  compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
+  samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사 포함', s1:'남자 발라드', s2:'마이너',
+  help:'도움말',
+  g1h:'남녀 키 바꾸기', g1p:'−5 / +5 버튼은 출발점이에요. ▶로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 −5와 +7은 같은 코드예요.',
+  g2h:'카포를 쓰는 이유', g2p:'키를 바꾸면 B♭, F♯m 같은 어려운 코드가 나와요. 카포를 끼우면 같은 높이로 쉬운 모양만 잡을 수 있어요. 7번 프렛까지만 추천해요.',
+  g3h:'바레 코드', g3p:'검지 하나로 여러 줄을 누르는 코드(F, Bm 등)예요. 초보자가 가장 많이 막히는 곳이라 바레가 적은 쪽을 추천해요.',
+  g4h:'악보 사진 인식', g4p:'이미지는 내 브라우저 안에서만 읽고 어디에도 저장하지 않아요. 틀린 글자는 입력칸에서 고쳐 주세요.',
+  footer:'표준 튜닝(EADGBE) · 원곡 키는 코드 진행으로 추정한 값이에요',
+  lvEasy:'쉬움', lvMid:'보통', lvTricky:'조금 어려움', lvBarre:'바레',
+  keyDown:n=>`${n}키 낮게`, keyUp:n=>`${n}키 높게`, keySame:'원키',
+  empty:'코드를 찾지 못했어요<br><small>예: C &nbsp;Am &nbsp;F#m7 &nbsp;Bb/D</small>',
+  titleNoCapo:L=>`카포 없이 · ${L}`, titleCapo:(c,L)=>`카포 ${c} · ${L} 모양`,
+  realSound:'실제 코드', orig:'원곡',
+  stepAria:'키 조절', down:'키 내리기', up:'키 올리기', reset:'원키로',
+  listen:'듣기', stopShort:'멈춤',
+  presets:'빠른 설정', fToM:'여자 노래를 남자 키로', mToF:'남자 노래를 여자 키로',
+  keynote:'출발점일 뿐이에요. 들어 보고 낮으면 ▲, 높으면 ▼',
+  recommended:'추천', noCapo:'카포 없이', capoN:c=>`카포 ${c}`, shapes:L=>`${L} 모양`, sameSound:'같은 높이',
+  withoutCapo:'카포 없이', barreN:n=>n?`바레 ${n}`:'바레 없음',
+  copy:'복사', copied:'복사됨', selected:'Ctrl+C',
+  fingering:'운지', approx:x=>`${x} 모양으로 표시`,
+  neckTitle:'카포별 난이도', neckAria:'카포 위치 선택', capoNone:'카포 없음', barreShort:n=>`${n}`,
+  neckCap:'모든 줄은 같은 높이로 소리 나요. 막대가 짧을수록 쉬워요.',
+  reading:(w,p)=>`${w} 읽는 중 ${p}%`, wChords:'코드', wLyrics:'가사',
+  prepImg:'이미지 준비 중…', loadEngine:'인식 엔진 준비 중… (처음만 약 9MB)',
+  noChordsImg:'코드를 못 찾았어요. 더 크고 선명하게 캡처해 주세요.',
+  okImg:(c,l)=>`코드 ${c}개 · 가사 ${l}줄을 읽었어요. 틀린 곳은 고쳐 주세요.`,
+  failImg:'이미지를 읽지 못했어요.'
+ },
+ en:{
+  title:'Easy Chord', desc:'Paste guitar chords, shift the key like karaoke, and get the new chords, the easiest capo position and fingering diagrams.',
+  brand:'Easy<span>Chord</span>', tagline:'Your key. Easier chords.', langAria:'Language',
+  inputLabel:'Original chords', lyricsOk:'Lyrics OK', lyricsTip:'Only chords change; lyrics and line breaks stay. [Am]lyrics format works too.',
+  placeholder:'Bb   F   Gm   Eb\nLyrics mixed in are fine',
+  photo:'Sheet photo', photoTip:'Reads chords and lyrics (English, Korean) from a photo or screenshot. Ctrl+V works too.',
+  simpTitle:'Simplify', simpTip:'Use an easier shape when one exists (Cmaj7 → C, Bb7sus4 → Bb7)',
+  compare:'Show original image', imgAlt:'Uploaded chord sheet',
+  samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'With lyrics', s1:'Male ballad', s2:'Minor',
+  help:'Help',
+  g1h:'Switching between male and female keys', g1p:'The −5 / +5 buttons are a starting point. Press ▶ and adjust one step at a time. Guitar chords ignore octaves, so −5 and +7 give the same chords.',
+  g2h:'Why a capo', g2p:'A new key can bring hard chords like B♭ or F♯m. A capo keeps the pitch while you play easy shapes. Suggestions stop at fret 7.',
+  g3h:'Barre chords', g3p:'One finger pressing several strings (F, Bm…). It’s where most beginners get stuck, so we pick the version with the fewest.',
+  g4h:'Reading a sheet photo', g4p:'Images are read only in your browser and never stored. Fix any wrong letters in the input box.',
+  footer:'Standard tuning (EADGBE) · the original key is estimated from the progression',
+  lvEasy:'Easy', lvMid:'Medium', lvTricky:'Tricky', lvBarre:'Barre',
+  keyDown:n=>`${n} lower`, keyUp:n=>`${n} higher`, keySame:'Original',
+  empty:'No chords found<br><small>e.g. C &nbsp;Am &nbsp;F#m7 &nbsp;Bb/D</small>',
+  titleNoCapo:L=>`No capo · ${L}`, titleCapo:(c,L)=>`Capo ${c} · ${L} shapes`,
+  realSound:'Actual chords', orig:'Original',
+  stepAria:'Change key', down:'Key down', up:'Key up', reset:'Back to original',
+  listen:'Listen', stopShort:'Stop',
+  presets:'Quick set', fToM:'Female song in a male key', mToF:'Male song in a female key',
+  keynote:'Just a starting point. Listen: too low ▲, too high ▼',
+  recommended:'Best', noCapo:'No capo', capoN:c=>`Capo ${c}`, shapes:L=>`${L} shapes`, sameSound:'Same pitch',
+  withoutCapo:'Without capo', barreN:n=>n?`${n} barre`:'No barre',
+  copy:'Copy', copied:'Copied', selected:'Ctrl+C',
+  fingering:'Fingering', approx:x=>`Shown as ${x}`,
+  neckTitle:'Difficulty by capo', neckAria:'Choose capo position', capoNone:'No capo', barreShort:n=>`${n}`,
+  neckCap:'Every row sounds at the same pitch. Shorter bar = easier.',
+  reading:(w,p)=>`Reading ${w} ${p}%`, wChords:'chords', wLyrics:'lyrics',
+  prepImg:'Preparing image…', loadEngine:'Loading engine… (first time ~9 MB)',
+  noChordsImg:'No chords found. Try a larger, sharper capture.',
+  okImg:(c,l)=>`Read ${c} chords · ${l} lyric lines. Fix any mistakes.`,
+  failImg:'Couldn’t read the image.'
+ }
+};
+function pickLang(){
+  try{ const q=new URLSearchParams(location.search).get('lang'); if(q==='en'||q==='ko') return q; }catch(e){}
+  try{ const s=localStorage.getItem('easychord-lang'); if(s==='en'||s==='ko') return s; }catch(e){}
+  const ls=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en']);
+  return ls.some(l=>/^ko\b/i.test(l))?'ko':'en';
+}
+let LANG=pickLang();
+const t=(k,...a)=>{ const v=(I18N[LANG]||I18N.ko)[k]; return typeof v==='function'?v(...a):v; };
+function applyStatic(){
+  document.documentElement.lang=LANG; document.title=t('title');
+  const md=document.querySelector('meta[name="description"]'); if(md) md.content=t('desc');
+  document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.dataset.i18n));
+  document.querySelectorAll('[data-i18n-html]').forEach(e=>e.innerHTML=t(e.dataset.i18nHtml));
+  document.querySelectorAll('[data-i18n-alt]').forEach(e=>e.alt=t(e.dataset.i18nAlt));
+  document.querySelectorAll('[data-i18n-aria]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.i18nAria)));
+  document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
+  document.querySelectorAll('[data-i18n-title]').forEach(e=>e.title=t(e.dataset.i18nTitle));
+  document.querySelectorAll('[data-i18n-ph]').forEach(e=>e.placeholder=t(e.dataset.i18nPh));
+  document.querySelectorAll('[data-ic]').forEach(e=>{ if(!e.firstChild) e.outerHTML=ic(e.dataset.ic); });
+}
+
+
+const SAMPLES=[
+  "Ebmaj7 Bb Cm7 Ab\nEb Bb/D Cm Fm7 Bb7\nAbmaj7 Bb Gm Cm\nFm7 Bb7sus4 Eb",
+  "D A Bm F#m\nG D Em A\nD A/C# Bm G\nEm A7 D",
+  "F#m D A E\nF#m D A C#7\nBm E A F#m\nD E F#m",
+  "Ebmaj7              Bb\nRain is knocking on my window\nCm7                 Ab\nAnd I think of you again\nEb         Bb/D      Cm   Fm7\nOn the road we used to walk on\nAbmaj7     Bb7sus4   Eb\nYou are still there",
+  "Ebmaj7              Bb\n창문을 두드리는 빗소리에\nCm7                 Ab\n오늘도 너를 떠올려\nEb         Bb/D      Cm   Fm7\n그때 우리 걷던 길 위에\nAbmaj7     Bb7sus4   Eb\n아직 네가 남아 있어"
+];
+
+const QMAP=[
+  [/^(maj7|M7|ma7|Δ7|Δ)$/,'maj7'],[/^(maj9|M9)$/,'maj9'],[/^(m7b5|ø|ø7|min7b5)$/,'m7b5'],
+  [/^(mmaj7|mM7|m\(maj7\))$/,'mmaj7'],[/^(m7|min7)$/,'m7'],[/^(m6|min6)$/,'m6'],[/^(m9|min9)$/,'m9'],[/^(m|min)$/,'m'],
+  [/^(7sus4|7sus)$/,'7sus4'],[/^(sus2)$/,'sus2'],[/^(sus4|sus)$/,'sus4'],[/^(add9|add2)$/,'add9'],
+  [/^(dim7|°7)$/,'dim7'],[/^(dim|°)$/,'dim'],[/^(aug|\+|\+5)$/,'aug'],
+  [/^6$/,'6'],[/^9$/,'9'],[/^7$/,'7'],[/^11$/,'11'],[/^13$/,'13'],[/^(M|maj)?$/,'']
+];
+const SIMP={maj7:'',maj9:'','6':'',add9:'',sus2:'',sus4:'','7sus4':'7','9':'7','11':'7','13':'7',m7:'m',m6:'m',m9:'m',mmaj7:'m',aug:'',dim7:'dim'};
+const MINORISH=new Set(['m','m7','m6','m9','mmaj7']);
+const triad=q=>MINORISH.has(q)?'m':(q==='dim'||q==='dim7')?'dim':q==='m7b5'?'m7b5':'';
+const base=q=>(MINORISH.has(q)||q.startsWith('dim')||q==='m7b5')?'m':'';
+const TONES={'':[0,4,7],m:[0,3,7],'7':[0,4,7,10],maj7:[0,4,7,11],m7:[0,3,7,10],sus2:[0,2,7],sus4:[0,5,7],add9:[0,4,7,14],
+  dim:[0,3,6],dim7:[0,3,6,9],m7b5:[0,3,6,10],aug:[0,4,8],'6':[0,4,7,9],m6:[0,3,7,9],'9':[0,4,7,10,14],m9:[0,3,7,10,14],
+  maj9:[0,4,7,11,14],'7sus4':[0,5,7,10],mmaj7:[0,3,7,11],'11':[0,5,7,10],'13':[0,4,7,10]};
+
+const OPEN={
+ 'C':{f:[-1,3,2,0,1,0],g:[0,3,2,0,1,0],d:1},'A':{f:[-1,0,2,2,2,0],g:[0,0,1,2,3,0],d:1},
+ 'G':{f:[3,2,0,0,0,3],g:[2,1,0,0,0,3],d:1},'E':{f:[0,2,2,1,0,0],g:[0,2,3,1,0,0],d:1},
+ 'D':{f:[-1,-1,0,2,3,2],g:[0,0,0,1,3,2],d:1},'Am':{f:[-1,0,2,2,1,0],g:[0,0,2,3,1,0],d:1},
+ 'Em':{f:[0,2,2,0,0,0],g:[0,2,3,0,0,0],d:1},'Dm':{f:[-1,-1,0,2,3,1],g:[0,0,0,2,3,1],d:1},
+ 'C7':{f:[-1,3,2,3,1,0],g:[0,3,2,4,1,0],d:1.5},'A7':{f:[-1,0,2,0,2,0],g:[0,0,2,0,3,0],d:1},
+ 'G7':{f:[3,2,0,0,0,1],g:[3,2,0,0,0,1],d:1},'E7':{f:[0,2,0,1,0,0],g:[0,2,0,1,0,0],d:1},
+ 'D7':{f:[-1,-1,0,2,1,2],g:[0,0,0,2,1,3],d:1},'B7':{f:[-1,2,1,2,0,2],g:[0,2,1,3,0,4],d:1.5},
+ 'Am7':{f:[-1,0,2,0,1,0],g:[0,0,2,0,1,0],d:1},'Em7':{f:[0,2,0,0,0,0],g:[0,2,0,0,0,0],d:1},
+ 'Dm7':{f:[-1,-1,0,2,1,1],g:[0,0,0,2,1,1],d:1.5},'Cmaj7':{f:[-1,3,2,0,0,0],g:[0,3,2,0,0,0],d:1},
+ 'Fmaj7':{f:[-1,-1,3,2,1,0],g:[0,0,3,2,1,0],d:1.5},'Amaj7':{f:[-1,0,2,1,2,0],g:[0,0,2,1,3,0],d:1.5},
+ 'Dmaj7':{f:[-1,-1,0,2,2,2],g:[0,0,0,1,1,1],d:1.5},'Gmaj7':{f:[3,2,0,0,0,2],g:[3,2,0,0,0,1],d:1.5},
+ 'Emaj7':{f:[0,2,1,1,0,0],g:[0,3,1,2,0,0],d:1.5},'Asus2':{f:[-1,0,2,2,0,0],g:[0,0,1,2,0,0],d:1},
+ 'Asus4':{f:[-1,0,2,2,3,0],g:[0,0,1,2,3,0],d:1},'Dsus2':{f:[-1,-1,0,2,3,0],g:[0,0,0,1,3,0],d:1},
+ 'Dsus4':{f:[-1,-1,0,2,3,3],g:[0,0,0,1,3,4],d:1},'Esus4':{f:[0,2,2,2,0,0],g:[0,2,3,4,0,0],d:1},
+ 'Cadd9':{f:[-1,3,2,0,3,0],g:[0,2,1,0,3,0],d:1},
+ 'Bm7':{f:[-1,2,0,2,0,2],g:[0,1,0,2,0,3],d:1.5},'Fmaj7':{f:[-1,-1,3,2,1,0],g:[0,0,3,2,1,0],d:1.5}
+};
+const ESH={'':{o:[0,2,2,1,0,0],g:[1,3,4,2,1,1],b:1},m:{o:[0,2,2,0,0,0],g:[1,3,4,1,1,1],b:1},
+ '7':{o:[0,2,0,1,0,0],g:[1,3,1,2,1,1],b:1},m7:{o:[0,2,0,0,0,0],g:[1,3,1,1,1,1],b:1},
+ maj7:{o:[0,null,1,1,0,null],g:[1,0,3,4,2,0],b:0},sus4:{o:[0,2,2,2,0,0],g:[1,2,3,4,1,1],b:1}};
+const ASH={'':{o:[null,0,2,2,2,0],g:[0,1,2,3,4,1],b:1},m:{o:[null,0,2,2,1,0],g:[0,1,3,4,2,1],b:1},
+ '7':{o:[null,0,2,0,2,0],g:[0,1,3,1,4,1],b:1},m7:{o:[null,0,2,0,1,0],g:[0,1,3,1,2,1],b:1},
+ maj7:{o:[null,0,2,1,2,0],g:[0,1,3,2,4,1],b:1},sus2:{o:[null,0,2,2,0,0],g:[0,1,3,4,1,1],b:1},
+ sus4:{o:[null,0,2,2,3,0],g:[0,1,2,3,4,1],b:1},dim:{o:[null,0,1,2,1,null],g:[0,1,2,4,3,0],b:0},
+ m7b5:{o:[null,0,1,0,1,null],g:[0,1,3,2,4,0],b:0}};
+
+const shapeCache=new Map();
+function getShape(pc,q){
+  const key=pc+'|'+q; if(shapeCache.has(key)) return shapeCache.get(key);
+  let r=null; const o=OPEN[SH[pc]+q];
+  if(o) r={f:o.f,g:o.g,d:o.d,barre:false};
+  else{
+    const c=[]; const rE=mod(pc-4), rA=mod(pc-9);
+    if(ESH[q]&&rE>0) c.push({r:rE,s:ESH[q]});
+    if(ASH[q]&&rA>0) c.push({r:rA,s:ASH[q]});
+    if(c.length){ c.sort((a,b)=>a.r-b.r); const {r:fr,s}=c[0];
+      r={f:s.o.map(x=>x===null?-1:x+fr),g:s.g,d:s.b?(fr>=7?3.5:3):2.5,barre:!!s.b}; }
+  }
+  shapeCache.set(key,r); return r;
+}
+const uniq=a=>[...new Set(a)];
+function pick(pc,q,simplify){
+  const exact=getShape(pc,q);
+  if(!simplify){
+    if(exact) return {q,shape:exact};
+    for(const alt of uniq([SIMP[q],triad(q),base(q)]).filter(x=>x!==undefined&&x!==q)){
+      const s=getShape(pc,alt); if(s) return {q,shape:s,approx:alt};
+    }
+  }
+  let best=null;
+  for(const alt of uniq([q,SIMP[q]??q,triad(q),base(q)])){
+    const s=getShape(pc,alt); if(s&&(!best||s.d<best.shape.d)) best={q:alt,shape:s};
+  }
+  return best;
+}
+
+function parseChord(tok){
+  const m=tok.match(/^([A-G])([#b♯♭]?)([^/]*)(?:\/([A-G])([#b♯♭]?))?$/); if(!m) return null;
+  const acc=a=>a==='#'||a==='♯'?1:a==='b'||a==='♭'?-1:0;
+  const NAT={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+  let q=null; for(const [re,v] of QMAP){ if(re.test(m[3])){q=v;break;} } if(q===null) return null;
+  return {pc:mod(NAT[m[1]]+acc(m[2])),q,bass:m[4]?mod(NAT[m[4]]+acc(m[5])):null};
+}
+function parse(text){
+  const chords=[]; const lines=text.split('\n').map(line=>{
+    const parts=line.split(/([\s|,()\[\]\-]+)/);
+    // 영어 가사 줄이면 한 글자 'A' 같은 단어는 코드가 아니라 가사로 봄
+    const latin=parts.filter((t,i)=>i%2===0&&t&&!parseChord(t)&&/^[A-Za-z'’]+$/.test(t)).length;
+    return parts.map((t,i)=>{
+      if(!t||i%2===1) return {t,ci:-1};
+      let c=parseChord(t); if(c&&latin>=2&&/^[A-G]$/.test(t)&&!/\[\s*$/.test(parts[i-1]||'')) c=null; // [ ] 안은 항상 코드
+      if(!c) return {t,ci:-1}; chords.push(c); return {t,ci:chords.length-1};
+    });
+  });
+  return {chords,lines};
+}
+function detectKey(chords){
+  const DIA={0:'M',2:'m',4:'m',5:'M',7:'M',9:'m',11:'d'};
+  const fam=c=>MINORISH.has(c.q)?'m':(c.q.startsWith('dim')||c.q==='m7b5')?'d':'M';
+  let best=null;
+  for(let k=0;k<12;k++){
+    let s=0; for(const c of chords){ if(DIA[mod(c.pc-k)]===fam(c)) s+=1; }
+    const f=chords[0], l=chords[chords.length-1];
+    const isT=c=>(mod(c.pc-k)===0&&fam(c)==='M')||(mod(c.pc-k)===9&&fam(c)==='m');
+    if(isT(f)) s+=1.5; if(isT(l)) s+=1.5;
+    if(!best||s>best.s) best={k,s};
+  }
+  const f=chords[0];
+  return {tonic:best.k,minor:mod(f.pc-best.k)===9&&MINORISH.has(f.q)};
+}
+const keyLabel=(tonic,minor)=>pretty(minor?pcName(tonic+9,FLATKEYS.has(mod(tonic)))+'m':pcName(tonic,FLATKEYS.has(mod(tonic))));
+
+function build(P,K,shift,simplify){
+  const flat=FLATKEYS.has(mod(K.tonic+shift));
+  const items=P.chords.map(c=>{
+    const pc=mod(c.pc+shift), p=pick(pc,c.q,simplify);
+    const bass=c.bass===null?null:mod(c.bass+shift);
+    return {...p,pc,bass,name:pcName(pc,flat)+p.q+(bass===null?'':'/'+pcName(bass,flat))};
+  });
+  const seen=new Map(); for(const it of items) if(!seen.has(it.name)) seen.set(it.name,it);
+  const unique=[...seen.values()];
+  return {shift,items,unique,score:items.reduce((a,b)=>a+b.shape.d,0),barres:unique.filter(u=>u.shape.barre).length,label:keyLabel(mod(K.tonic+shift),K.minor)};
+}
+
+function diagram(sh){
+  const W=104,H=128,L=17,T=30,G=14,FH=18,N=5;
+  const pos=sh.f.filter(x=>x>0), maxF=Math.max(0,...pos), minF=pos.length?Math.min(...pos):1;
+  const baseF=maxF<=N?1:minF; const x=i=>L+i*G; const y=f=>T+(f-baseF+.5)*FH;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-hidden="true">`;
+  for(let i=0;i<=N;i++) s+=`<line x1="${L}" x2="${L+5*G}" y1="${T+i*FH}" y2="${T+i*FH}" stroke="var(--muted)" stroke-width="1"/>`;
+  for(let i=0;i<6;i++) s+=`<line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${T+N*FH}" stroke="var(--muted)" stroke-width="1"/>`;
+  if(baseF===1) s+=`<rect x="${L-1}" y="${T-4}" width="${5*G+2}" height="4" fill="var(--ink)"/>`;
+  else s+=`<text x="${L-5}" y="${T+FH*.5+4}" text-anchor="end" font-size="10" fill="var(--muted)" font-family="IBM Plex Mono, monospace">${baseF}</text>`;
+  sh.f.forEach((f,i)=>{
+    if(f===-1) s+=`<text x="${x(i)}" y="${T-9}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="IBM Plex Mono, monospace">×</text>`;
+    if(f===0) s+=`<circle cx="${x(i)}" cy="${T-12}" r="3.6" fill="none" stroke="var(--muted)" stroke-width="1.2"/>`;
+  });
+  const ones=sh.f.map((f,i)=>({f,i})).filter(o=>o.f>0&&sh.g[o.i]===1);
+  let barre=null;
+  if(ones.length>=2&&ones.every(o=>o.f===ones[0].f)) barre={f:ones[0].f,a:ones[0].i,b:ones[ones.length-1].i};
+  if(barre){ s+=`<rect x="${x(barre.a)-6}" y="${y(barre.f)-6}" width="${x(barre.b)-x(barre.a)+12}" height="12" rx="6" fill="var(--accent)"/>`;
+    s+=`<text x="${(x(barre.a)+x(barre.b))/2}" y="${y(barre.f)+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent-ink)">1</text>`; }
+  sh.f.forEach((f,i)=>{
+    if(f<=0) return; if(barre&&sh.g[i]===1&&f===barre.f) return;
+    s+=`<circle cx="${x(i)}" cy="${y(f)}" r="6" fill="var(--accent)"/>`;
+    if(sh.g[i]) s+=`<text x="${x(i)}" y="${y(f)+3.5}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent-ink)">${sh.g[i]}</text>`;
+  });
+  return s+'</svg>';
+}
+const level=d=>d<=1?[t('lvEasy'),'t-easy']:d<=1.5?[t('lvMid'),'t-mid']:d<3?[t('lvTricky'),'t-mid']:[t('lvBarre'),'t-hard'];
+const keyNote=s=>s<0?t('keyDown',-s):s>0?t('keyUp',s):t('keySame');
+
+// 진행 미리듣기: 바뀐 키의 실제 소리로 코드를 하나씩 들려줌
+let audio=null;
+function stopAudio(){ if(audio){ try{audio.ctx.close();}catch(e){} clearTimeout(audio.t); audio=null; } }
+function playProgression(items,onEnd){
+  stopAudio();
+  const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return false;
+  const ctx=new AC(); const dur=0.95; let t=ctx.currentTime+0.06;
+  const seq=items.slice(0,24);
+  for(const it of seq){
+    const root=48+it.pc; const tones=(TONES[it.q]||TONES['']).map(v=>root+v);
+    const bass=(it.bass===null?it.pc:it.bass)+36;
+    for(const m of [bass,...tones]){
+      const o=ctx.createOscillator(), g=ctx.createGain();
+      o.type='triangle'; o.frequency.value=440*Math.pow(2,(m-69)/12);
+      g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.11,t+0.02); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t+dur+0.02);
+    }
+    t+=dur;
+  }
+  audio={ctx,t:setTimeout(()=>{stopAudio();onEnd();},(t-ctx.currentTime+0.2)*1000)};
+  return true;
+}
+
+const $src=document.getElementById('src'), $simp=document.getElementById('simp'), $out=document.getElementById('out');
+let shift=0, capoSel=null, preset=null;
+
+function render(){
+  const P=parse($src.value);
+  if(!P.chords.length){ $out.innerHTML=`<section class="card empty">${ic('music')}<div>${t('empty')}</div></section>`; return; }
+  const simplify=$simp.checked, K=detectKey(P.chords);
+  const origLabel=keyLabel(K.tonic,K.minor);
+  const sounding=build(P,K,shift,simplify);
+  const capos=[0,1,2,3,4,5,6,7].map(c=>({c,...build(P,K,shift-c,simplify)}));
+  // 바레 개수가 적은 쪽 우선, 같으면 난이도 합계 + 카포 위치가 낮을수록 가산점
+  const rank=v=>v.barres*100+v.score+v.c*0.3;
+  const bestC=capos.reduce((a,b)=>rank(b)<rank(a)-1e-9?b:a);
+  if(capoSel===null) capoSel=bestC.c;
+  const cur=capos.find(v=>v.c===capoSel);
+  const maxS=Math.max(...capos.map(v=>v.score));
+
+  const title=cur.c===0?t('titleNoCapo',cur.label):t('titleCapo',cur.c,cur.label);
+  const capoLine=cur.c===0?'':`<span class="capo">${ic('capo')}Capo ${cur.c}</span>\n`;
+  // 코드 이름 길이가 바뀌어도 가사 위 코드 위치가 밀리지 않게 뒤 공백을 늘리거나 줄임
+  // [코드]가사 형식 줄은 코드를 가사 위에 올려서 보여 줌(복사할 땐 [코드]가사 그대로)
+  const bracketed=(l,i)=>l[i].ci>=0&&i>0&&/\[\s*$/.test(l[i-1].t);
+  const cpOut=(l,html)=>{
+    const segs=[]; let cur={it:null,text:''};
+    l.forEach((t,i)=>{
+      if(bracketed(l,i)){ if(cur.it||cur.text) segs.push(cur); cur={it:cur_items(t.ci),text:''}; }
+      else if(t.ci>=0) cur.text+=cur_items(t.ci).name;
+      else cur.text+=(i%2===1)?t.t.replace(/[\[\]]/g,''):t.t;
+    });
+    if(cur.it||cur.text) segs.push(cur);
+    if(!html) return segs.map(s=>(s.it?`[${s.it.name}]`:'')+s.text).join('');
+    return segs.map(s=>`<span class="cp"><b class="${s.it&&s.it.shape.barre?'hard':''}">${s.it?esc(pretty(s.it.name)):''}</b><span class="ly">${esc(s.text)||' '}</span></span>`).join('');
+  };
+  const cur_items=ci=>cur.items[ci];
+  const lineOut=(l,html)=>{ if(l.some((t,i)=>bracketed(l,i))) return cpOut(l,html);
+    let out='',debt=0;
+    for(const t of l){
+      if(t.ci>=0){ const it=cur.items[t.ci]; debt+=it.name.length-t.t.length;
+        out+=html?`<span class="ch${it.shape.barre?' hard':''}">${esc(pretty(it.name))}</span>`:it.name; }
+      else if(/^ +$/.test(t.t)&&debt){ const want=t.t.length-debt, len=Math.max(1,want); debt=len-want; out+=' '.repeat(len); }
+      else out+=html?esc(t.t):t.t;
+    } return out; };
+  const sheetHTML=capoLine+P.lines.map(l=>lineOut(l,true)).join('\n');
+  const sheetTXT=(cur.c===0?'':`Capo ${cur.c}\n`)+P.lines.map(l=>lineOut(l,false)).join('\n');
+  const realLine=cur.c===0?'':`<p class="real">${ic('sound')}${t('realSound')} <b>${esc(pretty(uniq(sounding.items.map(i=>i.name)).join('  ')))}</b></p>`;
+  const barreBadge=n=>`<span class="badge ${n?'warn':'good'}">${ic(n?'alert':'check')}${t('barreN',n)}</span>`;
+  const delta=shift<0?`<span class="delta dn">${ic('arrowDown')}${t('keyDown',-shift)}</span>`:shift>0?`<span class="delta upc">${ic('arrowUp')}${t('keyUp',shift)}</span>`:`<span class="delta same">${t('keySame')}</span>`;
+
+  $out.innerHTML=`
+  <section class="card">
+    <div class="keyrow">
+      <div class="keybig"><span class="k">${sounding.label.replace(/([♭♯])/g,'<span class="acc">$1</span>')}</span><span class="kmeta"><span class="orig">${t('orig')} ${origLabel}</span>${delta}</span></div>
+      <div class="stepper" role="group" aria-label="${t('stepAria')}">
+        <button class="step" type="button" id="down" aria-label="${t('down')}" title="${t('down')}" ${shift<=MIN?'disabled':''}>${ic('down')}</button>
+        <span class="stepval" aria-live="polite">${shift>0?'+':''}${shift}</span>
+        <button class="step" type="button" id="up" aria-label="${t('up')}" title="${t('up')}" ${shift>=MAX?'disabled':''}>${ic('up')}</button>
+        <button class="icon-btn" type="button" id="reset" aria-label="${t('reset')}" title="${t('reset')}" ${shift===0?'disabled':''}>${ic('reset')}</button>
+      </div>
+      <button class="play" type="button" id="play">${ic(audio?'stop':'play')}<span>${audio?t('stopShort'):t('listen')}</span></button>
+    </div>
+    <div class="presets" role="group" aria-label="${t('presets')}">
+      <button class="chip" type="button" data-preset="-5" aria-pressed="${preset===-5}" title="${t('fToM')}" aria-label="${t('fToM')}">♀ → ♂ <b>−5</b></button>
+      <button class="chip" type="button" data-preset="5" aria-pressed="${preset===5}" title="${t('mToF')}" aria-label="${t('mToF')}">♂ → ♀ <b>+5</b></button>
+      <span class="hint-i" title="${t('keynote')}" aria-label="${t('keynote')}" role="img">${ic('info')}</span>
+    </div>
+  </section>
+
+  <div class="picks">
+    <button class="pick best" type="button" data-capo="${bestC.c}" aria-pressed="${capoSel===bestC.c}">
+      <span class="pk-ic">${ic(bestC.c?'capo':'guitar')}</span>
+      <span class="pk-body"><span class="eb">${ic('star')}${t('recommended')}</span>
+        <span class="main">${bestC.c===0?t('noCapo'):t('capoN',bestC.c)}</span>
+        <span class="badges">${bestC.c?`<span class="badge">${t('shapes',bestC.label)}</span>`:''}${barreBadge(bestC.barres)}</span></span>
+    </button>
+    ${bestC.c===0?'':`<button class="pick" type="button" data-capo="0" aria-pressed="${capoSel===0}">
+      <span class="pk-ic">${ic('guitar')}</span>
+      <span class="pk-body"><span class="eb">${t('withoutCapo')}</span>
+        <span class="main">${sounding.label}</span>
+        <span class="badges">${barreBadge(capos[0].barres)}</span></span>
+    </button>`}
+  </div>
+
+  <section class="card">
+    <div class="sec-h"><h2>${ic('sheet')}${esc(title)}</h2><button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button></div>
+    <pre class="sheet" id="sheet">${sheetHTML}</pre>
+    ${realLine}
+  </section>
+
+  <section class="card">
+    <div class="sec-h"><h2>${ic('grid')}${t('fingering')}</h2><span class="count">${cur.unique.length}</span></div>
+    <div class="diagrams">${cur.unique.map(u=>{const [tx,c]=level(u.shape.d);
+      return `<figure class="cd"><span class="nm">${esc(pretty(u.name))}</span>${diagram(u.shape)}<span class="lv ${c}">${tx}</span>${u.approx!==undefined?`<span class="approx">${esc(t('approx',pretty(pcName(u.pc,false)+u.approx)))}</span>`:''}</figure>`;}).join('')}</div>
+  </section>
+
+  <section class="card">
+    <div class="sec-h"><h2>${ic('capo')}${t('neckTitle')}</h2><span class="hint-i" title="${t('neckCap')}" aria-label="${t('neckCap')}" role="img">${ic('info')}</span></div>
+    <div class="neck" role="group" aria-label="${t('neckAria')}">${capos.map(v=>`
+      <button type="button" data-capo="${v.c}" aria-pressed="${capoSel===v.c}">
+        <span class="fr">${v.c===0?t('capoNone'):t('capoN',v.c)}${[3,5,7].includes(v.c)?'<i class="inlay"></i>':''}</span>
+        <span class="shape">${v.label}${v.c===bestC.c?ic('star'):''}</span>
+        <span class="bar"><i style="width:${Math.max(4,Math.round(v.score/maxS*100))}%"></i></span>
+        <span class="bc">${ic('barre')}${t('barreShort',v.barres)}</span>
+      </button>`).join('')}</div>
+  </section>`;
+
+
+  const set=(s,p=null)=>{shift=Math.max(MIN,Math.min(MAX,s));preset=p;capoSel=null;stopAudio();render();};
+  document.getElementById('down').onclick=()=>set(shift-1);
+  document.getElementById('up').onclick=()=>set(shift+1);
+  document.getElementById('reset').onclick=()=>set(0);
+  $out.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>set(+b.dataset.preset,+b.dataset.preset));
+  $out.querySelectorAll('[data-capo]').forEach(b=>b.onclick=()=>{capoSel=+b.dataset.capo;render();});
+  document.getElementById('play').onclick=()=>{
+    if(audio){stopAudio();render();return;}
+    if(playProgression(sounding.items,()=>render())) render();
+  };
+  document.getElementById('copy').onclick=async e=>{
+    const btn=e.currentTarget;
+    const lb=btn.querySelector('span');
+    try{ await navigator.clipboard.writeText(sheetTXT); lb.textContent=t('copied'); }
+    catch{ const r=document.createRange(); r.selectNodeContents(document.getElementById('sheet')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); lb.textContent=t('selected'); }
+    setTimeout(()=>{lb.textContent=t('copy');},1600);
+  };
+}
+
+// ── 악보 이미지 → 코드 글자 읽기(OCR). 인식 엔진은 이 사이트의 ocr/ 폴더에서 처음 한 번만 받아요.
+const $status=document.getElementById('ocrStatus'), $prev=document.getElementById('ocrPrev'), $img=document.getElementById('ocrImg'), $drop=document.getElementById('drop');
+const abs=p=>new URL(p,location.href).href;
+// 두 번 읽음: 코드는 영어 모델(코드 글자에 가장 정확), 가사는 한국어+영어 모델(한글·영어 가사 모두)
+const engines={}; let busy=false;
+function status(msg,kind=''){ $status.hidden=false; $status.className='ocr-status '+kind; $status.textContent=msg; }
+function loadScript(src){ return new Promise((ok,no)=>{ const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=()=>no(new Error('script')); document.head.appendChild(s); }); }
+async function getEngine(lang,label,psm){
+  if(engines[lang]) return engines[lang];
+  if(!window.Tesseract) await loadScript(abs('ocr/tesseract.min.js'));
+  const w=await Tesseract.createWorker(lang,1,{
+    workerPath:abs('ocr/worker-shim.js'), workerBlobURL:false, corePath:abs('ocr/'), langPath:abs('ocr/lang'), cacheMethod:'none',
+    logger:m=>{ if(m.status==='recognizing text') status(t('reading',t(label),Math.round(m.progress*100))); }
+  });
+  await w.setParameters({preserve_interword_spaces:'1',tessedit_pageseg_mode:psm});
+  return engines[lang]=w;
+}
+// ── 이미지 전처리 ──
+// 코드 줄 아래 굵은 가로줄, 마디 세로선, 박자표(2/4)가 글자에 붙어 인식을 망치므로 지움
+function inkOf(ctx,W,H,th){ const a=ctx.getImageData(0,0,W,H).data, b=new Uint8Array(W*H);
+  for(let i=0,p=0;i<b.length;i++,p+=4) b[i]=(0.299*a[p]+0.587*a[p+1]+0.114*a[p+2])<th?1:0; return b; }
+function removeHRules(b,W,H){ const K=Math.round(W*0.05);
+  for(let y=0;y<H;y++){ let x=0; const r=y*W;
+    while(x<W){ if(!b[r+x]){x++;continue;} const s=x; while(x<W&&b[r+x]) x++; if(x-s>=K) b.fill(0,r+s,r+x); } } }
+function removeBarsAndTimeSigs(b,W,H){
+  const lab=new Int32Array(W*H), comps=[null], st=[];
+  for(let i=0;i<b.length;i++){ if(!b[i]||lab[i]) continue;
+    const id=comps.length; let x0=W,x1=0,y0=H,y1=0,a=0; lab[i]=id; st.push(i);
+    while(st.length){ const p=st.pop(), x=p%W, y=(p-x)/W; a++; if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y;
+      for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){ const nx=x+dx, ny=y+dy; if(nx<0||ny<0||nx>=W||ny>=H) continue; const q=ny*W+nx; if(b[q]&&!lab[q]){lab[q]=id;st.push(q);} } }
+    comps.push({x:x0,y:y0,w:x1-x0+1,h:y1-y0+1,a});
+  }
+  const hs=comps.slice(1).filter(c=>c.a>30&&c.h>8).map(c=>c.h).sort((p,q)=>p-q); if(!hs.length) return 0;
+  const med=hs[hs.length>>1]; b.med=med; const kill=new Uint8Array(comps.length), small=[];
+  comps.forEach((c,i)=>{ if(!c) return; if(c.h>1.25*med&&c.w<c.h/6) kill[i]=1; else if(c.h<0.75*med&&c.h>0.25*med) small.push(i); });
+  for(const i of small) for(const j of small){ if(i===j) continue; const A=comps[i], B=comps[j];
+    const ov=Math.min(A.x+A.w,B.x+B.w)-Math.max(A.x,B.x), gap=B.y-(A.y+A.h);
+    if(ov>0.5*Math.min(A.w,B.w)&&gap>0&&gap<0.6*med){ kill[i]=1; kill[j]=1; } }
+  for(let i=0;i<b.length;i++) if(kill[lab[i]]) b[i]=0;
+  return med;
+}
+// 획 굵기(가로 잉크 길이의 중앙값)
+function strokeWidth(b,W,H){ const r=[]; for(let y=0;y<H;y+=3){ let x=0; const o=y*W; while(x<W){ if(!b[o+x]){x++;continue;} const s=x; while(x<W&&b[o+x]) x++; const L=x-s; if(L>1&&L<200) r.push(L); } }
+  r.sort((a,b)=>a-b); return r.length?r[r.length>>1]:0; }
+function toCanvas(b,W,H){ const c=document.createElement('canvas'); c.width=W; c.height=H; const x=c.getContext('2d'), d=x.createImageData(W,H);
+  for(let i=0,p=0;i<b.length;i++,p+=4){ const v=b[i]?0:255; d.data[p]=d.data[p+1]=d.data[p+2]=v; d.data[p+3]=255; } x.putImageData(d,0,0); return c; }
+function prep(file){
+  return new Promise((ok,no)=>{
+    const im=new Image(); const url=URL.createObjectURL(file);
+    im.onload=()=>{
+      const sc=Math.min(2.5,Math.max(1,1800/im.naturalWidth)), W=Math.round(im.naturalWidth*sc), H=Math.round(im.naturalHeight*sc);
+      const c=document.createElement('canvas'); c.width=W; c.height=H;
+      const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,W,H); x.drawImage(im,0,0,W,H);
+      const cb=inkOf(x,W,H,165); removeHRules(cb,W,H);
+      const sw=strokeWidth(cb,W,H), med=removeBarsAndTimeSigs(cb,W,H);
+      // 굵은 글꼴(획 굵기/글자 높이 ≥ 0.28)이면 가사는 더 진한 부분만 남겨 획을 가늘게 → 한글 인식이 훨씬 좋아짐
+      const lb=inkOf(x,W,H,med&&sw/med>=0.28?110:165); removeHRules(lb,W,H);
+      const lyricCanvas=toCanvas(lb,W,H);                // 가사용: 가로줄만 지움(한글 자모 보호)
+      ok({url,lyricCanvas,chordCanvas:toCanvas(cb,W,H)});  // 코드용: 세로선·박자표까지 지움
+    };
+    im.onerror=()=>no(new Error('image')); im.src=url;
+  });
+}
+
+// ── 코드 글자 보정 ──
+const QUALS=['7','9','11','13','6','m7','m6','m9','maj7','maj9','7sus4','sus4','sus2','add9','m7b5','dim7','mmaj7'];
+function lev(a,b){ const d=Array.from({length:a.length+1},(_,i)=>[i]); for(let j=1;j<=b.length;j++) d[0][j]=j;
+  for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++) d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[a.length][b.length]; }
+// 흔한 인식 실수: ♭→»·>, m→rn, 작은 위첨자 7→z·v·?, m7→w·u, C→Cc, 박자표 찌꺼기(D4→D) 등
+function repairChord(s){
+  s=s.replace(/♭/g,'b').replace(/♯/g,'#').replace(/^([A-G])[>»›]+/,'$1b');
+  if(parseChord(s)) return s;
+  if(/^[a-g]/.test(s)&&/\d/.test(s)&&parseChord(s[0].toUpperCase()+s.slice(1))) return s[0].toUpperCase()+s.slice(1);
+  if(/^([A-G])([a-g])$/.test(s)&&s[0].toLowerCase()===s[1]) return s[0];
+  const r=s.replace(/^([A-G][#b]?)rn/,'$1m'); if(parseChord(r)) return r;
+  const m=s.match(/^([A-G][#b]?)([^/]*)(\/[A-G][#b]?)?$/); if(!m) return null;
+  const root=m[1], suf=m[2], tail=m[3]||'';
+  if(/^[mn]?[wu]$|^[mn][\/?zZvrytT7]$/.test(suf)) return root+'m7'+tail;
+  if(suf==='n') return root+'m'+tail;
+  if(/^[zZ?vrytT]$/.test(suf)) return root+'7'+tail;
+  if(/^[23458]$/.test(suf)) return root+tail;
+  if(suf.length>=3&&/\d/.test(suf)){ let best=null,bd=3; for(const q of QUALS){ const dd=lev(suf,q); if(dd<bd){bd=dd;best=q;} } if(best!==null&&bd<=2) return root+best+tail; }
+  return null;
+}
+const EDGE=/^[|Il1iJ!\[\]().:;,'‘’"“”_~=¦\-—]+|[|Il1iJ!\[\]().:;,'‘’"“”_~=¦\-—]+$/g;
+// 한 단어에서 코드 찾기: 마디선 찌꺼기를 떼고, "DGD"처럼 붙어 읽힌 코드는 나눔
+function chordsInWord(w){
+  let s=w.t.replace(EDGE,'').replace(/^[Oo2-48](?=[A-G])/,''); if(!s) return [];
+  if(s==='6') s='G'; // 굵은 글꼴의 G가 6으로 읽히는 경우
+  const one=repairChord(s); if(one) return [{t:one,x0:w.x0,x1:w.x1}];
+  const n=s.length, cw=(w.x1-w.x0)/n, out=[]; let i=0, got=0;
+  while(i<n){ let f=null;
+    for(let L=Math.min(8,n-i);L>=1;L--){ const piece=s.substr(i,L); if(!/^[A-G]/.test(piece)) break; const r=repairChord(piece); if(r){f={r,L};break;} }
+    if(f){ out.push({t:f.r,x0:w.x0+i*cw,x1:w.x0+(i+f.L)*cw}); got+=f.L; i+=f.L; } else i++; }
+  return got>=n*0.6?out:[];
+}
+const LABEL=/^(intro|verse|bridge|chorus|outro|pre-?chorus|interlude|ending|hook|rap|간주|후렴|전주)$/i;
+function ocrLines(data,mode){
+  const lines=[];
+  for(const b of data.blocks||[]) for(const p of b.paragraphs||[]) for(const l of p.lines||[]){
+    const words=(l.words||[]).map(w=>({t:(w.text||'').trim(),x0:w.bbox.x0,x1:w.bbox.x1,cf:w.confidence})).filter(w=>w.t);
+    if(words.length) lines.push({words,y0:l.bbox.y0,y1:l.bbox.y1});
+  }
+  lines.sort((a,b)=>a.y0-b.y0);
+  for(const L of lines){
+    if(mode==='chord'){
+      const cs=[], extra=[]; let meaningful=0, hit=0;
+      for(const w of L.words){
+        if(/^\/[A-G]/.test(w.t)&&cs.length&&parseChord(cs[cs.length-1].t+w.t)){ cs[cs.length-1].t+=w.t; continue; }
+        const f=chordsInWord(w); if(/[A-Za-z0-9가-힣]/.test(w.t)) meaningful++;
+        if(f.length){ hit++; cs.push(...f); } else if(/^[A-Za-z]{3,}$/.test(w.t)) extra.push({t:w.t,x0:w.x0});
+      }
+      const conf=L.words.reduce((a,w)=>a+w.cf,0)/L.words.length;
+      L.isChord=(conf>=40||cs.length>=3)&&((cs.length>=2&&hit/Math.max(1,meaningful)>=0.5)||(cs.length===1&&meaningful===1&&cs[0].t.length>=2));
+      L.chords=L.isChord?cs:[]; L.extra=extra;
+    }else{
+      for(const w of L.words){ w.t=w.t==='|'?'I':w.t.replace(/[|_~=¦]+/g,''); }
+      L.words=L.words.filter(w=>w.t);
+      const txt=L.words.map(w=>w.t).join(' '), conf=L.words.reduce((a,w)=>a+w.cf,0)/Math.max(1,L.words.length);
+      const labels=L.words.filter(w=>LABEL.test(w.t.replace(/[^A-Za-z가-힣-]/g,'')));
+      L.isLabel=labels.length>0&&!/[가-힣]{2,}/.test(txt.replace(/간주|후렴|전주/g,''));
+      if(L.isLabel) L.label=labels.map(w=>{const t=w.t.replace(/[^A-Za-z가-힣-]/g,''); return t[0].toUpperCase()+t.slice(1);}).join(' → ');
+      L.isLyric=!L.isLabel&&conf>=45&&(/[가-힣]{2,}/.test(txt)||(txt.match(/[A-Za-z]{3,}/g)||[]).length>=2);
+    }
+  }
+  return lines;
+}
+// 가사 줄을 글자 단위로 펼침. 한글은 글자마다 따로 읽히기도 해서, 간격이 좁으면 띄어쓰기를 넣지 않음
+function lyricChars(L){
+  let wsum=0, n=0; for(const w of L.words){ wsum+=w.x1-w.x0; n+=[...w.t].length; }
+  const cw=wsum/Math.max(1,n), chars=[];
+  // 단어 사이 간격 중 '글자 사이'와 '띄어쓰기'가 뚜렷이 갈리면 그 경계를 기준으로 삼음
+  const gaps=L.words.slice(1).map((w,i)=>w.x0-L.words[i].x1).sort((a,b)=>a-b);
+  let th=cw*0.15, jump=0;
+  for(let i=0;i+1<gaps.length;i++){ const r=(gaps[i+1]+1)/(Math.max(gaps[i],0)+1); if(r>jump&&gaps[i+1]>cw*0.2){jump=r; if(r>=1.8) th=(gaps[i]+gaps[i+1])/2;} }
+  th=Math.min(Math.max(th,cw*0.15),cw*0.3); // 띄어쓰기는 보통 글자 폭의 0.3배 이상
+  L.words.forEach((w,wi)=>{
+    const cs=[...w.t], ww=(w.x1-w.x0)/cs.length;
+    if(wi&&w.x0-L.words[wi-1].x1>th) chars.push({c:' ',x:(L.words[wi-1].x1+w.x0)/2,sp:true});
+    cs.forEach((c,k)=>chars.push({c,x:w.x0+(k+.5)*ww}));
+  });
+  return {chars,cw};
+}
+// 코드 줄의 각 코드를, 아래 가사 줄에서 가로 위치가 가장 가까운 글자 앞에 [코드]로 끼워 넣음
+function mergeChordLyric(C,L,keepTail=true){
+  const {chars,cw}=lyricChars(L), at=new Map(), tail=[];
+  for(const ch of C.chords){
+    const target=ch.x0+cw/2; let best=-1, bd=Infinity;
+    chars.forEach((c,i)=>{ if(c.sp) return; const dd=Math.abs(c.x-target); if(dd<bd){bd=dd;best=i;} });
+    if(best<0||target>chars[chars.length-1].x+cw*1.5) tail.push(ch.t);
+    else at.set(best,(at.get(best)||'')+`[${ch.t}]`);
+  }
+  let s=''; chars.forEach((c,i)=>{ s+=(at.get(i)||'')+c.c; });
+  return s+(keepTail&&tail.length?' '+tail.map(t=>`[${t}]`).join(' '):'');
+}
+function sheetFromOCR(dataChords,dataLyrics){
+  const chordL=ocrLines(dataChords,'chord').filter(l=>l.isChord);
+  const over=(a,b)=>Math.min(a.y1,b.y1)-Math.max(a.y0,b.y0)>0.5*Math.min(a.y1-a.y0,b.y1-b.y0);
+  const lyricL=ocrLines(dataLyrics,'lyric').filter(l=>(l.isLyric||l.isLabel)&&!chordL.some(c=>over(c,l)));
+  const lines=[...chordL,...lyricL].sort((a,b)=>a.y0-b.y0), out=[]; let chords=0, lyrics=0;
+  for(let i=0;i<lines.length;i++){
+    const L=lines[i];
+    if(L.isChord){
+      chords+=L.chords.length;
+      const h=L.y1-L.y0; let j=i+1, bottom=L.y1, n=0;
+      // 1절·2절처럼 코드 한 줄 아래 가사가 여러 줄이면 각 줄에 같은 코드를 붙임
+      // 첫 가사 줄은 코드 줄 바로 아래, 2절 같은 다음 줄은 앞 가사 줄에 바짝 붙어 있어야 같은 코드로 봄
+      while(lines[j]&&lines[j].isLyric&&n<3&&(n===0?lines[j].y0-bottom<h*1.8:lines[j].y0-bottom<(lines[j-1].y1-lines[j-1].y0)*0.8&&(lines[j].y1-lines[j].y0)<(lines[j-1].y1-lines[j-1].y0)*1.6)){
+        out.push(mergeChordLyric(L,lines[j],n===0)); lyrics++; bottom=lines[j].y1; j++; n++; }
+      if(!n) out.push([...L.chords,...L.extra].sort((a,b)=>a.x0-b.x0).map(c=>c.t).join('   '));
+      i=j-1;
+    }else if(L.isLabel) out.push(L.label);
+    else if(L.isLyric){ out.push(lyricChars(L).chars.map(c=>c.c).join('')); lyrics++; }
+  }
+  return {text:out.join('\n'),chords,lyrics};
+}
+async function readImage(file){
+  if(busy||!file||!file.type.startsWith('image/')) return;
+  busy=true;
+  try{
+    status(engines.eng?t('prepImg'):t('loadEngine'));
+    const {url,chordCanvas,lyricCanvas}=await prep(file);
+    $img.src=url; $prev.hidden=false;
+    const opt={blocks:true,text:true};
+    const dc=(await (await getEngine('eng','wChords','6')).recognize(chordCanvas,{},opt)).data;
+    const dl=(await (await getEngine('kor+eng','wLyrics','6')).recognize(lyricCanvas,{},opt)).data;
+    const r=sheetFromOCR(dc,dl);
+    if(!r.chords){ status(t('noChordsImg'),'err'); return; }
+    $src.value=r.text; fresh(); render();
+    status(t('okImg',r.chords,r.lyrics),'ok');
+  }catch(e){
+    status(t('failImg'),'err');
+  }finally{ busy=false; }
+}
+document.getElementById('img').addEventListener('change',e=>{ readImage(e.target.files[0]); e.target.value=''; });
+$drop.addEventListener('dragover',e=>{e.preventDefault();$drop.classList.add('over');});
+$drop.addEventListener('dragleave',()=>$drop.classList.remove('over'));
+$drop.addEventListener('drop',e=>{e.preventDefault();$drop.classList.remove('over');readImage(e.dataTransfer.files[0]);});
+document.addEventListener('paste',e=>{ const f=[...(e.clipboardData?.files||[])].find(f=>f.type.startsWith('image/')); if(f){ e.preventDefault(); readImage(f); } });
+
+let timer;
+const fresh=()=>{shift=0;preset=null;capoSel=null;stopAudio();};
+$src.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{fresh();render();},150);});
+$simp.addEventListener('change',()=>{capoSel=null;render();});
+// 예시 2(가사 포함)는 화면 언어에 맞춰 영어/한국어 가사를 보여 줌
+const sampleText=k=>k===3?SAMPLES[LANG==='en'?3:4]:SAMPLES[k];
+document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{$src.value=sampleText(+b.dataset.sample);fresh();if(b.dataset.sample==='0'){shift=-5;preset=-5;}render();}));
+document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
+  if(LANG===b.dataset.lang) return; LANG=b.dataset.lang;
+  try{ localStorage.setItem('easychord-lang',LANG); }catch(e){}
+  if($src.value===SAMPLES[3]||$src.value===SAMPLES[4]) $src.value=sampleText(3);
+  applyStatic(); render();
+}));
+applyStatic();
+$src.value=SAMPLES[0]; shift=-5; preset=-5; render();
+})();
+</script>
+
+</body>
+</html>
