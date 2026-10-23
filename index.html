@@ -296,7 +296,7 @@ const I18N={
   realSound:'실제 코드', orig:'원곡',
   stepAria:'키 조절', down:'키 내리기', up:'키 올리기', reset:'원키로',
   listen:'듣기', stopShort:'멈춤',
-  presets:'빠른 설정', fToM:'여자 노래를 남자 키로', mToF:'남자 노래를 여자 키로',
+  presets:'빠른 설정', fmS:'여 → 남', mfS:'남 → 여', fToM:'여자 노래를 남자 키로', mToF:'남자 노래를 여자 키로',
   keynote:'출발점일 뿐이에요. 들어 보고 낮으면 ▲, 높으면 ▼',
   recommended:'추천', noCapo:'카포 없이', capoN:c=>`카포 ${c}`, shapes:L=>`${L} 모양`, sameSound:'같은 높이',
   withoutCapo:'카포 없이', barreN:n=>n?`바레 ${n}`:'바레 없음',
@@ -335,7 +335,7 @@ const I18N={
   realSound:'Actual chords', orig:'Original',
   stepAria:'Change key', down:'Key down', up:'Key up', reset:'Back to original',
   listen:'Listen', stopShort:'Stop',
-  presets:'Quick set', fToM:'Female song in a male key', mToF:'Male song in a female key',
+  presets:'Quick set', fmS:'Female → Male', mfS:'Male → Female', fToM:'Female song in a male key', mToF:'Male song in a female key',
   keynote:'Just a starting point. Listen: too low ▲, too high ▼',
   recommended:'Best', noCapo:'No capo', capoN:c=>`Capo ${c}`, shapes:L=>`${L} shapes`, sameSound:'Same pitch',
   withoutCapo:'Without capo', barreN:n=>n?`${n} barre`:'No barre',
@@ -623,8 +623,8 @@ function render(){
       <button class="play" type="button" id="play">${ic(audio?'stop':'play')}<span>${audio?t('stopShort'):t('listen')}</span></button>
     </div>
     <div class="presets" role="group" aria-label="${t('presets')}">
-      <button class="chip" type="button" data-preset="-5" aria-pressed="${preset===-5}" title="${t('fToM')}" aria-label="${t('fToM')}">♀ → ♂ <b>−5</b></button>
-      <button class="chip" type="button" data-preset="5" aria-pressed="${preset===5}" title="${t('mToF')}" aria-label="${t('mToF')}">♂ → ♀ <b>+5</b></button>
+      <button class="chip" type="button" data-preset="-5" aria-pressed="${preset===-5}" title="${t('fToM')}" aria-label="${t('fToM')}">${t('fmS')} <b>−5</b></button>
+      <button class="chip" type="button" data-preset="5" aria-pressed="${preset===5}" title="${t('mToF')}" aria-label="${t('mToF')}">${t('mfS')} <b>+5</b></button>
       <span class="hint-i" title="${t('keynote')}" aria-label="${t('keynote')}" role="img">${ic('info')}</span>
     </div>
   </section>
