@@ -74,6 +74,12 @@ textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f
 .switch .track::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);transition:transform .15s}
 .switch input:checked + .track{background:var(--accent)}
 .switch input:checked + .track::after{transform:translateX(12px)}
+.src-tip{margin:10px 0 0;font-size:.84rem;color:var(--muted)}
+.src-tip > .i{color:var(--muted)}
+.src-tip a{color:var(--accent);font-weight:700;text-decoration:none;display:inline-flex;gap:3px;align-items:center}
+.src-tip a:hover{text-decoration:underline}
+.src-tip a .i{width:.9em;height:.9em}
+.src-tip .muted{color:var(--muted)}
 .ocr-status{font-size:.84rem;margin:10px 0 0;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
 .ocr-status.ok{color:var(--good)} .ocr-status.err{color:var(--warn)}
 .input details summary{cursor:pointer;font-size:.84rem;color:var(--accent);margin-top:6px}
@@ -194,6 +200,7 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center}
         <button class="switch" type="button" id="clear" data-i18n-title="clear" data-i18n-aria="clear" aria-label="지우기"><i data-ic="x"></i></button>
         <label class="switch" for="simp" data-i18n-title="simpTip"><input type="checkbox" id="simp" checked><span class="track"></span><i data-ic="wand"></i><span data-i18n="simpTitle">쉬운 코드로</span></label>
       </div>
+      <p class="src-tip"><i data-ic="search"></i> <span data-i18n="srcTip">악보는 </span><a href="https://www.ultimate-guitar.com" target="_blank" rel="noopener nofollow">Ultimate Guitar<i data-ic="ext"></i></a><span data-i18n="srcHow">에서 복사해 오세요</span></p>
       <p class="ocr-status" id="note" hidden></p>
       <div class="samples" role="group" data-i18n-aria="samplesAria" aria-label="예시">
         <span class="lbl"><i data-ic="list"></i><span data-i18n="samples">예시</span></span>
@@ -248,6 +255,8 @@ const IC={
  check:'<path d="M20 6 9 17l-5-5"/>',
  clipboard:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>',
  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+ search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
+ ext:'<path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
  alert:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
  star:'<path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/>',
  guitar:'<path d="m20 4-6.5 6.5"/><path d="m18 2 4 4"/><circle cx="9" cy="15" r="5.5"/><circle cx="9" cy="15" r="1.3"/>',
@@ -265,6 +274,7 @@ const I18N={
   brand:'쉬운<span>코드</span>', tagline:'키는 내 목소리에, 코드는 쉽게', langAria:'언어',
   inputLabel:'원곡 코드', lyricsOk:'가사 섞여도 OK', lyricsTip:'코드만 바뀌고 가사·줄바꿈은 그대로예요. 카포 표시도 자동 반영돼요.',
   placeholder:'[Verse]\nG          D/F#\n코드 사이트에서 복사한 악보를\n그대로 붙여 넣으세요',
+  srcTip:'악보는 ', srcHow:'에서 복사해 오세요',
   paste:'붙여넣기', pasteTip:'코드 악보 사이트에서 복사한 악보를 붙여 넣어요', clear:'지우기', pasteFail:'Ctrl+V(휴대폰은 길게 눌러 붙여넣기)로 넣어 주세요', srcCapo:c=>`악보의 카포 ${c} 반영됨`,
   photo:'악보 사진', photoTip:'사진·캡처에서 코드와 가사(한국어·영어)를 읽어요. Ctrl+V로 붙여넣어도 돼요.',
   simpTitle:'쉬운 코드로', simpTip:'더 쉬운 모양이 있으면 바꿔요 (Cmaj7 → C, Bb7sus4 → Bb7)',
@@ -302,6 +312,7 @@ const I18N={
   brand:'Easy<span>Chord</span>', tagline:'Your key. Easier chords.', langAria:'Language',
   inputLabel:'Original chords', lyricsOk:'Lyrics OK', lyricsTip:'Only chords change; lyrics and line breaks stay. A capo note on the sheet is applied automatically.',
   placeholder:'[Verse]\nG          D/F#\nPaste a chord sheet copied\nfrom any chord site',
+  srcTip:'Copy a sheet from ', srcHow:' and paste it here',
   paste:'Paste', pasteTip:'Paste a chord sheet copied from a chord site', clear:'Clear', pasteFail:'Press Ctrl+V (or long-press → Paste on mobile)', srcCapo:c=>`Sheet capo ${c} applied`,
   photo:'Sheet photo', photoTip:'Reads chords and lyrics (English, Korean) from a photo or screenshot. Ctrl+V works too.',
   simpTitle:'Simplify', simpTip:'Use an easier shape when one exists (Cmaj7 → C, Bb7sus4 → Bb7)',
