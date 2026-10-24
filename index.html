@@ -201,6 +201,11 @@ body.dict-on .dict-fab{opacity:0;pointer-events:none}
 .dx-play .i{fill:currentColor;stroke:none;width:11px;height:11px}
 .dx-note,.dx-sub{font-size:.8rem;color:var(--muted);margin:12px 0 0}
 .dx-msg{margin:16px 0 0;font-weight:600}
+.dx-sec{margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+.dx-sec h3{display:flex;gap:6px;align-items:center;font-size:.95rem;margin:0}
+.dx-sec h3 .i{color:var(--accent)}
+.dx-sec p{margin:4px 0 0;font-size:.8rem;color:var(--muted)}
+.dx-sec + .dx-vs{margin-top:10px}
 .dx-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .dx-ex .chip{font-family:var(--f-mono)}
 @media (max-width:520px){.dict-fab span{display:none}.dict-fab{padding:14px}}
@@ -364,7 +369,7 @@ const I18N={
   rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
   dictFab:'코드 사전', dictTitle:'코드 사전', dictOpen:'코드 사전 열기', close:'닫기', dictPh:'예: Bmadd9, c#m7b5', dictHeard:'이렇게 읽었어요',
   dictEx:'자주 찾는 코드', dictTipSheet:'악보·운지의 코드 이름을 눌러도 여기서 열려요', dictNone:x=>`'${x}'는 코드로 읽지 못했어요`, dictSimilar:'혹시 이 코드인가요?',
-  dictOpt:'점선 음은 빼고 쳐도 돼요', dictOptOne:'빼고 쳐도 되는 음', dictNoShape:'초보자용 운지를 찾지 못했어요', posOpen:'개방', posFret:n=>`${n}프렛`, dictBass:'베이스', dictView:'코드 사전에서 보기',
+  dictOpt:'점선 음은 빼고 쳐도 돼요', dictOptOne:'빼고 쳐도 되는 음', dictNoShape:'초보자용 운지를 찾지 못했어요', posOpen:'개방', posFret:n=>`${n}프렛`, dictBass:'베이스', dictBarre:'하이코드', dictBarreTip:'모양은 그대로 두고 위치만 옮기면 다른 키 코드가 돼요', rootStr:(st,f)=>`${st}번 줄 근음 · ${f}프렛`, dictView:'코드 사전에서 보기',
   bassHint:(n,st,f)=>`베이스 ${n} · ${st}번 줄 ${f?f+'프렛':'개방'}`,
   help:'도움말',
   g1h:'남녀 키 바꾸기', g1p:'−5 / +5 버튼은 출발점이에요. ▶로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 −5와 +7은 같은 코드예요.',
@@ -408,7 +413,7 @@ const I18N={
   rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
   dictFab:'Chords', dictTitle:'Chord dictionary', dictOpen:'Open chord dictionary', close:'Close', dictPh:'e.g. Bmadd9, c#m7b5', dictHeard:'Read as',
   dictEx:'Popular lookups', dictTipSheet:'Tap any chord name on the sheet to open it here', dictNone:x=>`Couldn’t read '${x}' as a chord`, dictSimilar:'Did you mean',
-  dictOpt:'Dashed notes can be left out', dictOptOne:'Can be left out', dictNoShape:'No beginner-friendly shape found', posOpen:'Open', posFret:n=>`Fret ${n}`, dictBass:'bass', dictView:'Look up in chord dictionary',
+  dictOpt:'Dashed notes can be left out', dictOptOne:'Can be left out', dictNoShape:'No beginner-friendly shape found', posOpen:'Open', posFret:n=>`Fret ${n}`, dictBass:'bass', dictBarre:'Barre chords', dictBarreTip:'Keep the shape, slide it, and you get the same chord in another key', rootStr:(st,f)=>`Root on ${st}th · fret ${f}`, dictView:'Look up in chord dictionary',
   bassHint:(n,st,f)=>`Bass ${n} · ${st}${['','st','nd','rd'][st]||'th'} string ${f?'fret '+f:'open'}`,
   help:'Help',
   g1h:'Switching between male and female keys', g1p:'The −5 / +5 buttons are a starting point. Press ▶ and adjust one step at a time. Guitar chords ignore octaves, so −5 and +7 give the same chords.',
@@ -507,11 +512,12 @@ const OPEN={
 };
 const ESH={'':{o:[0,2,2,1,0,0],g:[1,3,4,2,1,1],b:1},m:{o:[0,2,2,0,0,0],g:[1,3,4,1,1,1],b:1},
  '7':{o:[0,2,0,1,0,0],g:[1,3,1,2,1,1],b:1},m7:{o:[0,2,0,0,0,0],g:[1,3,1,1,1,1],b:1},
- maj7:{o:[0,null,1,1,0,null],g:[1,0,3,4,2,0],b:0},sus4:{o:[0,2,2,2,0,0],g:[1,2,3,4,1,1],b:1}};
+ maj7:{o:[0,null,1,1,0,null],g:[1,0,3,4,2,0],b:0},sus4:{o:[0,2,2,2,0,0],g:[1,2,3,4,1,1],b:1},
+ '7sus4':{o:[0,2,0,2,0,0],g:[1,3,1,4,1,1],b:1}};
 const ASH={'':{o:[null,0,2,2,2,0],g:[0,1,2,3,4,1],b:1},m:{o:[null,0,2,2,1,0],g:[0,1,3,4,2,1],b:1},
  '7':{o:[null,0,2,0,2,0],g:[0,1,3,1,4,1],b:1},m7:{o:[null,0,2,0,1,0],g:[0,1,3,1,2,1],b:1},
  maj7:{o:[null,0,2,1,2,0],g:[0,1,3,2,4,1],b:1},sus2:{o:[null,0,2,2,0,0],g:[0,1,3,4,1,1],b:1},
- sus4:{o:[null,0,2,2,3,0],g:[0,1,2,3,4,1],b:1},dim:{o:[null,0,1,2,1,null],g:[0,1,2,4,3,0],b:0},
+ sus4:{o:[null,0,2,2,3,0],g:[0,1,2,3,4,1],b:1},'7sus4':{o:[null,0,2,0,3,0],g:[0,1,3,1,4,1],b:1},dim:{o:[null,0,1,2,1,null],g:[0,1,2,4,3,0],b:0},
  m7b5:{o:[null,0,1,0,1,null],g:[0,1,3,2,4,0],b:0}};
 
 const shapeCache=new Map();
@@ -1069,18 +1075,34 @@ function dictRender(){
     const T=r.type.tones.map(parseTone), names=new Map();
     T.forEach(x=>names.set(mod(rpc+x.semi),spellNote(r.root,x))); if(bpc!==null&&!names.has(bpc)) names.set(bpc,r.bass);
     const nameOf=pc=>names.get(pc)||pcName(pc,false);
-    const fam=bpc===null?builtinShape(rpc,r.type.id):null;
-    const vs=chooseV(dictVoicings(rpc,r.type,bpc),fam&&{key:fam.f.join(','),f:fam.f,g:fam.g,barre:fam.barre,n:fam.g.filter(Boolean).length,pos:Math.min(...fam.f.filter(x=>x>0))});
+    const list=dictVoicings(rpc,r.type,bpc);
+    // 하이코드: 6번 줄 근음(E형)·5번 줄 근음(A형) 기본 바레 모양. 표에 없는 코드는 계산된 바레 운지 중 근음이 그 줄인 것
+    const barres=[];
+    if(bpc===null) for(const [tbl,open,str] of [[ESH,4,6],[ASH,9,5]]){
+      const sh=tbl[r.type.id], fr=mod(rpc-open); let v=null;
+      if(sh&&sh.b&&fr>0){ const f=sh.o.map(x=>x===null?-1:x+fr); v={key:f.join(','),f,g:sh.g,barre:true,n:new Set(sh.g.filter(Boolean)).size,pos:fr}; }
+      else if(!sh&&T.length>2){ // 진짜 하이코드만: 개방현 없이, 근음 줄부터 1번 줄까지 모두 울리고, 검지 바레가 근음 프렛
+        const lo=6-str, c=list.find(x=>x.barre&&!x.f.includes(0)&&x.f.findIndex(n=>n>=0)===lo&&x.f.slice(lo).every(n=>n>0)&&x.g[lo]===1&&x.f[5]===x.pos);
+        if(c) v={...c}; }
+      if(v){ v.str=str; barres.push(v); }
+    }
+    const inBarre=v=>barres.some(b=>b.key===v.key);
+    const famS=bpc===null?builtinShape(rpc,r.type.id):null;
+    const fam=famS&&{key:famS.f.join(','),f:famS.f,g:famS.g,barre:famS.barre,n:famS.g.filter(Boolean).length,pos:Math.min(...famS.f.filter(x=>x>0))};
+    const vs=chooseV(list.filter(v=>!inBarre(v)),fam&&!inBarre(fam)?fam:null);
+    const allV=[...vs,...barres];
+    const fig=(v,k,posTxt)=>{ const [lt,lc]=level(v.barre?(v.pos>=7?3.5:3):vDiff(v));
+      return `<figure class="dx-v">${fretSVG(v,rpc,nameOf,shown+' '+v.f.map(n=>n<0?'x':n).join(' '))}<span class="pos">${posTxt}</span><span class="lv ${lc}">${lt}</span><button class="dx-play" type="button" data-k="${k}">${ic('play')}${t('listen')}</button></figure>`; };
     const shown=r.name;
     h=`${shown!==raw?`<p class="dx-heard">${t('dictHeard')} <code>${esc(raw)}</code> → <b>${esc(pretty(shown))}</b></p>`:''}
     <div class="dx-head"><b>${chordHTML(shown)}</b><span>${esc(noteP(r.root))} ${LANG==='en'?r.type.en:r.type.ko}${bpc!==null?` · ${t('dictBass')} ${esc(noteP(r.bass))}`:''}</span></div>
     <div class="dx-tones">${T.map(x=>`<span class="tn${x.semi===0?' root':''}${x.opt?' opt':''}"${x.opt?` title="${t('dictOptOne')}"`:''}><b>${esc(noteP(spellNote(r.root,x)))}</b><small>${degP(x.lbl)}</small></span>`).join('')}${bpc!==null&&!T.some(x=>mod(rpc+x.semi)===bpc)?`<span class="tn"><b class="bs">${esc(noteP(r.bass))}</b><small>${t('dictBass')}</small></span>`:''}</div>
-    ${vs.length?`<div class="dx-vs">${vs.map((v,k)=>{ const [lt,lc]=level(v.barre?(v.pos>=7?3.5:3):vDiff(v));
-      const open=v.f.includes(0)&&Math.max(...v.f)<=4;
-      return `<figure class="dx-v">${fretSVG(v,rpc,nameOf,shown+' '+v.f.map(n=>n<0?'x':n).join(' '))}<span class="pos">${open?t('posOpen'):t('posFret',v.pos)}</span><span class="lv ${lc}">${lt}</span><button class="dx-play" type="button" data-k="${k}">${ic('play')}${t('listen')}</button></figure>`; }).join('')}</div>`
-      :`<p class="dx-msg">${t('dictNoShape')}</p>`}
-    ${T.some(x=>x.opt)?`<p class="dx-note">${t('dictOpt')}</p>`:''}`;
-    $dout.innerHTML=h; $dout.querySelectorAll('.dx-play').forEach(b=>b.onclick=()=>pluck(vs[+b.dataset.k].f));
+    ${vs.length?`<div class="dx-vs">${vs.map((v,k)=>fig(v,k,v.f.includes(0)&&Math.max(...v.f)<=4?t('posOpen'):t('posFret',v.pos))).join('')}</div>`
+      :barres.length?'':`<p class="dx-msg">${t('dictNoShape')}</p>`}
+    ${T.some(x=>x.opt)?`<p class="dx-note">${t('dictOpt')}</p>`:''}
+    ${barres.length?`<div class="dx-sec"><h3>${ic('barre')}${t('dictBarre')}</h3><p>${t('dictBarreTip')}</p></div>
+    <div class="dx-vs">${barres.map((v,k)=>fig(v,vs.length+k,t('rootStr',v.str,v.pos))).join('')}</div>`:''}`;
+    $dout.innerHTML=h; $dout.querySelectorAll('.dx-play').forEach(b=>b.onclick=()=>pluck(allV[+b.dataset.k].f));
     return;
   }
   $dout.innerHTML=h;
