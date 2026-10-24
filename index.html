@@ -38,7 +38,7 @@ img{max-width:100%}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.page{max-width:1100px;margin:0 auto;padding-block:20px 48px}
+.page{max-width:1100px;margin:0 auto;padding-block:20px 96px}
 .i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:none}
 button{font:inherit;color:inherit}
 button:focus-visible,textarea:focus-visible,label:focus-within,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -166,6 +166,46 @@ textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f
 .rh-leg b{color:var(--hit);font-size:1rem}
 @media (max-width:520px){.rh-c b{font-size:1.15rem}.rh-grid{gap:4px}}
 @media (prefers-reduced-motion:no-preference){.rh-c{transition:background .08s}.rh-c.on b{transform:scale(1.18)}.rh-c b{transition:transform .08s}}
+.sheet .ch,.sheet .cp b,figure.cd .nm{cursor:pointer}
+.sheet .ch:hover,.sheet .cp b:hover,figure.cd .nm:hover{text-decoration:underline dotted;text-underline-offset:3px}
+/* 코드 사전: 떠 있는 버튼 + 오른쪽에서 밀려 나오는 패널 */
+.dict-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:40;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.2);cursor:pointer}
+.dict-fab .i{width:20px;height:20px}
+body.dict-on .dict-fab{opacity:0;pointer-events:none}
+.dict-scrim{position:fixed;inset:0;background:rgba(10,12,16,.42);z-index:49}
+.dict{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:50;background:var(--surface);border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(0,0,0,.16);
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 28px 16px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden;transition:transform .26s ease,visibility 0s .26s}
+.dict.open{transform:none;visibility:visible;transition:transform .26s ease}
+.dict-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.dict-h h2{display:flex;gap:8px;align-items:center;font-size:1.05rem;margin:0}
+.dict-h .icon-btn{margin-left:auto}
+.dict-search{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;background:var(--bg);color:var(--muted)}
+.dict-search:focus-within{border-color:var(--accent);outline:0}
+.dict-search input{flex:1;min-width:0;border:0;background:none;font:600 1.15rem var(--f-mono);padding:12px 0;color:var(--ink);outline:none}
+.dx-heard{font-size:.8rem;color:var(--muted);margin:10px 0 0}
+.dx-heard code{font-family:var(--f-mono);background:var(--bg);padding:1px 6px;border-radius:6px}
+.dx-heard b{font-family:var(--f-mono);color:var(--ink)}
+.dx-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:14px 0 10px}
+.dx-head b{font:600 2rem/1 var(--f-mono);letter-spacing:-.5px}
+.dx-head > span{color:var(--muted);font-size:.9rem}
+.dx-tones{display:flex;flex-wrap:wrap;gap:6px}
+.tn{display:grid;justify-items:center;min-width:44px;padding:4px 8px;border-radius:10px;background:var(--bg);border:1.5px solid transparent}
+.tn b{font:600 1rem var(--f-mono)} .tn small{font:600 .7rem var(--f-mono);color:var(--muted)}
+.tn.root b{color:var(--bass)} .tn.opt{border-style:dashed;border-color:var(--line);background:none}
+.dx-vs{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin-top:14px}
+.dx-v{margin:0;border:1px solid var(--line);border-radius:12px;padding:8px 6px 10px;display:grid;justify-items:center;gap:4px}
+.dx-v svg{width:100%;max-width:132px;height:auto}
+.dx-v .pos{font:600 .74rem var(--f-mono);color:var(--muted)}
+.dx-play{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;font-size:.76rem;font-weight:700;display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+.dx-play:hover{border-color:var(--accent);color:var(--accent)}
+.dx-play .i{fill:currentColor;stroke:none;width:11px;height:11px}
+.dx-note,.dx-sub{font-size:.8rem;color:var(--muted);margin:12px 0 0}
+.dx-msg{margin:16px 0 0;font-weight:600}
+.dx-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.dx-ex .chip{font-family:var(--f-mono)}
+@media (max-width:520px){.dict-fab span{display:none}.dict-fab{padding:14px}}
+@media (min-width:900px){.dict-scrim{display:none}}
+@media (prefers-reduced-motion:reduce){.dict,.dict.open{transition:none}}
 figure.cd .bassh{font-size:.68rem;font-weight:700;color:var(--bass);line-height:1.3}
 .count{font:600 .8rem var(--f-mono);color:var(--muted);background:var(--bg);border-radius:999px;padding:1px 8px}
 
@@ -254,6 +294,13 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;dis
       <div><i data-ic="clipboard"></i><h3 data-i18n="g4h"></h3><p data-i18n="g4p"></p></div>
     </div>
   </details>
+  <button class="dict-fab" id="dict-fab" type="button" aria-controls="dict" aria-expanded="false" data-i18n-aria="dictOpen" aria-label="코드 사전 열기"><i data-ic="search"></i><span data-i18n="dictFab">코드 사전</span></button>
+  <div class="dict-scrim" id="dict-scrim" hidden></div>
+  <aside class="dict" id="dict" role="dialog" aria-labelledby="dict-h" inert>
+    <div class="dict-h"><h2 id="dict-h"><i data-ic="book"></i><span data-i18n="dictTitle">코드 사전</span></h2><button class="icon-btn" type="button" id="dict-x" data-i18n-aria="close" data-i18n-title="close" aria-label="닫기"><i data-ic="x"></i></button></div>
+    <label class="dict-search"><i data-ic="search"></i><input id="dict-q" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-i18n-ph="dictPh" data-i18n-aria="dictTitle"></label>
+    <div id="dict-out" aria-live="polite"></div>
+  </aside>
   <footer><nav class="foot-nav"><a href="guide/" data-i18n="navGuide">기타 가이드</a><a href="about.html" data-i18n="navAbout">소개·문의</a><a href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a></nav><div data-i18n="footer"></div></footer>
 </div>
 
@@ -280,6 +327,7 @@ const IC={
  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
  reset:'<path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/>',
+ book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
  metro:'<path d="M9 3h6l4 18H5z"/><path d="M7.5 15h9M12 15l5-9"/>',
  play:'<path d="M7 4v16l13-8z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
@@ -314,6 +362,9 @@ const I18N={
   compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
   samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너', s5:'마디·분수 코드',
   rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
+  dictFab:'코드 사전', dictTitle:'코드 사전', dictOpen:'코드 사전 열기', close:'닫기', dictPh:'예: Bmadd9, c#m7b5', dictHeard:'이렇게 읽었어요',
+  dictEx:'자주 찾는 코드', dictTipSheet:'악보·운지의 코드 이름을 눌러도 여기서 열려요', dictNone:x=>`'${x}'는 코드로 읽지 못했어요`, dictSimilar:'혹시 이 코드인가요?',
+  dictOpt:'점선 음은 빼고 쳐도 돼요', dictOptOne:'빼고 쳐도 되는 음', dictNoShape:'초보자용 운지를 찾지 못했어요', posOpen:'개방', posFret:n=>`${n}프렛`, dictBass:'베이스', dictView:'코드 사전에서 보기',
   bassHint:(n,st,f)=>`베이스 ${n} · ${st}번 줄 ${f?f+'프렛':'개방'}`,
   help:'도움말',
   g1h:'남녀 키 바꾸기', g1p:'−5 / +5 버튼은 출발점이에요. ▶로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 −5와 +7은 같은 코드예요.',
@@ -355,6 +406,9 @@ const I18N={
   compare:'Show original image', imgAlt:'Uploaded chord sheet',
   samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor', s5:'Bars & slash chords',
   rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
+  dictFab:'Chords', dictTitle:'Chord dictionary', dictOpen:'Open chord dictionary', close:'Close', dictPh:'e.g. Bmadd9, c#m7b5', dictHeard:'Read as',
+  dictEx:'Popular lookups', dictTipSheet:'Tap any chord name on the sheet to open it here', dictNone:x=>`Couldn’t read '${x}' as a chord`, dictSimilar:'Did you mean',
+  dictOpt:'Dashed notes can be left out', dictOptOne:'Can be left out', dictNoShape:'No beginner-friendly shape found', posOpen:'Open', posFret:n=>`Fret ${n}`, dictBass:'bass', dictView:'Look up in chord dictionary',
   bassHint:(n,st,f)=>`Bass ${n} · ${st}${['','st','nd','rd'][st]||'th'} string ${f?'fret '+f:'open'}`,
   help:'Help',
   g1h:'Switching between male and female keys', g1p:'The −5 / +5 buttons are a starting point. Press ▶ and adjust one step at a time. Guitar chords ignore octaves, so −5 and +7 give the same chords.',
@@ -416,19 +470,22 @@ const SAMPLES=[
 ];
 
 const QMAP=[
+  [/^(madd9|madd2|minadd9)$/,'madd9'],[/^(69|6add9)$/,'69'],[/^(add11|add4)$/,'add11'],[/^(m11|min11)$/,'m11'],
+  [/^(7#5|aug7|\+7|7\+5)$/,'7#5'],[/^7b5$/,'7b5'],[/^7b9$/,'7b9'],[/^7#9$/,'7#9'],[/^(maj7#11|M7#11)$/,'maj7#11'],[/^5$/,'5'],[/^2$/,'add9'],
   [/^(maj7|M7|ma7|Δ7|Δ)$/,'maj7'],[/^(maj9|M9)$/,'maj9'],[/^(m7b5|ø|ø7|min7b5)$/,'m7b5'],
   [/^(mmaj7|mM7|m\(maj7\))$/,'mmaj7'],[/^(m7|min7)$/,'m7'],[/^(m6|min6)$/,'m6'],[/^(m9|min9)$/,'m9'],[/^(m|min)$/,'m'],
   [/^(7sus4|7sus)$/,'7sus4'],[/^(sus2)$/,'sus2'],[/^(sus4|sus)$/,'sus4'],[/^(add9|add2)$/,'add9'],
   [/^(dim7|°7)$/,'dim7'],[/^(dim|°)$/,'dim'],[/^(aug|\+|\+5)$/,'aug'],
   [/^6$/,'6'],[/^9$/,'9'],[/^7$/,'7'],[/^11$/,'11'],[/^13$/,'13'],[/^(M|maj)?$/,'']
 ];
-const SIMP={maj7:'',maj9:'','6':'',add9:'',sus2:'',sus4:'','7sus4':'7','9':'7','11':'7','13':'7',m7:'m',m6:'m',m9:'m',mmaj7:'m',aug:'',dim7:'dim'};
-const MINORISH=new Set(['m','m7','m6','m9','mmaj7']);
+const SIMP={madd9:'m','69':'',add11:'',m11:'m','7#5':'7','7b5':'7','7b9':'7','7#9':'7','maj7#11':'',maj7:'',maj9:'','6':'',add9:'',sus2:'',sus4:'','7sus4':'7','9':'7','11':'7','13':'7',m7:'m',m6:'m',m9:'m',mmaj7:'m',aug:'',dim7:'dim'};
+const MINORISH=new Set(['m','m7','m6','m9','mmaj7','madd9','m11']);
 const triad=q=>MINORISH.has(q)?'m':(q==='dim'||q==='dim7')?'dim':q==='m7b5'?'m7b5':'';
 const base=q=>(MINORISH.has(q)||q.startsWith('dim')||q==='m7b5')?'m':'';
 const TONES={'':[0,4,7],m:[0,3,7],'7':[0,4,7,10],maj7:[0,4,7,11],m7:[0,3,7,10],sus2:[0,2,7],sus4:[0,5,7],add9:[0,4,7,14],
   dim:[0,3,6],dim7:[0,3,6,9],m7b5:[0,3,6,10],aug:[0,4,8],'6':[0,4,7,9],m6:[0,3,7,9],'9':[0,4,7,10,14],m9:[0,3,7,10,14],
-  maj9:[0,4,7,11,14],'7sus4':[0,5,7,10],mmaj7:[0,3,7,11],'11':[0,5,7,10],'13':[0,4,7,10]};
+  maj9:[0,4,7,11,14],'7sus4':[0,5,7,10],mmaj7:[0,3,7,11],'11':[0,5,7,10],'13':[0,4,7,10],
+  madd9:[0,3,7,14],'69':[0,4,7,9,14],add11:[0,4,7,17],m11:[0,3,7,10,17],'7#5':[0,4,8,10],'7b5':[0,4,6,10],'7b9':[0,4,7,10,13],'7#9':[0,4,7,10,15],'maj7#11':[0,4,7,11,18],'5':[0,7]};
 
 const OPEN={
  'C':{f:[-1,3,2,0,1,0],g:[0,3,2,0,1,0],d:1},'A':{f:[-1,0,2,2,2,0],g:[0,0,1,2,3,0],d:1},
@@ -460,6 +517,12 @@ const ASH={'':{o:[null,0,2,2,2,0],g:[0,1,2,3,4,1],b:1},m:{o:[null,0,2,2,1,0],g:[
 const shapeCache=new Map();
 function getShape(pc,q){
   const key=pc+'|'+q; if(shapeCache.has(key)) return shapeCache.get(key);
+  let r=builtinShape(pc,q);
+  if(!r){ const ty=TYPE_BY_ID.get(q), v=ty&&dictVoicings(pc,ty)[0]; if(v) r={f:v.f,g:v.g,d:vDiff(v),barre:v.barre}; }
+  shapeCache.set(key,r); return r;
+}
+// 손에 익은 기본 모양(개방 코드, E·A 바레 모양)
+function builtinShape(pc,q){
   let r=null; const o=OPEN[SH[pc]+q];
   if(o) r={f:o.f,g:o.g,d:o.d,barre:false};
   else{
@@ -469,7 +532,7 @@ function getShape(pc,q){
     if(c.length){ c.sort((a,b)=>a.r-b.r); const {r:fr,s}=c[0];
       r={f:s.o.map(x=>x===null?-1:x+fr),g:s.g,d:s.b?(fr>=7?3.5:3):2.5,barre:!!s.b}; }
   }
-  shapeCache.set(key,r); return r;
+  return r;
 }
 const uniq=a=>[...new Set(a)];
 function pick(pc,q,simplify){
@@ -826,6 +889,223 @@ function render(){
   };
 }
 
+// ── 코드 사전 ──
+// 코드 종류 데이터. tones = 근음에서 본 음정 이름(괄호 = 빼고 쳐도 되는 음), al = 다르게 쓰는 이름.
+// 새 코드는 이 배열에 한 줄만 넣으면 검색·구성음·운지(자동 계산)·소리가 모두 동작해요.
+const TYPES=[
+ {id:'',       al:['maj','major'],                         tones:['1','3','5'],                   ko:'메이저',           en:'major'},
+ {id:'m',      al:['min','minor','mi','-'],                tones:['1','b3','5'],                  ko:'마이너',           en:'minor'},
+ {id:'5',      al:['power','no3'],                         tones:['1','5'],                       ko:'파워 코드',        en:'power chord'},
+ {id:'7',      al:['dom7','dom'],                          tones:['1','3','(5)','b7'],            ko:'세븐',             en:'dominant 7th'},
+ {id:'maj7',   al:['ma7','mj7','j7','major7'],             tones:['1','3','(5)','7'],             ko:'메이저 세븐',      en:'major 7th'},
+ {id:'m7',     al:['min7','mi7','-7','minor7'],            tones:['1','b3','(5)','b7'],           ko:'마이너 세븐',      en:'minor 7th'},
+ {id:'mmaj7',  al:['minmaj7','mma7','-maj7'],              tones:['1','b3','(5)','7'],            ko:'마이너 메이저 세븐', en:'minor-major 7th'},
+ {id:'6',      al:['maj6','add6'],                         tones:['1','3','(5)','6'],             ko:'식스',             en:'6th'},
+ {id:'m6',     al:['min6','-6'],                           tones:['1','b3','(5)','6'],            ko:'마이너 식스',      en:'minor 6th'},
+ {id:'69',     al:['6/9','6add9'],                         tones:['1','3','(5)','6','9'],         ko:'식스 나인',        en:'6/9'},
+ {id:'add9',   al:['add2','2'],                            tones:['1','3','(5)','9'],             ko:'애드 나인',        en:'add 9'},
+ {id:'madd9',  al:['madd2','minadd9','-add9'],             tones:['1','b3','(5)','9'],            ko:'마이너 애드 나인', en:'minor add 9'},
+ {id:'add11',  al:['add4'],                                tones:['1','3','(5)','11'],            ko:'애드 일레븐',      en:'add 11'},
+ {id:'sus2',   al:[],                                      tones:['1','2','5'],                   ko:'서스 투',          en:'suspended 2nd'},
+ {id:'sus4',   al:['sus'],                                 tones:['1','4','5'],                   ko:'서스 포',          en:'suspended 4th'},
+ {id:'7sus4',  al:['7sus','sus7'],                         tones:['1','4','(5)','b7'],            ko:'세븐 서스 포',     en:'7th suspended 4th'},
+ {id:'9',      al:['dom9'],                                tones:['1','3','(5)','b7','9'],        ko:'나인',             en:'dominant 9th'},
+ {id:'m9',     al:['min9','-9'],                           tones:['1','b3','(5)','b7','9'],       ko:'마이너 나인',      en:'minor 9th'},
+ {id:'maj9',   al:['ma9','j9'],                            tones:['1','3','(5)','7','9'],         ko:'메이저 나인',      en:'major 9th'},
+ {id:'11',     al:['dom11'],                               tones:['1','(5)','b7','(9)','11'],     ko:'일레븐',           en:'11th'},
+ {id:'m11',    al:['min11','-11'],                         tones:['1','b3','(5)','b7','(9)','11'],ko:'마이너 일레븐',    en:'minor 11th'},
+ {id:'13',     al:['dom13'],                               tones:['1','3','(5)','b7','(9)','13'], ko:'서틴',             en:'13th'},
+ {id:'dim',    al:['°','o','mb5','dim5'],                  tones:['1','b3','b5'],                 ko:'디미니시',         en:'diminished'},
+ {id:'dim7',   al:['°7','o7'],                             tones:['1','b3','b5','bb7'],           ko:'디미니시 세븐',    en:'diminished 7th'},
+ {id:'m7b5',   al:['min7b5','m7-5','halfdim','-7b5'],      tones:['1','b3','b5','b7'],            ko:'하프 디미니시',    en:'half-diminished'},
+ {id:'aug',    al:['+','+5','#5','aug5'],                  tones:['1','3','#5'],                  ko:'오그먼트',         en:'augmented'},
+ {id:'7#5',    al:['aug7','+7','7+5','7+','7aug'],         tones:['1','3','#5','b7'],             ko:'세븐 샵 파이브',   en:'7th sharp 5'},
+ {id:'7b5',    al:['7-5'],                                 tones:['1','3','b5','b7'],             ko:'세븐 플랫 파이브', en:'7th flat 5'},
+ {id:'7b9',    al:['7-9'],                                 tones:['1','3','(5)','b7','b9'],       ko:'세븐 플랫 나인',   en:'7th flat 9'},
+ {id:'7#9',    al:['7+9'],                                 tones:['1','3','(5)','b7','#9'],       ko:'세븐 샵 나인',     en:'7th sharp 9'},
+ {id:'maj7#11',al:['maj7+11','ma7#11'],                    tones:['1','3','(5)','7','#11'],       ko:'메이저 세븐 샵 일레븐', en:'major 7th sharp 11'}
+];
+const TYPE_BY_ID=new Map(TYPES.map(x=>[x.id,x]));
+const ALIAS=new Map(); TYPES.forEach(x=>[x.id,...x.al].forEach(a=>ALIAS.set(a.toLowerCase(),x)));
+const DEG={1:0,2:2,3:4,4:5,5:7,6:9,7:11,9:14,11:17,13:21};
+const accOf=a=>a==='#'?1:a==='b'?-1:a==='bb'?-2:a==='x'?2:0;
+const toneCache=new Map();
+function parseTone(lb){ // 'b3' → {semi:3, step:2}, '(5)' → 생략 가능
+  if(toneCache.has(lb)) return toneCache.get(lb);
+  const opt=lb[0]==='(', x=lb.replace(/[()]/g,''), m=x.match(/^(bb|b|#)?(\d+)$/), d=+m[2];
+  const r={lbl:x,semi:DEG[d]+accOf(m[1]||''),step:(d-1)%7,opt}; toneCache.set(lb,r); return r;
+}
+// 음정 이름으로 음 철자 정하기: C#의 b5는 G(Ab 아님), C의 #11은 F#
+function spellNote(root,tone){
+  const L=LET[(LET.indexOf(root[0])+tone.step)%7], pc=mod(NAT[root[0]]+accOf(root.slice(1))+tone.semi);
+  let d=mod(pc-NAT[L]); if(d>6) d-=12;
+  const n=L+(d===-2?'bb':d===-1?'b':d===1?'#':d===2?'x':'');
+  // 이론상 맞지만 초보자에게 낯선 철자(F♯♯, F♭, E♯ …)는 쉬운 이름으로
+  return (Math.abs(d)===2||/^(Fb|Cb|E#|B#)$/.test(n))?pcName(pc,d<0):n;
+}
+const noteP=n=>n[0]+n.slice(1).replace(/x/g,'♯♯').replace(/#/g,'♯').replace(/b/g,'♭');
+const degP=l=>l.replace(/#/g,'♯').replace(/b/g,'♭');
+
+// 입력 보정: 'b m add 9' → Bmadd9, 'c샵 마이너 세븐' → C#m7, 'CM7' → Cmaj7, 'BMADD9' → Bmadd9
+const KO_WORDS=[[/메이저\s*세븐/g,'maj7'],[/메이저/g,'maj'],[/마이너/g,'m'],[/세븐/g,'7'],[/나인/g,'9'],[/식스/g,'6'],[/디미니[쉬시]?/g,'dim'],[/(어|오)그(먼트|멘트)?/g,'aug'],
+  [/서스/g,'sus'],[/(애|에)드/g,'add'],[/샵|샾|sharp/gi,'#'],[/플랫|flat/gi,'b']];
+function readChord(raw){
+  let s=raw; for(const [re,v] of KO_WORDS) s=s.replace(re,v);
+  s=s.replace(/[\s_,.]+/g,'').replace(/♯/g,'#').replace(/♭/g,'b').replace(/[()（）\[\]]/g,'')
+     .replace(/Δ7?/g,'maj7').replace(/[øØ]7?/g,'m7b5').replace(/°7/g,'dim7').replace(/°/g,'dim');
+  const m=s.match(/^([a-gA-G])(#|b)?(.*)$/); if(!m) return null;
+  const root=m[1].toUpperCase()+(m[2]||'');
+  let rest=m[3], bass=null;
+  const sl=rest.match(/^(.*)\/([a-gA-G])(#|b)?$/); if(sl){ rest=sl[1]; bass=sl[2].toUpperCase()+(sl[3]||''); }
+  // 대문자 M은 메이저(CM7), 그래도 못 찾으면 전부 소문자로 다시(BMADD9 → madd9)
+  const type=ALIAS.get(rest.replace(/^M(?![a-z])/,'maj').replace(/M(?=\d)/g,'maj').toLowerCase())||ALIAS.get(rest.toLowerCase())||null;
+  return {root,bass,rest,type,name:type?root+type.id+(bass&&bass!==root?'/'+bass:''):null};
+}
+// 운지 계산기: 구성음이 모두 들어가고, 가장 낮은 줄이 근음(또는 슬래시 베이스)이고,
+// 손가락 4개(검지 바레 포함)로 4프렛 안에서 잡히는 모양을 지판 전체에서 찾아 쉬운 순으로 정렬
+const OPEN_MIDI=[40,45,50,55,59,64];
+function fingering(f){
+  const idx=[]; for(let i=0;i<6;i++) if(f[i]>0) idx.push(i);
+  const g=[0,0,0,0,0,0]; if(!idx.length) return {g,n:0,barre:false};
+  const order=a=>a.sort((x,y)=>f[x]-f[y]||x-y);
+  if(idx.length<=4){ order(idx).forEach((st,k)=>g[st]=k+1); return {g,n:idx.length,barre:false}; }
+  const minF=Math.min(...idx.map(i=>f[i])), atMin=idx.filter(i=>f[i]===minF);
+  if(atMin.length<2) return null;
+  for(let i=atMin[0];i<=atMin[atMin.length-1];i++) if(f[i]<minF) return null; // 바레 아래 개방·뮤트 줄이 끼면 불가
+  const rest=order(idx.filter(i=>f[i]>minF)); if(rest.length>3) return null;
+  atMin.forEach(st=>g[st]=1); rest.forEach((st,k)=>g[st]=k+2);
+  return {g,n:rest.length+1,barre:true};
+}
+const vCache=new Map();
+function dictVoicings(rootPc,type,bassPc=null){
+  const key=rootPc+'|'+type.id+'|'+bassPc; if(vCache.has(key)) return vCache.get(key);
+  const T=type.tones.map(parseTone), all=new Set(), req=new Set();
+  T.forEach(x=>{ const p=mod(rootPc+x.semi); all.add(p); if(!x.opt) req.add(p); });
+  const bass=bassPc===null?rootPc:bassPc; all.add(bass); req.add(bass);
+  const hiMin=T.length<=2?0:4; // 파워 코드 말고는 2번 줄까지는 울려야 함
+  const judge=(f,minStr)=>{
+    const snd=[]; for(let i=0;i<6;i++) if(f[i]>=0) snd.push(i);
+    if(snd.length<minStr) return null;
+    const lo=snd[0], hi=snd[snd.length-1];
+    if(hi-lo+1!==snd.length||lo>2||hi<hiMin) return null;          // 가운데 줄 뮤트 금지, 베이스는 6·5·4번 줄
+    if(mod(OPEN_MIDI[lo]+f[lo])!==bass) return null;
+    const pcs=new Set(snd.map(i=>mod(OPEN_MIDI[i]+f[i]))); for(const p of req) if(!pcs.has(p)) return null;
+    const fg=fingering(f); if(!fg) return null;
+    const fr=f.filter(x=>x>0), pos=fr.length?Math.min(...fr):0, span=fr.length?Math.max(...fr)-pos:0, opens=f.filter(x=>x===0).length;
+    const cost=T.length<=2 // 파워 코드는 낮은 줄 2~3개가 정석
+      ?pos*.9+fg.n*.5+span*.7+Math.abs(snd.length-3)*.8+(lo?.3:0)
+      :pos*.9+fg.n*.5+span*.7+(fg.barre?1.6:0)+(6-snd.length)*.45-opens*.25;
+    return {key:f.join(','),f:f.slice(),g:fg.g,barre:fg.barre,n:fg.n,pos,cost};
+  };
+  let list=[];
+  for(const minStr of (T.length<=2?[2]:[4,3])){
+    const found=new Map();
+    for(let b=1;b<=9;b++){ // 1~4프렛, 2~5프렛 … 창을 옮기며 탐색
+      const opts=OPEN_MIDI.map(o=>{ const a=[-1]; if(all.has(mod(o))) a.push(0); for(let fr=b;fr<b+4;fr++) if(all.has(mod(o+fr))) a.push(fr); return a; });
+      const f=[]; const rec=i=>{ if(i===6){ const v=judge(f,minStr); if(v&&!found.has(v.key)) found.set(v.key,v); return; } for(const x of opts[i]){ f[i]=x; rec(i+1); } };
+      rec(0);
+    }
+    list=[...found.values()].sort((a,b)=>a.cost-b.cost); if(list.length) break;
+  }
+  vCache.set(key,list); return list;
+}
+const vDiff=v=>v.barre?(v.pos>=7?3.5:3):(v.f.includes(0)&&Math.max(...v.f)<=4)?(v.n<=3?1.5:2):2.5;
+// 가장 쉬운 것 + 다른 위치 2개 (기본 모양이 있으면 그걸 맨 앞에)
+function chooseV(list,first){
+  const res=first?[first]:[];
+  for(const v of list){ if(res.length>=3) break; if(!res.some(r=>r.key===v.key||Math.abs(r.pos-v.pos)<3)) res.push(v); }
+  for(const v of list){ if(res.length>=3) break; if(!res.some(r=>r.key===v.key)) res.push(v); }
+  return res;
+}
+function fretSVG(v,rootPc,nameOf,label){
+  const W=132,H=164,L=32,T=36,G=15,FH=21,N=5,x=i=>L+i*G;
+  const fr=v.f.filter(n=>n>0), maxF=Math.max(0,...fr), minF=fr.length?Math.min(...fr):1, base=maxF<=N?1:minF, y=f=>T+(f-base+.5)*FH;
+  const pcOf=i=>mod(OPEN_MIDI[i]+v.f[i]);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">`;
+  for(let i=0;i<=N;i++) s+=`<line x1="${L}" x2="${x(5)}" y1="${T+i*FH}" y2="${T+i*FH}" stroke="var(--muted)" stroke-opacity=".55" stroke-width="1"/>`;
+  for(let i=0;i<6;i++) s+=`<line x1="${x(i)}" x2="${x(i)}" y1="${T}" y2="${T+N*FH}" stroke="var(--muted)" stroke-width="${(1.7-i*.17).toFixed(2)}"/>`;
+  if(base===1) s+=`<rect x="${L-1.5}" y="${T-4.5}" width="${5*G+3}" height="5" rx="1.5" fill="var(--ink)"/>`;
+  else s+=`<text x="${L-7}" y="${T+FH*.5+4}" text-anchor="end" font-size="10" font-weight="600" fill="var(--muted)" font-family="IBM Plex Mono,monospace">${base}fr</text>`;
+  v.f.forEach((f,i)=>{
+    if(f===-1) s+=`<text x="${x(i)}" y="${T-12}" text-anchor="middle" font-size="12" fill="var(--muted)" font-family="IBM Plex Mono,monospace">×</text>`;
+    if(f===0) s+=`<circle cx="${x(i)}" cy="${T-16}" r="4" fill="none" stroke="${pcOf(i)===rootPc?'var(--bass)':'var(--muted)'}" stroke-width="1.5"/>`;
+  });
+  const bar=v.barre?v.f.map((f,i)=>i).filter(i=>v.g[i]===1):[];
+  if(bar.length){ const a=bar[0], z=bar[bar.length-1], f=v.f[a];
+    s+=`<rect x="${x(a)-7}" y="${y(f)-7}" width="${x(z)-x(a)+14}" height="14" rx="7" fill="var(--accent)"/><text x="${(x(a)+x(z))/2}" y="${y(f)+3.6}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--accent-ink)">1</text>`; }
+  v.f.forEach((f,i)=>{
+    if(f<=0||bar.includes(i)) return;
+    s+=`<circle cx="${x(i)}" cy="${y(f)}" r="7" fill="${pcOf(i)===rootPc?'var(--bass)':'var(--accent)'}"/>`;
+    if(v.g[i]) s+=`<text x="${x(i)}" y="${y(f)+3.6}" text-anchor="middle" font-size="9.5" font-weight="700" fill="var(--accent-ink)">${v.g[i]}</text>`;
+  });
+  v.f.forEach((f,i)=>{ if(f<0) return; const pc=pcOf(i);
+    s+=`<text x="${x(i)}" y="${T+N*FH+17}" text-anchor="middle" font-size="9" font-weight="600" fill="${pc===rootPc?'var(--bass)':'var(--muted)'}" font-family="IBM Plex Mono,monospace">${esc(noteP(nameOf(pc)))}</text>`; });
+  return s+'</svg>';
+}
+let dxAudio=null;
+function pluck(f){ // 6번 줄부터 차례로 퉁기기
+  const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+  if(dxAudio){ try{dxAudio.close();}catch(e){} }
+  const ctx=dxAudio=new AC(); let t0=ctx.currentTime+.03;
+  f.forEach((x,i)=>{ if(x<0) return; const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='triangle'; o.frequency.value=440*Math.pow(2,(OPEN_MIDI[i]+x-69)/12);
+    g.gain.setValueAtTime(.0001,t0); g.gain.exponentialRampToValueAtTime(.16,t0+.01); g.gain.exponentialRampToValueAtTime(.0001,t0+1.8);
+    o.connect(g).connect(ctx.destination); o.start(t0); o.stop(t0+1.9); t0+=.035; });
+  setTimeout(()=>{ if(dxAudio===ctx){ try{ctx.close();}catch(e){} dxAudio=null; } },2700);
+}
+const DX_EX=['Bmadd9','C#m7b5','Faug','Gsus4','Dm9','E7#9','Am/G','Cmaj7'];
+const $dict=document.getElementById('dict'), $dfab=document.getElementById('dict-fab'), $dscrim=document.getElementById('dict-scrim'), $dq=document.getElementById('dict-q'), $dout=document.getElementById('dict-out');
+const exChips=list=>`<div class="dx-ex">${list.map(q=>`<button class="chip" type="button" data-dq="${esc(q)}">${esc(pretty(q))}</button>`).join('')}</div>`;
+function dictRender(){
+  const raw=$dq.value.trim(); let h='';
+  const r=raw?readChord(raw):null;
+  if(!raw) h=`<p class="dx-sub">${t('dictEx')}</p>${exChips(DX_EX)}<p class="dx-note">${ic('info')} ${t('dictTipSheet')}</p>`;
+  else if(!r||!r.type){
+    const rest=r?r.rest.toLowerCase():'';
+    const sug=r&&rest?TYPES.filter(x=>[x.id,...x.al].some(a=>a&&(a.startsWith(rest)||rest.startsWith(a)))).slice(0,6).map(x=>r.root+x.id):[];
+    h=`<p class="dx-msg">${esc(t('dictNone',raw))}</p>${sug.length?`<p class="dx-sub">${t('dictSimilar')}</p>${exChips(sug)}`:`<p class="dx-sub">${t('dictEx')}</p>${exChips(DX_EX)}`}`;
+  } else {
+    const rpc=mod(NAT[r.root[0]]+accOf(r.root.slice(1))), bpc=r.bass&&r.bass!==r.root?mod(NAT[r.bass[0]]+accOf(r.bass.slice(1))):null;
+    const T=r.type.tones.map(parseTone), names=new Map();
+    T.forEach(x=>names.set(mod(rpc+x.semi),spellNote(r.root,x))); if(bpc!==null&&!names.has(bpc)) names.set(bpc,r.bass);
+    const nameOf=pc=>names.get(pc)||pcName(pc,false);
+    const fam=bpc===null?builtinShape(rpc,r.type.id):null;
+    const vs=chooseV(dictVoicings(rpc,r.type,bpc),fam&&{key:fam.f.join(','),f:fam.f,g:fam.g,barre:fam.barre,n:fam.g.filter(Boolean).length,pos:Math.min(...fam.f.filter(x=>x>0))});
+    const shown=r.name;
+    h=`${shown!==raw?`<p class="dx-heard">${t('dictHeard')} <code>${esc(raw)}</code> → <b>${esc(pretty(shown))}</b></p>`:''}
+    <div class="dx-head"><b>${chordHTML(shown)}</b><span>${esc(noteP(r.root))} ${LANG==='en'?r.type.en:r.type.ko}${bpc!==null?` · ${t('dictBass')} ${esc(noteP(r.bass))}`:''}</span></div>
+    <div class="dx-tones">${T.map(x=>`<span class="tn${x.semi===0?' root':''}${x.opt?' opt':''}"${x.opt?` title="${t('dictOptOne')}"`:''}><b>${esc(noteP(spellNote(r.root,x)))}</b><small>${degP(x.lbl)}</small></span>`).join('')}${bpc!==null&&!T.some(x=>mod(rpc+x.semi)===bpc)?`<span class="tn"><b class="bs">${esc(noteP(r.bass))}</b><small>${t('dictBass')}</small></span>`:''}</div>
+    ${vs.length?`<div class="dx-vs">${vs.map((v,k)=>{ const [lt,lc]=level(v.barre?(v.pos>=7?3.5:3):vDiff(v));
+      const open=v.f.includes(0)&&Math.max(...v.f)<=4;
+      return `<figure class="dx-v">${fretSVG(v,rpc,nameOf,shown+' '+v.f.map(n=>n<0?'x':n).join(' '))}<span class="pos">${open?t('posOpen'):t('posFret',v.pos)}</span><span class="lv ${lc}">${lt}</span><button class="dx-play" type="button" data-k="${k}">${ic('play')}${t('listen')}</button></figure>`; }).join('')}</div>`
+      :`<p class="dx-msg">${t('dictNoShape')}</p>`}
+    ${T.some(x=>x.opt)?`<p class="dx-note">${t('dictOpt')}</p>`:''}`;
+    $dout.innerHTML=h; $dout.querySelectorAll('.dx-play').forEach(b=>b.onclick=()=>pluck(vs[+b.dataset.k].f));
+    return;
+  }
+  $dout.innerHTML=h;
+  $dout.querySelectorAll('[data-dq]').forEach(b=>b.onclick=()=>{ $dq.value=b.dataset.dq; dictRender(); });
+}
+function openDict(q){
+  if(typeof q==='string') $dq.value=q;
+  dictRender();
+  $dict.classList.add('open'); $dict.removeAttribute('inert'); $dscrim.hidden=false;
+  document.body.classList.add('dict-on'); $dfab.setAttribute('aria-expanded','true');
+  if(typeof q!=='string') setTimeout(()=>$dq.focus({preventScroll:true}),60); // 악보에서 열 땐 휴대폰 키보드가 뜨지 않게
+}
+function closeDict(){
+  if(!$dict.classList.contains('open')) return;
+  $dict.classList.remove('open'); $dict.setAttribute('inert',''); $dscrim.hidden=true;
+  document.body.classList.remove('dict-on'); $dfab.setAttribute('aria-expanded','false'); $dfab.focus({preventScroll:true});
+}
+$dfab.addEventListener('click',()=>openDict());
+document.getElementById('dict-x').addEventListener('click',closeDict);
+$dscrim.addEventListener('click',closeDict);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDict(); });
+$dq.addEventListener('input',dictRender);
+// 악보·운지 카드의 코드 이름을 누르면 사전에서 바로 보기
+$out.addEventListener('click',e=>{ const c=e.target.closest('.sheet .ch, .sheet .cp b, figure.cd .nm'); if(c&&c.textContent.trim()) openDict(c.textContent.trim()); });
+
 const $note=document.getElementById('note');
 const note=(msg)=>{ $note.hidden=!msg; $note.textContent=msg||''; };
 document.getElementById('paste').addEventListener('click',async()=>{
@@ -845,7 +1125,7 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',(
   if(LANG===b.dataset.lang) return; LANG=b.dataset.lang;
   try{ localStorage.setItem('easychord-lang',LANG); }catch(e){}
   if($src.value===SAMPLES[3]||$src.value===SAMPLES[5]) $src.value=sampleText(3);
-  applyStatic(); buildRh(); render();
+  applyStatic(); buildRh(); render(); dictRender();
 }));
 applyStatic();
 $src.value=sampleText(3); render(); // 처음엔 악보 사이트 형식(카포·섹션·가사 포함) 예시를 보여 줌
