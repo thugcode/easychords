@@ -14,6 +14,7 @@
   --bg:#f3f4f6; --surface:#ffffff; --ink:#111318; --muted:#6b7280; --line:#e4e6eb;
   --accent:#2f5bea; --accent-soft:#e8eeff; --accent-ink:#ffffff;
   --good:#16865a; --good-soft:#e3f5ec; --warn:#d1461f; --warn-soft:#fde9e2;
+  --bass:#0b8577; --hit:#dc2f2a;
   --neck:#1b1e26; --neck-ink:#e9ebf0; --fret:#9aa1ae;
   --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
@@ -22,12 +23,12 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
   --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
-  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14;
+  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14; --bass:#4fd1c0; --hit:#ff5f57;
   --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
   --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
-  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14;
+  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14; --bass:#4fd1c0; --hit:#ff5f57;
   --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}
 
 *{box-sizing:border-box}
@@ -139,6 +140,33 @@ textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f
 .sheet .cp .ly{font-family:var(--f-body);line-height:1.55;white-space:pre;color:var(--ink)}
 .real{font-size:.82rem;color:var(--muted);margin:8px 0 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .real b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+.bs{color:var(--bass);font-weight:700}
+.bs .sl{color:var(--muted);font-weight:500}
+.sheet .bar{color:var(--muted);opacity:.5;font-weight:400}
+.sheet .beat{color:var(--muted);opacity:.5}
+/* 리듬 스트로크 가이드 */
+.rhythm{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.rh-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rh-h{display:inline-flex;gap:5px;align-items:center;font-size:.8rem;font-weight:700;color:var(--muted);margin-right:2px}
+.rh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
+.rh-beat{display:flex;border-radius:10px;background:var(--bg);overflow:hidden}
+.rh-c{flex:1 1 0;min-width:0;display:grid;justify-items:center;padding:6px 0 4px;border-radius:8px}
+.rh-c b{font:700 1.45rem/1.1 var(--f-body);color:var(--ink)}
+.rh-c small{font:600 .68rem var(--f-mono);color:var(--muted)}
+.rh-c.rest b{color:var(--muted);opacity:.5;font-weight:500}
+.rh-c.acc b{color:var(--hit)}
+.rh-c.on{background:var(--accent-soft)}
+.rh-c.on small{color:var(--accent)}
+.rh-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:10px}
+.rh-play .i{fill:currentColor;stroke:none}
+.rh-bpm{display:inline-flex;align-items:center;gap:8px;font:600 .82rem var(--f-mono);color:var(--muted)}
+.rh-bpm input{width:120px;accent-color:var(--accent)}
+.rh-bpm output{color:var(--ink);min-width:3ch;text-align:right}
+.rh-leg{margin-left:auto;font-size:.78rem;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
+.rh-leg b{color:var(--hit);font-size:1rem}
+@media (max-width:520px){.rh-c b{font-size:1.15rem}.rh-grid{gap:4px}}
+@media (prefers-reduced-motion:no-preference){.rh-c{transition:background .08s}.rh-c.on b{transform:scale(1.18)}.rh-c b{transition:transform .08s}}
+figure.cd .bassh{font-size:.68rem;font-weight:700;color:var(--bass);line-height:1.3}
 .count{font:600 .8rem var(--f-mono);color:var(--muted);background:var(--bg);border-radius:999px;padding:1px 8px}
 
 /* 운지 */
@@ -210,6 +238,7 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;dis
         <button class="chip" type="button" data-sample="0" data-i18n="s0">여자 발라드</button>
         <button class="chip" type="button" data-sample="1" data-i18n="s1">남자 발라드</button>
         <button class="chip" type="button" data-sample="2" data-i18n="s2">마이너</button>
+        <button class="chip" type="button" data-sample="5" data-i18n="s5">마디·분수 코드</button>
       </div>
     </section>
 
@@ -251,6 +280,7 @@ const IC={
  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
  reset:'<path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/>',
+ metro:'<path d="M9 3h6l4 18H5z"/><path d="M7.5 15h9M12 15l5-9"/>',
  play:'<path d="M7 4v16l13-8z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
  copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
@@ -282,7 +312,9 @@ const I18N={
   photo:'악보 사진', photoTip:'사진·캡처에서 코드와 가사(한국어·영어)를 읽어요. Ctrl+V로 붙여넣어도 돼요.',
   simpTitle:'쉬운 코드로', simpTip:'더 쉬운 모양이 있으면 바꿔요 (Cmaj7 → C, Bb7sus4 → Bb7)',
   compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
-  samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너',
+  samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너', s5:'마디·분수 코드',
+  rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
+  bassHint:(n,st,f)=>`베이스 ${n} · ${st}번 줄 ${f?f+'프렛':'개방'}`,
   help:'도움말',
   g1h:'남녀 키 바꾸기', g1p:'−5 / +5 버튼은 출발점이에요. ▶로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 −5와 +7은 같은 코드예요.',
   g2h:'카포를 쓰는 이유', g2p:'키를 바꾸면 B♭, F♯m 같은 어려운 코드가 나와요. 카포를 끼우면 같은 높이로 쉬운 모양만 잡을 수 있어요. 7번 프렛까지만 추천해요.',
@@ -321,7 +353,9 @@ const I18N={
   photo:'Sheet photo', photoTip:'Reads chords and lyrics (English, Korean) from a photo or screenshot. Ctrl+V works too.',
   simpTitle:'Simplify', simpTip:'Use an easier shape when one exists (Cmaj7 → C, Bb7sus4 → Bb7)',
   compare:'Show original image', imgAlt:'Uploaded chord sheet',
-  samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor',
+  samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor', s5:'Bars & slash chords',
+  rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
+  bassHint:(n,st,f)=>`Bass ${n} · ${st}${['','st','nd','rd'][st]||'th'} string ${f?'fret '+f:'open'}`,
   help:'Help',
   g1h:'Switching between male and female keys', g1p:'The −5 / +5 buttons are a starting point. Press ▶ and adjust one step at a time. Guitar chords ignore octaves, so −5 and +7 give the same chords.',
   g2h:'Why a capo', g2p:'A new key can bring hard chords like B♭ or F♯m. A capo keeps the pitch while you play easy shapes. Suggestions stop at fret 7.',
@@ -377,6 +411,7 @@ const SAMPLES=[
   "D A Bm F#m\nG D Em A\nD A/C# Bm G\nEm A7 D",
   "F#m D A E\nF#m D A C#7\nBm E A F#m\nD E F#m",
   "Capo: 1st fret\n\n[Verse]\nE                 F#m\nOn the last day of the winter\nA                 B\nA little leaf began to grow\nE                 F#m\nI opened up the old window\nA          B         E\nAnd let the morning in\n\n[Chorus]\nA            B\nWhen the spring comes\nG#m          C#m\nWill you walk with me\nA            B           E\nSlowly, like we used to",
+  "[Intro]\n| C    G/B  | Am   C/G  |\n| F    C/E  | Dm7  G7   |\n\n[Verse]\n| C - - - | G/B - - - |\n| Am - - - | Em/G - - - |\n| F - - - | C/E - - - |\n| Dm7 - G7 - | C - - - |",
   "Capo: 1st fret\n\n[Verse]\nE              F#m\n겨울 끝에 서 있던 나무에\nA              B\n작은 잎이 하나 돋아나\nE              F#m\n오래 닫혀 있던 창문을\nA        B      E\n이제야 활짝 열어 봐\n\n[Chorus]\nA          B\n봄이 오면 우리\nG#m        C#m\n다시 걸어 볼까\nA          B          E\n그때처럼 천천히"
 ];
 
@@ -452,16 +487,17 @@ function pick(pc,q,simplify){
   return best;
 }
 
+// 코드 = 근음 + (#/b) + 종류 + (/베이스 음). 예: C/E, D/F#, Bbmaj7/D
+const NAT={C:0,D:2,E:4,F:5,G:7,A:9,B:11}, LET='CDEFGAB';
 function parseChord(tok){
   const m=tok.match(/^([A-G])([#b♯♭]?)([^/]*)(?:\/([A-G])([#b♯♭]?))?$/); if(!m) return null;
   const acc=a=>a==='#'||a==='♯'?1:a==='b'||a==='♭'?-1:0;
-  const NAT={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
   let q=null; for(const [re,v] of QMAP){ if(re.test(m[3])){q=v;break;} } if(q===null) return null;
   return {pc:mod(NAT[m[1]]+acc(m[2])),q,bass:m[4]?mod(NAT[m[4]]+acc(m[5])):null};
 }
 // 악보 사이트에서 붙여 넣은 안내 줄(Capo·Tuning·Key 등)과 타브 줄 처리
 const META=/^\s*(capo|tuning|key|tempo|bpm|strumming|difficulty|author|transpose|chords?\s*used|카포|튜닝|조성)\b\s*[:：]?/i;
-const isTab=l=>(l.match(/-/g)||[]).length>=4&&/\|/.test(l)&&!/[가-힣]/.test(l);
+const isTab=l=>/-{3,}/.test(l)&&(l.match(/-/g)||[]).length>=4&&/\|/.test(l)&&!/[가-힣]/.test(l);
 function parse(text){
   let srcCapo=0;
   const chords=[]; const lines=text.split('\n').map(line=>{
@@ -495,6 +531,12 @@ function detectKey(chords){
   const f=chords[0];
   return {tonic:best.k,minor:mod(f.pc-best.k)===9&&MINORISH.has(f.q)};
 }
+const STEP=[0,1,1,2,2,3,3,4,5,5,6,6]; // 반음 간격 → 음이름 몇 칸 위인지
+function spellBass(root,bass,flat){
+  const rpc=NAT[root[0]]+(root[1]==='#'?1:root[1]==='b'?-1:0);
+  const L=LET[(LET.indexOf(root[0])+STEP[mod(bass-rpc)])%7], d=mod(bass-NAT[L]);
+  return d===0?L:d===1?L+'#':d===11?L+'b':pcName(bass,flat);
+}
 const keyLabel=(tonic,minor)=>pretty(minor?pcName(tonic+9,FLATKEYS.has(mod(tonic)))+'m':pcName(tonic,FLATKEYS.has(mod(tonic))));
 
 function build(P,K,shift,simplify){
@@ -502,7 +544,8 @@ function build(P,K,shift,simplify){
   const items=P.chords.map(c=>{
     const pc=mod(c.pc+shift), p=pick(pc,c.q,simplify);
     const bass=c.bass===null?null:mod(c.bass+shift);
-    return {...p,pc,bass,name:pcName(pc,flat)+p.q+(bass===null?'':'/'+pcName(bass,flat))};
+    const root=pcName(pc,flat);
+    return {...p,pc,bass,name:root+p.q+(bass===null||bass===pc?'':'/'+spellBass(root,bass,flat))};
   });
   const seen=new Map(); for(const it of items) if(!seen.has(it.name)) seen.set(it.name,it);
   const unique=[...seen.values()];
@@ -534,6 +577,18 @@ function diagram(sh){
   });
   return s+'</svg>';
 }
+// 코드 이름 HTML: 베이스 음(/E)만 다른 색으로
+const chordHTML=name=>{ const i=name.indexOf('/'), p=x=>esc(pretty(x));
+  return i<0?p(name):`${p(name.slice(0,i))}<span class="bs"><span class="sl">/</span>${p(name.slice(i+1))}</span>`; };
+// 베이스 음을 낮은 줄(6·5·4번)에서 3프렛 안쪽으로 찾음. 운지 모양이 이미 그 음으로 시작하면 표시 안 함
+const OPENS=[4,9,2,7,11,4];
+function bassHint(u){
+  if(u.bass===null) return '';
+  const lo=u.shape.f.findIndex(f=>f>=0); if(lo>=0&&mod(OPENS[lo]+u.shape.f[lo])===u.bass) return '';
+  let pos=null; for(const [st,o] of [[6,4],[5,9],[4,2]]){ const f=mod(u.bass-o); if(f<=3){pos=[st,f];break;} }
+  if(!pos){ const a=mod(u.bass-4), b=mod(u.bass-9); pos=a<=b?[6,a]:[5,b]; }
+  return `<span class="bassh">${esc(pretty(t('bassHint',u.name.split('/')[1],pos[0],pos[1])))}</span>`;
+}
 const level=d=>d<=1?[t('lvEasy'),'t-easy']:d<=1.5?[t('lvMid'),'t-mid']:d<3?[t('lvTricky'),'t-mid']:[t('lvBarre'),'t-hard'];
 const keyNote=s=>s<0?t('keyDown',-s):s>0?t('keyUp',s):t('keySame');
 
@@ -560,12 +615,88 @@ function playProgression(items,onEnd){
   return true;
 }
 
+// ── 리듬 스트로크 가이드 ──
+// steps: D=다운 U=업 -=쉼. div: 한 박을 몇 칸(틱)으로 나누는지. pos: 셔플처럼 칸이 틱에 고르게 놓이지 않을 때의 위치
+const RHY=[
+  {id:'calypso', steps:'D-DU-UDU',         acc:[0,3],  div:2, bpm:96},
+  {id:'go8',     steps:'DUDUDUDU',         acc:[2,6],  div:2, bpm:112},
+  {id:'go16',    steps:'D-DUDUDUD-DUDUDU', acc:[4,12], div:4, bpm:70},
+  {id:'shuffle', steps:'DUDUDUDU',         acc:[2,6],  div:3, bpm:100, pos:[0,2,3,5,6,8,9,11]}
+];
+const rh={id:null,bpm:96,timer:null,ctx:null,tick:0,noise:null};
+const $rh=document.createElement('div'); $rh.className='rhythm';
+const rhPat=()=>RHY.find(r=>r.id===rh.id);
+const rhPer=p=>p.pos?2:p.div; // 한 박에 보이는 칸 수
+const rhCount=(p,j)=>{ const per=rhPer(p), k=j%per; return !k?String(j/per+1):p.pos?'a':per===2?'&':['','e','&','a'][k]; };
+const ARW={D:'↓',U:'↑','-':'–'};
+function buildRh(){
+  const p=rhPat();
+  let h=`<div class="rh-top" role="group" aria-label="${t('rhythm')}"><span class="rh-h">${ic('metro')}${t('rhythm')}</span>${RHY.map(r=>`<button class="chip" type="button" data-rh="${r.id}" aria-pressed="${r.id===rh.id}">${t('rh_'+r.id)}</button>`).join('')}</div>`;
+  if(p){
+    const per=rhPer(p); let beats='';
+    for(let b=0;b<4;b++){ let cells='';
+      for(let k=0;k<per;k++){ const j=b*per+k, s=p.steps[j], a=s!=='-'&&p.acc.includes(j);
+        cells+=`<span class="rh-c${s==='-'?' rest':''}${a?' acc':''}" data-j="${j}"><b>${ARW[s]}</b><small>${rhCount(p,j)}</small></span>`; }
+      beats+=`<span class="rh-beat">${cells}</span>`; }
+    h+=`<div class="rh-grid" role="img" aria-label="${t('rhPattern')}: ${[...p.steps].map(s=>ARW[s]).join(' ')}">${beats}</div>
+    <div class="rh-ctl">
+      <button class="btn rh-play" type="button" id="rh-play">${ic(rh.timer?'stop':'play')}<span>${rh.timer?t('stopShort'):t('rhStart')}</span></button>
+      <label class="rh-bpm"><input type="range" id="rh-bpm" min="40" max="180" step="2" value="${rh.bpm}" aria-label="BPM"><output>${rh.bpm}</output>BPM</label>
+      <span class="rh-leg"><b>↓</b>${t('rhAcc')}</span>
+    </div>`;
+  }
+  $rh.innerHTML=h;
+  $rh.querySelectorAll('[data-rh]').forEach(b=>b.onclick=()=>{
+    const was=rh.timer; stopRh(true);
+    if(rh.id===b.dataset.rh){ rh.id=null; } else { rh.id=b.dataset.rh; rh.bpm=rhPat().bpm; if(was) startRh(); }
+    buildRh();
+  });
+  const pb=$rh.querySelector('#rh-play'); if(pb) pb.onclick=()=>{ rh.timer?stopRh():startRh(); buildRh(); };
+  const bi=$rh.querySelector('#rh-bpm'); if(bi) bi.oninput=()=>{ rh.bpm=+bi.value; bi.nextElementSibling.textContent=rh.bpm; if(rh.timer) rhInterval(); };
+}
+function rhInterval(){ clearInterval(rh.timer); rh.timer=setInterval(rhStep,60000/rh.bpm/rhPat().div); }
+function startRh(){
+  if(!rhPat()) return;
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(AC&&!rh.ctx){ try{ rh.ctx=new AC(); }catch(e){ rh.ctx=null; } }
+  rh.tick=0; rhStep(); rhInterval();
+}
+function stopRh(keepUI){
+  clearInterval(rh.timer); rh.timer=null;
+  if(rh.ctx){ try{ rh.ctx.close(); }catch(e){} rh.ctx=null; rh.noise=null; }
+  $rh.querySelectorAll('.rh-c.on').forEach(e=>e.classList.remove('on'));
+  if(!keepUI&&$rh.querySelector('#rh-play')) buildRh();
+}
+// 틱마다: 해당 칸에 불을 켜고 소리를 냄(셔플은 셋잇단 틱 중 1·3번째만 칸이 있음)
+function rhStep(){
+  const p=rhPat(); if(!p) return stopRh();
+  const tk=rh.tick++%(4*p.div), j=p.pos?p.pos.indexOf(tk):tk; if(j<0) return;
+  $rh.querySelectorAll('.rh-c.on').forEach(e=>e.classList.remove('on'));
+  const c=$rh.querySelector(`.rh-c[data-j="${j}"]`); if(c) c.classList.add('on');
+  const s=p.steps[j]; if(s!=='-') strum(s==='D',p.acc.includes(j)); else if(tk%p.div===0) click();
+}
+function strum(down,acc){
+  const ctx=rh.ctx; if(!ctx) return;
+  if(!rh.noise){ const n=Math.floor(ctx.sampleRate*.09); rh.noise=ctx.createBuffer(1,n,ctx.sampleRate);
+    const d=rh.noise.getChannelData(0); for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2); }
+  const src=ctx.createBufferSource(), f=ctx.createBiquadFilter(), g=ctx.createGain();
+  src.buffer=rh.noise; f.type='bandpass'; f.frequency.value=down?1300:2600; f.Q.value=.9; g.gain.value=acc?.9:.32;
+  src.connect(f).connect(g).connect(ctx.destination); src.start();
+}
+function click(){
+  const ctx=rh.ctx; if(!ctx) return; const o=ctx.createOscillator(), g=ctx.createGain(), t0=ctx.currentTime;
+  o.frequency.value=1000; g.gain.setValueAtTime(.06,t0); g.gain.exponentialRampToValueAtTime(.0001,t0+.04);
+  o.connect(g).connect(ctx.destination); o.start(t0); o.stop(t0+.05);
+}
+document.addEventListener('visibilitychange',()=>{ if(document.hidden&&rh.timer) stopRh(); });
+buildRh();
+
 const $src=document.getElementById('src'), $simp=document.getElementById('simp'), $out=document.getElementById('out');
 let shift=0, capoSel=null, preset=null;
 
 function render(){
   const P=parse($src.value);
-  if(!P.chords.length){ $out.innerHTML=`<section class="card empty">${ic('music')}<div>${t('empty')}</div></section>`; return; }
+  if(!P.chords.length){ stopRh(); $out.innerHTML=`<section class="card empty">${ic('music')}<div>${t('empty')}</div></section>`; return; }
   const simplify=$simp.checked, K=detectKey(P.chords);
   const sc=P.srcCapo; // 악보가 카포 기준이면 실제 소리는 그만큼 높음
   const origLabel=keyLabel(mod(K.tonic+sc),K.minor);
@@ -592,21 +723,27 @@ function render(){
     });
     if(cur.it||cur.text) segs.push(cur);
     if(!html) return segs.map(s=>(s.it?`[${s.it.name}]`:'')+s.text).join('');
-    return segs.map(s=>`<span class="cp"><b class="${s.it&&s.it.shape.barre?'hard':''}">${s.it?esc(pretty(s.it.name)):''}</b><span class="ly">${esc(s.text)||' '}</span></span>`).join('');
+    return segs.map(s=>`<span class="cp"><b class="${s.it&&s.it.shape.barre?'hard':''}">${s.it?chordHTML(s.it.name):''}</b><span class="ly">${esc(s.text).replace(/\|/g,'<span class="bar">|</span>')||' '}</span></span>`).join('');
   };
   const cur_items=ci=>cur.items[ci];
+  // 마디(|)는 연한 회색, 코드만 있는 줄의 박자 표시(- / %)도 연하게
+  const delim=(x,html,cl)=>!html?x:esc(x).replace(/\|/g,'<span class="bar">|</span>').replace(/-+/g,m=>cl?`<span class="beat">${m}</span>`:m);
   const lineOut=(l,html)=>{ if(l.some((t,i)=>bracketed(l,i))) return cpOut(l,html);
+    const cl=l.some(x=>x.ci>=0)&&!l.some((x,i)=>i%2===0&&x.ci<0&&/[A-Za-z가-힣]/.test(x.t));
     let out='',debt=0;
-    for(const t of l){
+    l.forEach((t,i)=>{
       if(t.ci>=0){ const it=cur.items[t.ci]; debt+=it.name.length-t.t.length;
-        out+=html?`<span class="ch${it.shape.barre?' hard':''}">${esc(pretty(it.name))}</span>`:it.name; }
-      else if(/^ +$/.test(t.t)&&debt){ const want=t.t.length-debt, len=Math.max(1,want); debt=len-want; out+=' '.repeat(len); }
-      else out+=html?esc(t.t):t.t;
-    } return out; };
+        out+=html?`<span class="ch${it.shape.barre?' hard':''}">${chordHTML(it.name)}</span>`:it.name; return; }
+      if(i%2===1&&debt&&/^ /.test(t.t)){ // 코드 이름 길이가 바뀐 만큼 앞 공백을 줄이거나 늘려 마디·가사 위치 유지
+        const lead=t.t.match(/^ +/)[0].length, want=lead-debt, len=Math.max(1,want); debt=len-want;
+        out+=' '.repeat(len)+delim(t.t.slice(lead),html,cl); return; }
+      if(i%2===1) out+=delim(t.t,html,cl);
+      else out+=html?(cl&&/^[\/%.]+$/.test(t.t)?`<span class="beat">${esc(t.t)}</span>`:esc(t.t)):t.t;
+    }); return out; };
   const shown=P.lines.filter(l=>!l.meta); while(shown.length&&!shown[0].map(x=>x.t).join('').trim()) shown.shift();
   const sheetHTML=capoLine+shown.map(l=>lineOut(l,true)).join('\n');
   const sheetTXT=(cur.c===0?'':`Capo ${cur.c}\n`)+shown.map(l=>lineOut(l,false)).join('\n');
-  const realLine=cur.c===0?'':`<p class="real">${ic('sound')}${t('realSound')} <b>${esc(pretty(uniq(sounding.items.map(i=>i.name)).join('  ')))}</b></p>`;
+  const realLine=cur.c===0?'':`<p class="real">${ic('sound')}${t('realSound')} <b>${uniq(sounding.items.map(i=>i.name)).map(chordHTML).join('&nbsp; ')}</b></p>`;
   const barreBadge=n=>`<span class="badge ${n?'warn':'good'}">${ic(n?'alert':'check')}${t('barreN',n)}</span>`;
   const delta=shift<0?`<span class="delta dn">${ic('arrowDown')}${t('keyDown',-shift)}</span>`:shift>0?`<span class="delta upc">${ic('arrowUp')}${t('keyUp',shift)}</span>`:`<span class="delta same">${t('keySame')}</span>`;
 
@@ -646,6 +783,7 @@ function render(){
 
   <section class="card">
     <div class="sec-h"><h2>${ic('sheet')}${esc(title)}</h2><button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button></div>
+    <div id="rh-slot"></div>
     <pre class="sheet" id="sheet">${sheetHTML}</pre>
     ${realLine}
   </section>
@@ -653,7 +791,7 @@ function render(){
   <section class="card">
     <div class="sec-h"><h2>${ic('grid')}${t('fingering')}</h2><span class="count">${cur.unique.length}</span></div>
     <div class="diagrams">${cur.unique.map(u=>{const [tx,c]=level(u.shape.d);
-      return `<figure class="cd"><span class="nm">${esc(pretty(u.name))}</span>${diagram(u.shape)}<span class="lv ${c}">${tx}</span>${u.approx!==undefined?`<span class="approx">${esc(t('approx',pretty(pcName(u.pc,false)+u.approx)))}</span>`:''}</figure>`;}).join('')}</div>
+      return `<figure class="cd"><span class="nm">${chordHTML(u.name)}</span>${diagram(u.shape)}<span class="lv ${c}">${tx}</span>${bassHint(u)}${u.approx!==undefined?`<span class="approx">${esc(t('approx',pretty(pcName(u.pc,false)+u.approx)))}</span>`:''}</figure>`;}).join('')}</div>
   </section>
 
   <section class="card">
@@ -668,6 +806,7 @@ function render(){
   </section>`;
 
 
+  document.getElementById('rh-slot').replaceWith($rh); // 리듬 가이드는 다시 그려도 상태(재생 중 등)가 유지되게 같은 요소를 옮겨 붙임
   const set=(s,p=null)=>{shift=Math.max(MIN,Math.min(MAX,s));preset=p;capoSel=null;stopAudio();render();};
   document.getElementById('down').onclick=()=>set(shift-1);
   document.getElementById('up').onclick=()=>set(shift+1);
@@ -700,13 +839,13 @@ const fresh=()=>{shift=0;preset=null;capoSel=null;stopAudio();};
 $src.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{fresh();render();},150);});
 $simp.addEventListener('change',()=>{capoSel=null;render();});
 // 예시 2(가사 포함)는 화면 언어에 맞춰 영어/한국어 가사를 보여 줌
-const sampleText=k=>k===3?SAMPLES[LANG==='en'?3:4]:SAMPLES[k];
+const sampleText=k=>k===3?SAMPLES[LANG==='en'?3:5]:SAMPLES[k===5?4:k];
 document.querySelectorAll('[data-sample]').forEach(b=>b.addEventListener('click',()=>{$src.value=sampleText(+b.dataset.sample);fresh();if(b.dataset.sample==='0'){shift=-5;preset=-5;}render();}));
 document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
   if(LANG===b.dataset.lang) return; LANG=b.dataset.lang;
   try{ localStorage.setItem('easychord-lang',LANG); }catch(e){}
-  if($src.value===SAMPLES[3]||$src.value===SAMPLES[4]) $src.value=sampleText(3);
-  applyStatic(); render();
+  if($src.value===SAMPLES[3]||$src.value===SAMPLES[5]) $src.value=sampleText(3);
+  applyStatic(); buildRh(); render();
 }));
 applyStatic();
 $src.value=sampleText(3); render(); // 처음엔 악보 사이트 형식(카포·섹션·가사 포함) 예시를 보여 줌
