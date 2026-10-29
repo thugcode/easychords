@@ -248,6 +248,31 @@ figure.cd .approx{font-size:.68rem;color:var(--muted);line-height:1.3}
 .help-grid .i{width:22px;height:22px;color:var(--accent);grid-row:span 2;margin-top:2px}
 .help-grid h3{font-size:.92rem;margin:0}
 .help-grid p{margin:0;color:var(--muted);font-size:.86rem}
+/* 저장한 악보(기록) */
+.hist-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer}
+.hist-btn:hover{border-color:var(--accent);color:var(--accent)}
+.hist-btn b{background:var(--accent);color:var(--accent-ink);border-radius:999px;font:700 .7rem var(--f-mono);padding:1px 6px}
+.sec-act{display:flex;gap:6px;margin-left:auto}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn.ghost.done{background:var(--good-soft);color:var(--good)}
+.hl{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.hi{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.hi.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.hi-title{width:100%;border:0;background:none;font:700 .98rem var(--f-body);color:var(--ink);padding:2px 0;border-bottom:1px dashed transparent}
+.hi-title:hover,.hi-title:focus{border-bottom-color:var(--line);outline:none}
+.hi-meta{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
+.hi-meta b{color:var(--ink);font-family:var(--f-mono);font-weight:600}
+.hi-ch{font:500 .8rem var(--f-mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hi-act{display:flex;gap:6px;align-items:center}
+.hi-act .btn{padding:6px 12px}
+.hi-act .icon-btn{margin-left:auto;width:32px;height:32px}
+.hist-empty{color:var(--muted);text-align:center;padding:28px 8px;display:grid;gap:8px;justify-items:center;font-size:.9rem}
+.hist-empty .i{width:28px;height:28px}
+.hist-foot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:.78rem;color:var(--muted)}
+.hist-foot button{border:1px solid var(--line);background:none;border-radius:8px;padding:5px 10px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer}
+.hist-foot button.arm{border-color:var(--warn);color:var(--warn)}
+.toast{width:max-content;max-width:calc(100vw - 32px);position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:.86rem;font-weight:700;z-index:60;display:flex;gap:6px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+@media (max-width:520px){.hist-btn span{display:none}.sec-act .btn span{display:none}}
 /* 도구 아래 안내·자주 묻는 질문 */
 .info{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,28px)}
 .info h2{font-size:1.15rem;margin:0 0 8px;text-wrap:balance}
@@ -282,6 +307,7 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;dis
   <header class="top">
     <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2c6.6 0 12 2.6 12 7.6 0 6.7-6.4 16.4-9.6 20.3a3 3 0 0 1-4.8 0C10.4 26 4 16.3 4 9.6 4 4.6 9.4 2 16 2Z" fill="var(--accent)"/><path d="M11 10v9M16 10v9M21 10v9M9 14h14" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"/></svg><b data-i18n-html="brand">쉬운<span>코드</span></b></div>
     <p class="tag" data-i18n="tagline">키는 내 목소리에, 코드는 쉽게</p>
+    <button class="hist-btn" id="hist-btn" type="button" aria-controls="hist" aria-expanded="false" data-i18n-title="histOpen" data-i18n-aria="histOpen" aria-label="저장한 악보 보기"><i data-ic="clock"></i><span data-i18n="histShort">기록</span><b id="hist-n" hidden></b></button>
     <div class="lang" role="group" data-i18n-aria="langAria" aria-label="언어 선택"><i data-ic="globe"></i><button type="button" data-lang="ko" aria-pressed="true">KO</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
   </header>
 
@@ -314,16 +340,21 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;dis
     <p class="info-lead" data-i18n="infoP">노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.</p>
     <div class="info-grid"><div><i data-ic="mic"></i><h3 data-i18n="i1h">키 바꾸기</h3><p data-i18n="i1p">악보를 붙여 넣고 ▲▼로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고 코드만 바꾸며, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.</p></div><div><i data-ic="capo"></i><h3 data-i18n="i2h">카포 추천</h3><p data-i18n="i2p">같은 높이로 소리 나는 카포 0~7번 조합을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 카포별 난이도 막대를 보고 직접 고를 수도 있어요.</p></div><div><i data-ic="book"></i><h3 data-i18n="i3h">운지와 코드 사전</h3><p data-i18n="i3p">곡에 나온 코드는 운지 그림으로 모아 보여 줘요. Bmadd9, C♯m7♭5처럼 낯선 코드는 코드 사전에서 구성음, 잡기 쉬운 운지, 하이코드까지 확인할 수 있어요.</p></div><div><i data-ic="metro"></i><h3 data-i18n="i4h">리듬 가이드</h3><p data-i18n="i4p">칼립소, 8비트 고고, 16비트 슬로우 고고, 셔플 패턴을 화살표로 보여 주고, 메트로놈처럼 박자에 맞춰 칸마다 불이 들어와요.</p></div></div>
     <h2 data-i18n="faqH">자주 묻는 질문</h2>
-    <div class="faq"><details><summary data-i18n="q1">어느 사이트의 악보를 붙여 넣어야 하나요?</summary><p data-i18n="a1">코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요.</p></details><details><summary data-i18n="q2">여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?</summary><p data-i18n="a2">보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. &quot;여 → 남&quot; 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요.</p></details><details><summary data-i18n="q3">카포를 끼우면 소리가 달라지나요?</summary><p data-i18n="a3">음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요.</p></details><details><summary data-i18n="q4">&quot;쉬운 코드로&quot;를 켜면 무엇이 바뀌나요?</summary><p data-i18n="a4">Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요.</p></details><details><summary data-i18n="q5">원곡 키가 다르게 나와요.</summary><p data-i18n="a5">원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.</p></details><details><summary data-i18n="q6">붙여 넣은 악보가 저장되나요?</summary><p data-i18n="a6">아니요. 악보와 가사는 사용 중인 브라우저 안에서만 처리되고 어디에도 보내거나 저장하지 않아요. 다음 방문을 위해 기억하는 것은 언어 설정뿐이에요.</p></details><details><summary data-i18n="q7">무료인가요?</summary><p data-i18n="a7">네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.</p></details></div>
+    <div class="faq"><details><summary data-i18n="q1">어느 사이트의 악보를 붙여 넣어야 하나요?</summary><p data-i18n="a1">코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요.</p></details><details><summary data-i18n="q2">여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?</summary><p data-i18n="a2">보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. &quot;여 → 남&quot; 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요.</p></details><details><summary data-i18n="q3">카포를 끼우면 소리가 달라지나요?</summary><p data-i18n="a3">음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요.</p></details><details><summary data-i18n="q4">&quot;쉬운 코드로&quot;를 켜면 무엇이 바뀌나요?</summary><p data-i18n="a4">Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요.</p></details><details><summary data-i18n="q5">원곡 키가 다르게 나와요.</summary><p data-i18n="a5">원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.</p></details><details><summary data-i18n="q6">붙여 넣은 악보가 저장되나요?</summary><p data-i18n="a6">서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요.</p></details><details><summary data-i18n="q7">무료인가요?</summary><p data-i18n="a7">네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.</p></details></div>
     <p class="info-more"><a href="guide/" data-i18n="infoMore">기타 가이드 더 보기 →</a></p>
   </section>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "어느 사이트의 악보를 붙여 넣어야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요."}}, {"@type": "Question", "name": "여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. \"여 → 남\" 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요."}}, {"@type": "Question", "name": "카포를 끼우면 소리가 달라지나요?", "acceptedAnswer": {"@type": "Answer", "text": "음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요."}}, {"@type": "Question", "name": "\"쉬운 코드로\"를 켜면 무엇이 바뀌나요?", "acceptedAnswer": {"@type": "Answer", "text": "Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요."}}, {"@type": "Question", "name": "원곡 키가 다르게 나와요.", "acceptedAnswer": {"@type": "Answer", "text": "원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요."}}, {"@type": "Question", "name": "붙여 넣은 악보가 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "아니요. 악보와 가사는 사용 중인 브라우저 안에서만 처리되고 어디에도 보내거나 저장하지 않아요. 다음 방문을 위해 기억하는 것은 언어 설정뿐이에요."}}, {"@type": "Question", "name": "무료인가요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요."}}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "어느 사이트의 악보를 붙여 넣어야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요."}}, {"@type": "Question", "name": "여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. \"여 → 남\" 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요."}}, {"@type": "Question", "name": "카포를 끼우면 소리가 달라지나요?", "acceptedAnswer": {"@type": "Answer", "text": "음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요."}}, {"@type": "Question", "name": "\"쉬운 코드로\"를 켜면 무엇이 바뀌나요?", "acceptedAnswer": {"@type": "Answer", "text": "Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요."}}, {"@type": "Question", "name": "원곡 키가 다르게 나와요.", "acceptedAnswer": {"@type": "Answer", "text": "원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요."}}, {"@type": "Question", "name": "붙여 넣은 악보가 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요."}}, {"@type": "Question", "name": "무료인가요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요."}}]}</script>
   <button class="dict-fab" id="dict-fab" type="button" aria-controls="dict" aria-expanded="false" data-i18n-aria="dictOpen" aria-label="코드 사전 열기"><i data-ic="search"></i><span data-i18n="dictFab">코드 사전</span></button>
   <div class="dict-scrim" id="dict-scrim" hidden></div>
   <aside class="dict" id="dict" role="dialog" aria-labelledby="dict-h" inert>
     <div class="dict-h"><h2 id="dict-h"><i data-ic="book"></i><span data-i18n="dictTitle">코드 사전</span></h2><button class="icon-btn" type="button" id="dict-x" data-i18n-aria="close" data-i18n-title="close" aria-label="닫기"><i data-ic="x"></i></button></div>
     <label class="dict-search"><i data-ic="search"></i><input id="dict-q" type="search" enterkeyhint="search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-i18n-ph="dictPh" data-i18n-aria="dictTitle"></label>
     <div id="dict-out" aria-live="polite"></div>
+  </aside>
+<div class="dict-scrim" id="hist-scrim" hidden></div>
+  <aside class="dict" id="hist" role="dialog" aria-labelledby="hist-h" inert>
+    <div class="dict-h"><h2 id="hist-h"><i data-ic="clock"></i><span data-i18n="histTitle">저장한 악보</span></h2><button class="icon-btn" type="button" id="hist-x" data-i18n-aria="close" data-i18n-title="close" aria-label="닫기"><i data-ic="x"></i></button></div>
+    <div id="hist-out"></div>
   </aside>
   <footer><nav class="foot-nav"><a href="guide/" data-i18n="navGuide">기타 가이드</a><a href="about.html" data-i18n="navAbout">소개·문의</a><a href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a></nav><div data-i18n="footer"></div></footer>
 </div>
@@ -351,6 +382,9 @@ const IC={
  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
  reset:'<path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ bookmark:'<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+ trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
  metro:'<path d="M9 3h6l4 18H5z"/><path d="M7.5 15h9M12 15l5-9"/>',
  play:'<path d="M7 4v16l13-8z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
@@ -386,6 +420,10 @@ const I18N={
   compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
   samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너', s5:'마디·분수 코드',
   rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
+  histShort:'기록', histOpen:'저장한 악보 보기', histTitle:'저장한 악보', save:'저장', saved:'저장됨', savedToast:'저장했어요 · 위쪽 ‘기록’에서 다시 볼 수 있어요',
+  histEmpty:'아직 저장한 악보가 없어요.<br>변환한 악보에서 ‘저장’을 누르면 여기에 모여요.', histOpenBtn:'열기', histDel:'삭제', histTitleAria:'제목 (눌러서 바꾸기)',
+  histLocal:'이 브라우저에만 저장돼요', histClear:'전체 삭제', histClearArm:'한 번 더 누르면 모두 삭제', histNoStore:'이 브라우저에서는 저장할 수 없어요 (시크릿 모드 등)',
+  histUntitled:'제목 없는 악보', histCapo:c=>c?`카포 ${c}`:'카포 없이', histSimp:'쉬운 코드',
   dictFab:'코드 사전', dictTitle:'코드 사전', dictOpen:'코드 사전 열기', close:'닫기', dictPh:'예: Bmadd9, c#m7b5', dictHeard:'이렇게 읽었어요',
   dictEx:'자주 찾는 코드', dictTipSheet:'악보·운지의 코드 이름을 눌러도 여기서 열려요', dictNone:x=>`'${x}'는 코드로 읽지 못했어요`, dictSimilar:'혹시 이 코드인가요?',
   dictOpt:'점선 음은 빼고 쳐도 돼요', dictOptOne:'빼고 쳐도 되는 음', dictNoShape:'초보자용 운지를 찾지 못했어요', posOpen:'개방', posFret:n=>`${n}프렛`, dictBass:'베이스', dictBarre:'하이코드', dictBarreTip:'모양은 그대로 두고 위치만 옮기면 다른 키 코드가 돼요', rootStr:(st,f)=>`${st}번 줄 근음 · ${f}프렛`, dictView:'코드 사전에서 보기',
@@ -413,7 +451,7 @@ const I18N={
   q5:"원곡 키가 다르게 나와요.",
   a5:"원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.",
   q6:"붙여 넣은 악보가 저장되나요?",
-  a6:"아니요. 악보와 가사는 사용 중인 브라우저 안에서만 처리되고 어디에도 보내거나 저장하지 않아요. 다음 방문을 위해 기억하는 것은 언어 설정뿐이에요.",
+  a6:"서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요.",
   q7:"무료인가요?",
   a7:"네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.",
   infoMore:"기타 가이드 더 보기 →",
@@ -456,6 +494,10 @@ const I18N={
   compare:'Show original image', imgAlt:'Uploaded chord sheet',
   samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor', s5:'Bars & slash chords',
   rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
+  histShort:'Saved', histOpen:'Show saved sheets', histTitle:'Saved sheets', save:'Save', saved:'Saved', savedToast:'Saved · find it under “Saved” at the top',
+  histEmpty:'No saved sheets yet.<br>Press “Save” on a converted sheet to keep it here.', histOpenBtn:'Open', histDel:'Delete', histTitleAria:'Title (tap to rename)',
+  histLocal:'Stored only in this browser', histClear:'Delete all', histClearArm:'Press again to delete all', histNoStore:'This browser can’t save (private mode?)',
+  histUntitled:'Untitled sheet', histCapo:c=>c?`Capo ${c}`:'No capo', histSimp:'Simplified',
   dictFab:'Chords', dictTitle:'Chord dictionary', dictOpen:'Open chord dictionary', close:'Close', dictPh:'e.g. Bmadd9, c#m7b5', dictHeard:'Read as',
   dictEx:'Popular lookups', dictTipSheet:'Tap any chord name on the sheet to open it here', dictNone:x=>`Couldn’t read '${x}' as a chord`, dictSimilar:'Did you mean',
   dictOpt:'Dashed notes can be left out', dictOptOne:'Can be left out', dictNoShape:'No beginner-friendly shape found', posOpen:'Open', posFret:n=>`Fret ${n}`, dictBass:'bass', dictBarre:'Barre chords', dictBarreTip:'Keep the shape, slide it, and you get the same chord in another key', rootStr:(st,f)=>`Root on ${st}th · fret ${f}`, dictView:'Look up in chord dictionary',
@@ -483,7 +525,7 @@ const I18N={
   q5:"The original key looks wrong.",
   a5:"The original key is estimated from the progression, so it can occasionally differ. Only the label changes; the converted chords and capo suggestion are unaffected.",
   q6:"Is my sheet stored?",
-  a6:"No. Sheets and lyrics are processed only in your browser and never sent or saved. The only thing remembered is your language setting.",
+  a6:"Nothing is sent to a server. Sheets and lyrics are processed only in your browser. Sheets you “Save” are kept in this browser so you can reopen them, and you can delete them anytime under “Saved”.",
   q7:"Is it free?",
   a7:"Yes, every feature is free with no sign-up. The site is supported by ads.",
   infoMore:"More guitar guides (Korean) →",
@@ -882,6 +924,7 @@ function render(){
     }); return out; };
   const shown=P.lines.filter(l=>!l.meta); while(shown.length&&!shown[0].map(x=>x.t).join('').trim()) shown.shift();
   const sheetHTML=capoLine+shown.map(l=>lineOut(l,true)).join('\n');
+  view={orig:origLabel,key:sounding.label,capo:cur.c,preview:uniq(cur.items.map(i=>i.name)).slice(0,8).join('  ')};
   const sheetTXT=(cur.c===0?'':`Capo ${cur.c}\n`)+shown.map(l=>lineOut(l,false)).join('\n');
   const realLine=cur.c===0?'':`<p class="real">${ic('sound')}${t('realSound')} <b>${uniq(sounding.items.map(i=>i.name)).map(chordHTML).join('&nbsp; ')}</b></p>`;
   const barreBadge=n=>`<span class="badge ${n?'warn':'good'}">${ic(n?'alert':'check')}${t('barreN',n)}</span>`;
@@ -922,7 +965,7 @@ function render(){
   </div>
 
   <section class="card">
-    <div class="sec-h"><h2>${ic('sheet')}${esc(title)}</h2><button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button></div>
+    <div class="sec-h"><h2>${ic('sheet')}${esc(title)}</h2><div class="sec-act">${saveBtn()}<button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button></div></div>
     <div id="rh-slot"></div>
     <pre class="sheet" id="sheet">${sheetHTML}</pre>
     ${realLine}
@@ -957,6 +1000,7 @@ function render(){
     if(audio){stopAudio();render();return;}
     if(playProgression(sounding.items,()=>render())) render();
   };
+  document.getElementById('save').onclick=saveCurrent;
   document.getElementById('copy').onclick=async e=>{
     const btn=e.currentTarget;
     const lb=btn.querySelector('span');
@@ -1180,6 +1224,7 @@ function dictRender(){
   $dout.querySelectorAll('[data-dq]').forEach(b=>b.onclick=()=>{ $dq.value=b.dataset.dq; dictRender(); });
 }
 function openDict(q){
+  if(typeof closeHist==='function') closeHist();
   if(typeof q==='string') $dq.value=q;
   dictRender();
   $dict.classList.add('open'); $dict.removeAttribute('inert'); $dscrim.hidden=false;
@@ -1198,6 +1243,77 @@ document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDict(); });
 $dq.addEventListener('input',dictRender);
 // 악보·운지 카드의 코드 이름을 누르면 사전에서 바로 보기
 $out.addEventListener('click',e=>{ const c=e.target.closest('.sheet .ch, .sheet .cp b, figure.cd .nm'); if(c&&c.textContent.trim()) openDict(c.textContent.trim()); });
+
+// ── 저장한 악보(기록) ──
+// 서버 없이 이 브라우저의 localStorage에만 보관. 같은 원본 악보를 다시 저장하면 새로 쌓지 않고 갱신해서 맨 위로 올림
+const HKEY='easychord-history', HMAX=50;
+let view=null;
+const hLoad=()=>{ try{ const a=JSON.parse(localStorage.getItem(HKEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } };
+const hSave=a=>{ try{ localStorage.setItem(HKEY,JSON.stringify(a.slice(0,HMAX))); return true; }catch(e){ return false; } };
+const hFind=src=>hLoad().find(e=>e.src===src);
+const isSaved=()=>{ const e=hFind($src.value); return !!(e&&view&&e.shift===shift&&e.capo===view.capo&&e.simp===$simp.checked); };
+const saveBtn=()=>{ const ok=isSaved(); return `<button class="btn ghost${ok?' done':''}" type="button" id="save" aria-pressed="${ok}">${ic(ok?'check':'bookmark')}<span>${ok?t('saved'):t('save')}</span></button>`; };
+function autoTitle(src){
+  // 가사처럼 보이는 첫 줄(코드·섹션·안내 줄이 아닌 줄), 없으면 앞쪽 코드
+  const P=parse(src);
+  for(const L of P.lines){ if(L.meta||L.some(x=>x.ci>=0)) continue; const line=L.map(x=>x.t).join('').trim();
+    if(line&&!/^[\[(].*[\])]$/.test(line)&&!/^[|\-\s]+$/.test(line)) return line.length>28?line.slice(0,27)+'…':line; }
+  return P.chords.length?pretty(view.preview.split('  ').slice(0,4).join(' '))+' …':t('histUntitled');
+}
+let toastT;
+function toast(msg){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; el.setAttribute('role','status'); document.body.appendChild(el); }
+  el.innerHTML=msg; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>{el.hidden=true;},2600); }
+function saveCurrent(){
+  if(!view) return;
+  const a=hLoad(), src=$src.value, old=a.find(e=>e.src===src);
+  const ent={id:old?old.id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),title:old?old.title:autoTitle(src),src,
+    shift,capo:view.capo,simp:$simp.checked,orig:view.orig,key:view.key,preview:view.preview,at:Date.now()};
+  if(!hSave([ent,...a.filter(e=>e.src!==src)])){ toast(esc(t('histNoStore'))); return; }
+  toast(ic('check')+esc(t('savedToast'))); hCount(); render();
+}
+function hCount(){ const n=hLoad().length, b=document.getElementById('hist-n'); b.hidden=!n; b.textContent=n; }
+const $hist=document.getElementById('hist'), $hbtn=document.getElementById('hist-btn'), $hscrim=document.getElementById('hist-scrim'), $hout=document.getElementById('hist-out');
+const fmtDate=ms=>{ try{ return new Date(ms).toLocaleDateString(LANG==='en'?'en-US':'ko-KR',{month:'short',day:'numeric'}); }catch(e){ return ''; } };
+function histRender(){
+  const a=hLoad();
+  if(!a.length){ $hout.innerHTML=`<div class="hist-empty">${ic('bookmark')}<div>${t('histEmpty')}</div></div><div class="hist-foot"><span>${ic('info')} ${t('histLocal')}</span></div>`; return; }
+  $hout.innerHTML=`<ul class="hl">${a.map(e=>`<li class="hi${e.src===$src.value?' cur':''}">
+      <input class="hi-title" data-id="${e.id}" value="${esc(e.title)}" maxlength="60" aria-label="${t('histTitleAria')}">
+      <span class="hi-meta"><span>${esc(pretty(e.orig))} → <b>${esc(pretty(e.key))}</b></span><span>${t('histCapo',e.capo)}</span>${e.simp?`<span>${t('histSimp')}</span>`:''}<span>${fmtDate(e.at)}</span></span>
+      <span class="hi-ch">${esc(pretty(e.preview||''))}</span>
+      <span class="hi-act"><button class="btn" type="button" data-open="${e.id}">${ic('sheet')}<span>${t('histOpenBtn')}</span></button><button class="icon-btn" type="button" data-del="${e.id}" aria-label="${t('histDel')}" title="${t('histDel')}">${ic('trash')}</button></span>
+    </li>`).join('')}</ul>
+    <div class="hist-foot"><span>${ic('info')} ${t('histLocal')}</span><button type="button" id="hist-clear">${t('histClear')}</button></div>`;
+  $hout.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
+    const e=hLoad().find(x=>x.id===b.dataset.open); if(!e) return;
+    $src.value=e.src; fresh(); shift=e.shift; capoSel=e.capo; $simp.checked=e.simp; note(''); render(); closeHist();
+    if(innerWidth<900) $out.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  $hout.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ hSave(hLoad().filter(x=>x.id!==b.dataset.del)); hCount(); histRender(); render(); });
+  $hout.querySelectorAll('.hi-title').forEach(inp=>{
+    const commit=()=>{ const a=hLoad(), e=a.find(x=>x.id===inp.dataset.id); const v=inp.value.trim()||t('histUntitled'); if(e&&e.title!==v){ e.title=v; hSave(a); } inp.value=v; };
+    inp.onchange=commit; inp.onkeydown=ev=>{ if(ev.key==='Enter') inp.blur(); };
+  });
+  const clr=document.getElementById('hist-clear');
+  clr.onclick=()=>{ if(!clr.classList.contains('arm')){ clr.classList.add('arm'); clr.textContent=t('histClearArm'); setTimeout(()=>{ if(clr.isConnected){ clr.classList.remove('arm'); clr.textContent=t('histClear'); } },3000); return; }
+    hSave([]); hCount(); histRender(); render(); };
+}
+function openHist(){
+  if($dict.classList.contains('open')) closeDict();
+  histRender(); $hist.classList.add('open'); $hist.removeAttribute('inert'); $hscrim.hidden=false;
+  document.body.classList.add('dict-on'); $hbtn.setAttribute('aria-expanded','true');
+  setTimeout(()=>document.getElementById('hist-x').focus({preventScroll:true}),60);
+}
+function closeHist(){
+  if(!$hist.classList.contains('open')) return;
+  $hist.classList.remove('open'); $hist.setAttribute('inert',''); $hscrim.hidden=true;
+  document.body.classList.remove('dict-on'); $hbtn.setAttribute('aria-expanded','false');
+}
+$hbtn.addEventListener('click',()=>$hist.classList.contains('open')?closeHist():openHist());
+document.getElementById('hist-x').addEventListener('click',()=>{ closeHist(); $hbtn.focus({preventScroll:true}); });
+$hscrim.addEventListener('click',closeHist);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeHist(); });
+hCount();
 
 const $note=document.getElementById('note');
 const note=(msg)=>{ $note.hidden=!msg; $note.textContent=msg||''; };
@@ -1218,7 +1334,7 @@ document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',(
   if(LANG===b.dataset.lang) return; LANG=b.dataset.lang;
   try{ localStorage.setItem('easychord-lang',LANG); }catch(e){}
   if($src.value===SAMPLES[3]||$src.value===SAMPLES[5]) $src.value=sampleText(3);
-  applyStatic(); buildRh(); render(); dictRender();
+  applyStatic(); buildRh(); render(); dictRender(); if($hist.classList.contains('open')) histRender();
 }));
 applyStatic();
 $src.value=sampleText(3); render(); // 처음엔 악보 사이트 형식(카포·섹션·가사 포함) 예시를 보여 줌
