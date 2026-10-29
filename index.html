@@ -3,155 +3,205 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <title>쉬운코드</title>
 <meta name="description" content="기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-/* Layout: 앱처럼 카드 단위. 왼쪽 입력 카드, 오른쪽 결과(키 → 추천 → 악보 → 운지 → 카포별). 좁은 화면은 한 줄 */
+/* 쉬운코드 — 따뜻한 종이 톤 디자인. 왼쪽: 1 악보 → 2 키 → 3 카포, 오른쪽: 악보 */
 :root{
-  --bg:#f3f4f6; --surface:#ffffff; --ink:#111318; --muted:#6b7280; --line:#e4e6eb;
-  --accent:#2f5bea; --accent-soft:#e8eeff; --accent-ink:#ffffff;
-  --good:#16865a; --good-soft:#e3f5ec; --warn:#d1461f; --warn-soft:#fde9e2;
-  --bass:#0b8577; --hit:#dc2f2a;
-  --neck:#1b1e26; --neck-ink:#e9ebf0; --fret:#9aa1ae;
-  --f-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --r:14px;
+  --bg:#F5F3EE; --surface:#FFFFFF; --sunk:#FAF8F4;
+  --ink:#1B1A17; --ink2:#45423B; --muted:#78746A; --line:#E5E1D7; --line2:#D6D1C4;
+  --accent:#0E6B63; --accent-strong:#0A524C; --accent-soft:#E2F0EC; --accent-ink:#FFFFFF;
+  --hard:#B9440F; --hard-soft:#FBEADF; --easy:#2C7A3A; --easy-soft:#E5F2E3; --mid:#9A6A00; --mid-soft:#FBF1D9;
+  --good:var(--easy); --good-soft:var(--easy-soft); --warn:var(--hard); --warn-soft:var(--hard-soft);
+  --bass:#5146C9; --hit:#D12F1E; --top-bg:rgba(245,243,238,.9); --shadow:0 10px 30px rgba(40,32,16,.14);
+  --f-body:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:16px; --sheet-scale:1; color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
-  --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
-  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14; --bass:#4fd1c0; --hit:#ff5f57;
-  --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141311; --surface:#1D1C19; --sunk:#181715; --ink:#EEEBE4; --ink2:#C8C3B8; --muted:#9A9588; --line:#2C2A25; --line2:#3B3830;
+  --accent:#4DB6A9; --accent-strong:#86D6CA; --accent-soft:#16302C; --accent-ink:#0E1513;
+  --hard:#F08B50; --hard-soft:#3A2416; --easy:#6CC38A; --easy-soft:#183022; --mid:#E3B84E; --mid-soft:#352A10;
+  --bass:#A9A3FF; --hit:#FF6B5C; --top-bg:rgba(20,19,17,.88); --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f1115; --surface:#171a21; --ink:#eef0f4; --muted:#9aa1ad; --line:#262a33;
-  --accent:#7b97ff; --accent-soft:#1d2540; --accent-ink:#0f1115;
-  --good:#3fc488; --good-soft:#12291f; --warn:#ff7a52; --warn-soft:#351c14; --bass:#4fd1c0; --hit:#ff5f57;
-  --neck:#0a0c10; --neck-ink:#e6e8ee; --fret:#5b6070; color-scheme:dark}
+  --bg:#141311; --surface:#1D1C19; --sunk:#181715; --ink:#EEEBE4; --ink2:#C8C3B8; --muted:#9A9588; --line:#2C2A25; --line2:#3B3830;
+  --accent:#4DB6A9; --accent-strong:#86D6CA; --accent-soft:#16302C; --accent-ink:#0E1513;
+  --hard:#F08B50; --hard-soft:#3A2416; --easy:#6CC38A; --easy-soft:#183022; --mid:#E3B84E; --mid-soft:#352A10;
+  --bass:#A9A3FF; --hit:#FF6B5C; --top-bg:rgba(20,19,17,.88); --shadow:0 10px 30px rgba(0,0,0,.45); color-scheme:dark}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0}
 img{max-width:100%}
 [hidden]{display:none!important}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.page{max-width:1100px;margin:0 auto;padding-block:20px 96px}
-.i{width:1.15em;height:1.15em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.2em;flex:none}
-button{font:inherit;color:inherit}
-button:focus-visible,textarea:focus-visible,label:focus-within,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.4}
+h1,h2,h3,p{margin:0}
+a{color:var(--accent)}
+.i{width:1.1em;height:1.1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.18em;flex:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mt{margin-top:12px}
 
-/* 상단 */
-.top{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;margin-bottom:18px}
-.logo{display:flex;align-items:center;gap:8px;font-size:1.35rem;font-weight:700;letter-spacing:-.4px}
-.logo svg{width:30px;height:30px}
-.logo span{color:var(--accent)}
-.tag{margin:0;color:var(--muted);font-size:.92rem;flex:1 1 200px}
-.lang{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px 3px 3px 10px;color:var(--muted)}
-.lang button{border:0;background:none;padding:3px 10px;border-radius:999px;font-size:.8rem;font-weight:700;cursor:pointer;color:var(--muted)}
+/* 머리글 */
+.top{position:sticky;top:0;z-index:30;background:var(--top-bg);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top-in{max-width:1240px;margin:0 auto;padding:12px 28px;display:flex;align-items:center;gap:10px 16px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-size:16px;font-weight:700}
+.tagline{color:var(--muted);font-size:14px;margin-left:4px}
+.top-r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.ghost{border:1px solid var(--line2);background:var(--surface);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.ghost:hover{border-color:var(--ink2)}
+.ghost b{background:var(--accent);color:var(--accent-ink);border-radius:999px;font:700 11px var(--f-mono);padding:1px 6px}
+.lang{display:flex;border:1px solid var(--line2);border-radius:999px;overflow:hidden;background:var(--surface)}
+.lang button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:600;color:var(--muted)}
 .lang button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 
-.grid{display:grid;gap:16px}
-@media (min-width:900px){.grid{grid-template-columns:350px minmax(0,1fr);align-items:start}.input{position:sticky;top:max(16px,env(safe-area-inset-top,0px))}}
-.input,.results{min-width:0}
-.results{display:grid;gap:16px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+/* 배치 */
+.wrap{max-width:1240px;margin:0 auto;padding:28px 28px 40px}
+.grid{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px;align-items:start}
+.side{display:flex;flex-direction:column;gap:20px;position:sticky;top:84px;max-height:calc(100vh - 100px);overflow-y:auto;scrollbar-width:thin;padding-bottom:4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+.card-h{display:flex;align-items:center;gap:10px;padding:18px 20px 0}
+.step-n{width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;display:grid;place-items:center;flex:none}
+.card-t{font-size:17px;font-weight:700;letter-spacing:-.01em}
+.card-b{padding:14px 20px 20px}
+.hint{font-size:14px;color:var(--muted);line-height:1.55}
+.hint .hard{color:var(--hard);font-weight:600}
 
-/* 입력 카드 */
-.card-h,.sec-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.card-h label{font-weight:700}
-.sec-h h2{display:flex;align-items:center;gap:8px;font-size:1rem;margin:0}
-.sec-h > :last-child{margin-left:auto}
-.pill{font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--good-soft);color:var(--good);margin-left:auto;display:inline-flex;gap:4px;align-items:center}
-textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f-mono);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
-.input.over{outline:2px dashed var(--accent);outline-offset:3px}
-.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.tool{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.9rem;cursor:pointer}
-.switch{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:.9rem;font-weight:600;user-select:none}
-.switch input{position:absolute;opacity:0;width:1px;height:1px}
-.switch .track{width:30px;height:18px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s}
-.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:var(--surface);transition:transform .15s}
-.switch input:checked + .track{background:var(--accent)}
-.switch input:checked + .track::after{transform:translateX(12px)}
-.src-tip{margin:10px 0 0;font-size:.84rem;color:var(--muted)}
-.src-tip > .i{color:var(--muted)}
-.src-tip a{color:var(--accent);font-weight:700;text-decoration:none;display:inline-flex;gap:3px;align-items:center}
+/* 1 악보 */
+textarea{display:block;width:100%;height:190px;resize:vertical;border:1px solid var(--line2);border-radius:10px;background:var(--sunk);padding:12px 14px;font:500 14px/1.6 var(--f-mono);color:var(--ink);outline:none;margin-top:10px}
+textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid var(--line2);background:var(--surface);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:600;display:inline-flex;gap:6px;align-items:center}
+.btn:hover:not(:disabled){border-color:var(--ink2)}
+.btn .i{width:16px;height:16px}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.btn.primary:hover{opacity:.88}
+.btn.saved{border-color:var(--easy);color:var(--easy);background:var(--easy-soft)}
+.chip-btn,.chip{border:1px solid var(--line2);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600;display:inline-flex;gap:5px;align-items:center}
+.chip-btn:hover:not(:disabled),.chip:hover{border-color:var(--ink2)}
+.chip-btn[aria-pressed="true"],.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong)}
+.chip-btn b{font-family:var(--f-mono)}
+.src-tip{margin-top:10px;font-size:13px;color:var(--muted)}
+.src-tip a{font-weight:700;text-decoration:none;display:inline-flex;gap:3px;align-items:center}
 .src-tip a:hover{text-decoration:underline}
-.src-tip a .i{width:.9em;height:.9em}
-.src-tip .muted{color:var(--muted)}
-.ocr-status{font-size:.84rem;margin:10px 0 0;color:var(--muted);display:flex;gap:6px;align-items:flex-start}
-.ocr-status.ok{color:var(--good)} .ocr-status.err{color:var(--warn)}
-.input details summary{cursor:pointer;font-size:.84rem;color:var(--accent);margin-top:6px}
-.input details img{margin-top:8px;border-radius:8px;border:1px solid var(--line);max-width:100%}
-.samples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
-.samples .lbl{display:inline-flex;gap:5px;align-items:center;font-size:.8rem;color:var(--muted);margin-right:2px}
-.chip{font-size:.82rem;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);cursor:pointer;display:inline-flex;gap:5px;align-items:center}
-.chip:hover{border-color:var(--accent)}
-.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.src-tip .i{width:.95em;height:.95em}
+.note{margin-top:10px;font-size:13px;color:var(--hard)}
+.samples{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.samples .lbl{font-size:13px;color:var(--muted);font-weight:600;margin-right:2px}
 
-/* 키 카드 */
-.keyrow{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
-.keybig{display:flex;align-items:center;gap:12px}
-.keybig .k{font:600 2.6rem/1 var(--f-mono);letter-spacing:-1px}
-.keybig .k .acc{font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",var(--f-body);font-size:.7em;vertical-align:.35em;margin-left:1px}
-.kmeta{display:grid;gap:2px;font-size:.84rem}
-.kmeta .orig{color:var(--muted)}
-.delta{font-weight:700;display:inline-flex;gap:3px;align-items:center}
-.delta.dn{color:var(--accent)} .delta.upc{color:var(--warn)} .delta.same{color:var(--muted)}
-.stepper{display:flex;align-items:center;gap:6px}
-.step,.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--bg);cursor:pointer;display:grid;place-items:center}
-.step .i{width:22px;height:22px}
-.icon-btn{width:36px;height:36px;border-radius:10px;color:var(--muted)}
-.step:hover:not(:disabled),.icon-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
-.step:disabled,.icon-btn:disabled{opacity:.35;cursor:not-allowed}
-.stepval{font:600 1.15rem var(--f-mono);min-width:3ch;text-align:center;font-variant-numeric:tabular-nums}
-.play{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;border:0;background:var(--ink);color:var(--bg);font-weight:700;cursor:pointer}
-.play .i{fill:currentColor;stroke:none}
-.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
-.presets .chip b{font-family:var(--f-mono)}
-.hint-i{color:var(--muted);display:inline-flex;cursor:help}
+/* 2 키 */
+.keyline{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.keybox .lbl{font-size:13px;color:var(--muted);font-weight:500}
+.keybox .val{font:700 28px/1.2 var(--f-mono)}
+.keybox .val .acc{font-family:"Segoe UI Symbol","Apple Symbols","Noto Sans Symbols 2",var(--f-body);font-size:.75em}
+.keybox.to .val{color:var(--accent)}
+.keybox .dl{font-size:12px;font-weight:700;color:var(--muted)}
+.arrow{color:var(--muted);font-size:20px}
+.stepper{display:flex;align-items:center;border:1px solid var(--line2);border-radius:10px;overflow:hidden;background:var(--surface)}
+.stepper button{border:0;background:none;width:44px;height:42px;font-size:20px;font-weight:500}
+.stepper button:hover:not(:disabled){background:var(--sunk)}
+.stepper output{min-width:64px;text-align:center;font-weight:700;font-size:15px;border-left:1px solid var(--line);border-right:1px solid var(--line);line-height:42px;font-variant-numeric:tabular-nums}
+.play{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px}
+.play .i{fill:currentColor;stroke:none;width:14px;height:14px}
+.keyempty{color:var(--muted);font-size:14px}
 
-/* 추천 카드 */
-.picks{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.pick{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;cursor:pointer;display:flex;gap:12px;align-items:center}
-.pick:hover{border-color:var(--accent)}
-.pick[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.pk-ic{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:none}
-.pk-ic .i{width:24px;height:24px}
-.pk-body{display:grid;gap:4px;min-width:0}
-.pk-body .eb{font-size:.75rem;font-weight:700;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
-.pick.best .eb{color:var(--accent)}
-.pk-body .main{font-size:1.45rem;font-weight:700;line-height:1.15}
-.badges{display:flex;flex-wrap:wrap;gap:6px}
-.badge{font-size:.78rem;font-weight:700;padding:2px 9px;border-radius:999px;background:var(--bg);display:inline-flex;gap:4px;align-items:center}
-.badge.good{background:var(--good-soft);color:var(--good)} .badge.warn{background:var(--warn-soft);color:var(--warn)}
-.badge .i{width:13px;height:13px}
+/* 3 카포 */
+.capos{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.capo{display:grid;grid-template-columns:minmax(76px,auto) 1fr auto;align-items:center;gap:10px;text-align:left;border:1px solid transparent;background:none;border-radius:10px;padding:9px 10px;width:100%}
+.capo:hover{background:var(--sunk)}
+.capo[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.capo .cn{font-weight:700;font-size:15px;line-height:1.3}
+.capo .cn small{display:block;font-size:12px;color:var(--muted);font-weight:500;line-height:1.2}
+.capo .chs{font:500 13.5px var(--f-mono);color:var(--ink2);display:flex;flex-wrap:wrap;gap:2px 8px}
+.capo .chs .h{color:var(--hard);font-weight:700}
+.badge{font-size:12px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.b-easy{background:var(--easy-soft);color:var(--easy)} .b-mid{background:var(--mid-soft);color:var(--mid)} .b-hard{background:var(--hard-soft);color:var(--hard)}
+.rec{white-space:nowrap;font-size:11px;font-weight:700;color:var(--accent-ink);background:var(--accent);padding:1px 6px;border-radius:4px;margin-left:5px;vertical-align:2px}
 
-/* 악보 */
-.btn{font-size:.85rem;font-weight:700;padding:7px 13px;border-radius:10px;border:0;background:var(--accent);color:var(--accent-ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
-.sheet{margin:0;padding:14px 16px;border-radius:10px;background:var(--bg);font:500 1rem/1.9 var(--f-mono);white-space:pre-wrap;overflow-x:auto;color:var(--muted)}
-.sheet .ch{color:var(--ink);font-weight:600}
-.sheet .ch.hard,.sheet .cp b.hard{color:var(--warn)}
-.sheet .capo{display:inline-flex;gap:6px;align-items:center;color:var(--accent);font-weight:600;margin-bottom:4px}
-.sheet .cp{display:inline-flex;flex-direction:column;vertical-align:bottom;margin-bottom:6px}
-.sheet .cp b{font-weight:600;color:var(--accent);min-height:1.55em;line-height:1.55;padding-right:.6ch;white-space:pre}
-.sheet .cp .ly{font-family:var(--f-body);line-height:1.55;white-space:pre;color:var(--ink)}
-.real{font-size:.82rem;color:var(--muted);margin:8px 0 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.real b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
-.bs{color:var(--bass);font-weight:700}
+/* 악보 카드 */
+.sheet-card{overflow:hidden;min-width:0}
+.sheet-head{padding:24px 28px 20px;border-bottom:1px solid var(--line);display:flex;gap:16px 20px;align-items:flex-end;flex-wrap:wrap}
+.sh-title .eyebrow{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:2px}
+.sh-title h2{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.25;text-wrap:balance}
+.sh-title h2 em{font-style:normal;font-family:var(--f-mono);color:var(--accent)}
+.sh-title p{color:var(--muted);font-size:15px;margin-top:4px}
+.sh-tools{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:flex;background:var(--sunk);border:1px solid var(--line2);border-radius:10px;padding:3px}
+.seg button{border:0;background:none;border-radius:7px;padding:6px 12px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.size{display:flex;align-items:center;border:1px solid var(--line2);border-radius:10px;background:var(--surface)}
+.size button{border:0;background:none;width:36px;height:34px;font-weight:700}
+.size button:first-child{font-size:12px}.size button:last-child{font-size:18px}
+.size span{font-size:12.5px;color:var(--muted);min-width:42px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;padding:12px 28px;border-bottom:1px solid var(--line)}
+.toggle{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;border:0;background:none;padding:6px 4px}
+.toggle .sw{width:36px;height:21px;border-radius:999px;background:var(--line2);position:relative;transition:background .15s;flex:none}
+.toggle .sw::after{content:"";position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.toggle[aria-pressed="true"] .sw{background:var(--accent)}
+.toggle[aria-pressed="true"] .sw::after{left:17.5px}
+.tb-r{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* 운지 */
+.diag-wrap{padding:20px 28px;background:var(--sunk);border-bottom:1px solid var(--line)}
+.diag-top{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.diag-top h3{font-size:15px;font-weight:700}
+.diag-top span{font-size:13px;color:var(--muted)}
+.diags{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.diag{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 6px 8px;text-align:center;display:grid;justify-items:center;gap:2px}
+.diag .nm{font:700 17px/1.2 var(--f-mono);cursor:pointer}
+.diag.hard .nm{color:var(--hard)}
+.diag svg{width:100%;max-width:96px;height:auto}
+.lv{font-size:11.5px;font-weight:700;display:inline-flex;gap:4px;align-items:center;color:var(--muted)}
+.lv::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.t-easy{color:var(--easy)} .t-mid{color:var(--mid)} .t-hard{color:var(--hard)}
+.diag .approx{font-size:11px;color:var(--muted);line-height:1.3}
+.diag .bassh{font-size:11px;font-weight:700;color:var(--bass);line-height:1.3}
+.rh-wrap{padding:14px 28px;border-bottom:1px solid var(--line)}
+
+/* 악보 본문: 코드는 가사 글자 바로 위 */
+.sheet{padding:28px 28px 36px;font-size:calc(19px * var(--sheet-scale));overflow-x:auto}
+.sec{display:inline-block;font-size:.68em;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);background:var(--sunk);border:1px solid var(--line2);border-radius:6px;padding:.15em .6em;margin:1.4em 0 .6em}
+.sheet > .sec:first-child{margin-top:0}
+.ln{line-height:1.35;margin-bottom:.55em}
+.sg,.sheet .cp{display:inline-flex;flex-direction:column;vertical-align:bottom}
+.sg .c,.sheet .cp b{font:700 .82em/1.55em var(--f-mono);color:var(--accent);min-height:1.55em;padding-right:.5em;white-space:pre}
+.sg .c.h,.sheet .cp b.hard{color:var(--hard)}
+.sg .t,.sheet .cp .ly{white-space:pre}
+.cl{font:500 .82em/1.55 var(--f-mono);white-space:pre;color:var(--muted);margin-bottom:.6em}
+.cl .ch{color:var(--accent);font-weight:700}
+.cl .ch.hard{color:var(--hard)}
+.lyr{margin-bottom:.55em;white-space:pre-wrap}
+.blank{height:.6em}
+.tabl{font:500 .68em/1.4 var(--f-mono);white-space:pre;color:var(--muted)}
+.sheet .bar{opacity:.5;font-weight:400}
+.sheet .beat{opacity:.5}
+.bs{color:var(--bass)}
 .bs .sl{color:var(--muted);font-weight:500}
-.sheet .bar{color:var(--muted);opacity:.5;font-weight:400}
-.sheet .beat{color:var(--muted);opacity:.5}
+.sheet .ch,.sg .c,.sheet .cp b{cursor:pointer}
+.sheet .ch:hover,.sg .c:hover,.sheet .cp b:hover,.diag .nm:hover{text-decoration:underline dotted;text-underline-offset:3px}
+.used{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 28px;border-top:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.used .real{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.used .real b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+.legend{display:flex;gap:14px;margin-left:auto;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+.empty{padding:56px 24px;text-align:center;color:var(--muted);display:grid;gap:10px;justify-items:center}
+.empty .i{width:30px;height:30px}
+
 /* 리듬 스트로크 가이드 */
-.rhythm{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .rh-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.rh-h{display:inline-flex;gap:5px;align-items:center;font-size:.8rem;font-weight:700;color:var(--muted);margin-right:2px}
+.rh-h{display:inline-flex;gap:5px;align-items:center;font-size:13px;font-weight:700;color:var(--muted);margin-right:2px}
 .rh-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:12px}
-.rh-beat{display:flex;border-radius:10px;background:var(--bg);overflow:hidden}
-.rh-c{flex:1 1 0;min-width:0;display:grid;justify-items:center;padding:6px 0 4px;border-radius:8px}
-.rh-c b{font:700 1.45rem/1.1 var(--f-body);color:var(--ink)}
+.rh-beat{display:flex;border-radius:10px;background:var(--sunk);border:1px solid var(--line);overflow:hidden}
+.rh-c{flex:1 1 0;min-width:0;display:grid;justify-items:center;padding:6px 0 4px}
+.rh-c b{font:700 1.4rem/1.1 var(--f-body)}
 .rh-c small{font:600 .68rem var(--f-mono);color:var(--muted)}
 .rh-c.rest b{color:var(--muted);opacity:.5;font-weight:500}
 .rh-c.acc b{color:var(--hit)}
@@ -164,186 +214,189 @@ textarea{width:100%;min-height:210px;resize:vertical;font:500 .98rem/1.7 var(--f
 .rh-bpm output{color:var(--ink);min-width:3ch;text-align:right}
 .rh-leg{margin-left:auto;font-size:.78rem;color:var(--muted);display:inline-flex;gap:4px;align-items:center}
 .rh-leg b{color:var(--hit);font-size:1rem}
-@media (max-width:520px){.rh-c b{font-size:1.15rem}.rh-grid{gap:4px}}
-@media (prefers-reduced-motion:no-preference){.rh-c{transition:background .08s}.rh-c.on b{transform:scale(1.18)}.rh-c b{transition:transform .08s}}
-.sheet .ch,.sheet .cp b,figure.cd .nm{cursor:pointer}
-.sheet .ch:hover,.sheet .cp b:hover,figure.cd .nm:hover{text-decoration:underline dotted;text-underline-offset:3px}
-/* 코드 사전: 떠 있는 버튼 + 오른쪽에서 밀려 나오는 패널 */
-.dict-fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:40;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.2);cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.rh-c{transition:background .08s}.rh-c b{transition:transform .08s}.rh-c.on b{transform:scale(1.18)}}
+
+/* 아래 안내·자주 묻는 질문 */
+.info,.faq-sec{display:grid;grid-template-columns:380px minmax(0,1fr);gap:24px}
+.info{margin-top:56px}
+.faq-sec{margin-top:40px}
+.info h2,.faq-sec h2{font-size:24px;font-weight:800;letter-spacing:-.02em;line-height:1.3;text-wrap:balance}
+.info .lead{color:var(--ink2);margin-top:10px;font-size:15.5px;text-wrap:pretty}
+.info .more{margin-top:14px;font-weight:700}
+.info .more a{text-decoration:none}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.feat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.feat h3{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;gap:8px;align-items:center}
+.feat h3 .i{color:var(--accent)}
+.feat p{font-size:14.5px;color:var(--ink2);text-wrap:pretty}
+.faq-list{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.faq-list details{border-bottom:1px solid var(--line)}
+.faq-list details:last-child{border-bottom:0}
+.faq-list summary{padding:16px 20px;font-size:15.5px;font-weight:600;display:flex;justify-content:space-between;gap:12px;cursor:pointer;list-style:none}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:hover{background:var(--sunk)}
+.faq-list summary::after{content:"+";font-size:20px;line-height:1;color:var(--muted);transition:transform .15s;flex:none}
+.faq-list details[open] summary::after{transform:rotate(45deg)}
+.faq-list p{padding:0 20px 18px;color:var(--ink2);font-size:15px;text-wrap:pretty}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 28px 96px;text-align:center;font-size:13px;color:var(--muted)}
+footer a{color:var(--ink2);text-decoration:none;margin:0 8px}
+footer a:hover{text-decoration:underline}
+footer div{margin-top:6px}
+
+/* 코드 사전·저장한 악보 패널 */
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line2);background:var(--surface);display:grid;place-items:center;color:var(--muted)}
+.icon-btn:hover{border-color:var(--ink2);color:var(--ink)}
+.dict-fab{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:max(20px,env(safe-area-inset-bottom,0px));z-index:40;display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border:0;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;box-shadow:var(--shadow)}
 .dict-fab .i{width:20px;height:20px}
 body.dict-on .dict-fab{opacity:0;pointer-events:none}
-.dict-scrim{position:fixed;inset:0;background:rgba(10,12,16,.42);z-index:49}
-.dict{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:50;background:var(--surface);border-left:1px solid var(--line);box-shadow:-12px 0 32px rgba(0,0,0,.16);
-  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 28px 16px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden;transition:transform .26s ease,visibility 0s .26s}
+.dict-scrim{position:fixed;inset:0;background:rgba(20,16,10,.38);z-index:49}
+.dict{position:fixed;top:0;right:0;bottom:0;width:min(400px,100vw);z-index:50;background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);
+  padding:max(18px,env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 28px 18px;overflow-y:auto;overscroll-behavior:contain;transform:translateX(105%);visibility:hidden;transition:transform .26s ease,visibility 0s .26s}
 .dict.open{transform:none;visibility:visible;transition:transform .26s ease}
-.dict-h{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.dict-h h2{display:flex;gap:8px;align-items:center;font-size:1.05rem;margin:0}
+.dict-h{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.dict-h h2{display:flex;gap:8px;align-items:center;font-size:18px;font-weight:800;letter-spacing:-.01em}
 .dict-h .icon-btn{margin-left:auto}
-.dict-search{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:12px;padding:0 12px;background:var(--bg);color:var(--muted)}
-.dict-search:focus-within{border-color:var(--accent);outline:0}
-.dict-search input{flex:1;min-width:0;border:0;background:none;font:600 1.15rem var(--f-mono);padding:12px 0;color:var(--ink);outline:none}
-.dx-heard{font-size:.8rem;color:var(--muted);margin:10px 0 0}
-.dx-heard code{font-family:var(--f-mono);background:var(--bg);padding:1px 6px;border-radius:6px}
+.dict-search{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);border-radius:12px;padding:0 12px;background:var(--sunk);color:var(--muted)}
+.dict-search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.dict-search input{flex:1;min-width:0;border:0;background:none;font:600 18px var(--f-mono);padding:12px 0;color:var(--ink);outline:none}
+.dx-heard{font-size:13px;color:var(--muted);margin-top:10px}
+.dx-heard code{font-family:var(--f-mono);background:var(--sunk);padding:1px 6px;border-radius:6px}
 .dx-heard b{font-family:var(--f-mono);color:var(--ink)}
 .dx-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:14px 0 10px}
-.dx-head b{font:600 2rem/1 var(--f-mono);letter-spacing:-.5px}
-.dx-head > span{color:var(--muted);font-size:.9rem}
+.dx-head b{font:700 32px/1 var(--f-mono);letter-spacing:-.5px}
+.dx-head > span{color:var(--muted);font-size:14px}
 .dx-tones{display:flex;flex-wrap:wrap;gap:6px}
-.tn{display:grid;justify-items:center;min-width:44px;padding:4px 8px;border-radius:10px;background:var(--bg);border:1.5px solid transparent}
-.tn b{font:600 1rem var(--f-mono)} .tn small{font:600 .7rem var(--f-mono);color:var(--muted)}
-.tn.root b{color:var(--bass)} .tn.opt{border-style:dashed;border-color:var(--line);background:none}
+.tn{display:grid;justify-items:center;min-width:44px;padding:4px 8px;border-radius:10px;background:var(--sunk);border:1px solid var(--line)}
+.tn b{font:700 16px var(--f-mono)} .tn small{font:600 11px var(--f-mono);color:var(--muted)}
+.tn.root b{color:var(--bass)} .tn.opt{border-style:dashed;border-color:var(--line2);background:none}
 .dx-vs{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;margin-top:14px}
-.dx-v{margin:0;border:1px solid var(--line);border-radius:12px;padding:8px 6px 10px;display:grid;justify-items:center;gap:4px}
+.dx-v{margin:0;border:1px solid var(--line);border-radius:12px;padding:8px 6px 10px;display:grid;justify-items:center;gap:4px;background:var(--surface)}
 .dx-v svg{width:100%;max-width:132px;height:auto}
-.dx-v .pos{font:600 .74rem var(--f-mono);color:var(--muted)}
-.dx-play{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:4px 11px;font-size:.76rem;font-weight:700;display:inline-flex;gap:4px;align-items:center;cursor:pointer}
+.dx-v .pos{font:600 12px var(--f-mono);color:var(--muted)}
+.dx-play{border:1px solid var(--line2);background:var(--sunk);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700;display:inline-flex;gap:4px;align-items:center}
 .dx-play:hover{border-color:var(--accent);color:var(--accent)}
 .dx-play .i{fill:currentColor;stroke:none;width:11px;height:11px}
-.dx-note,.dx-sub{font-size:.8rem;color:var(--muted);margin:12px 0 0}
-.dx-msg{margin:16px 0 0;font-weight:600}
+.dx-note,.dx-sub{font-size:13px;color:var(--muted);margin-top:12px}
+.dx-msg{margin-top:16px;font-weight:600}
 .dx-sec{margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
-.dx-sec h3{display:flex;gap:6px;align-items:center;font-size:.95rem;margin:0}
+.dx-sec h3{display:flex;gap:6px;align-items:center;font-size:15px;font-weight:700}
 .dx-sec h3 .i{color:var(--accent)}
-.dx-sec p{margin:4px 0 0;font-size:.8rem;color:var(--muted)}
+.dx-sec p{margin-top:4px;font-size:13px;color:var(--muted)}
 .dx-sec + .dx-vs{margin-top:10px}
 .dx-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .dx-ex .chip{font-family:var(--f-mono)}
-@media (max-width:520px){.dict-fab span{display:none}.dict-fab{padding:14px}}
-@media (min-width:900px){.dict-scrim{display:none}}
-@media (prefers-reduced-motion:reduce){.dict,.dict.open{transition:none}}
-figure.cd .bassh{font-size:.68rem;font-weight:700;color:var(--bass);line-height:1.3}
-.count{font:600 .8rem var(--f-mono);color:var(--muted);background:var(--bg);border-radius:999px;padding:1px 8px}
-
-/* 운지 */
-.diagrams{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
-figure.cd{margin:0;padding:8px 6px;border:1px solid var(--line);border-radius:12px;text-align:center;display:grid;gap:2px;justify-items:center}
-figure.cd .nm{font:600 1.05rem var(--f-mono)}
-figure.cd svg{width:100%;max-width:100px;height:auto}
-.lv{font-size:.72rem;font-weight:700;display:inline-flex;gap:4px;align-items:center;color:var(--muted)}
-.lv::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
-.t-easy{color:var(--good)} .t-mid{color:var(--accent)} .t-hard{color:var(--warn)}
-figure.cd .approx{font-size:.68rem;color:var(--muted);line-height:1.3}
-
-/* 카포별 */
-.neck{border-radius:12px;overflow:hidden;background:var(--neck);color:var(--neck-ink)}
-.neck button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:70px 64px 1fr 58px;align-items:center;gap:10px;width:100%;padding:8px 14px;cursor:pointer;border-bottom:2px solid var(--fret);font-size:.88rem}
-.neck button:last-child{border-bottom:0}
-.neck button:hover{background:rgba(255,255,255,.06)}
-.neck button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.neck button[aria-pressed="true"]{background:rgba(123,151,255,.22)}
-.neck .fr{font:600 .82rem var(--f-mono);display:flex;align-items:center;gap:6px}
-.neck .inlay{width:7px;height:7px;border-radius:50%;background:var(--neck-ink);opacity:.7}
-.neck .shape{font:600 .95rem var(--f-mono);display:flex;align-items:center;gap:5px}
-.neck .shape .i{width:14px;height:14px;color:#ffd166;fill:#ffd166;stroke:none}
-.neck .bar{height:8px;border-radius:4px;background:rgba(255,255,255,.12);overflow:hidden}
-.neck .bar i{display:block;height:100%;background:var(--fret)}
-.neck .bc{text-align:right;font-variant-numeric:tabular-nums;font-size:.8rem;display:flex;gap:4px;justify-content:flex-end;align-items:center}
-
-/* 도움말·하단 */
-.help{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px}
-.help summary{cursor:pointer;font-weight:700;display:flex;gap:8px;align-items:center;list-style:none}
-.help summary::-webkit-details-marker{display:none}
-.help-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:14px}
-.help-grid > div{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:start}
-.help-grid .i{width:22px;height:22px;color:var(--accent);grid-row:span 2;margin-top:2px}
-.help-grid h3{font-size:.92rem;margin:0}
-.help-grid p{margin:0;color:var(--muted);font-size:.86rem}
-/* 저장한 악보(기록) */
-.hist-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer}
-.hist-btn:hover{border-color:var(--accent);color:var(--accent)}
-.hist-btn b{background:var(--accent);color:var(--accent-ink);border-radius:999px;font:700 .7rem var(--f-mono);padding:1px 6px}
-.sec-act{display:flex;gap:6px;margin-left:auto}
-.btn.ghost{background:var(--accent-soft);color:var(--accent)}
-.btn.ghost.done{background:var(--good-soft);color:var(--good)}
 .hl{list-style:none;margin:0;padding:0;display:grid;gap:10px}
-.hi{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+.hi{border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:6px;background:var(--surface)}
 .hi.cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.hi-title{width:100%;border:0;background:none;font:700 .98rem var(--f-body);color:var(--ink);padding:2px 0;border-bottom:1px dashed transparent}
-.hi-title:hover,.hi-title:focus{border-bottom-color:var(--line);outline:none}
-.hi-meta{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
-.hi-meta b{color:var(--ink);font-family:var(--f-mono);font-weight:600}
-.hi-ch{font:500 .8rem var(--f-mono);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hi-title{width:100%;border:0;background:none;font:700 16px var(--f-body);color:var(--ink);padding:2px 0;border-bottom:1px dashed transparent}
+.hi-title:hover,.hi-title:focus{border-bottom-color:var(--line2);outline:none}
+.hi-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px}
+.hi-meta b{color:var(--accent);font-family:var(--f-mono);font-weight:700}
+.hi-ch{font:500 13px var(--f-mono);color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hi-act{display:flex;gap:6px;align-items:center}
 .hi-act .btn{padding:6px 12px}
 .hi-act .icon-btn{margin-left:auto;width:32px;height:32px}
-.hist-empty{color:var(--muted);text-align:center;padding:28px 8px;display:grid;gap:8px;justify-items:center;font-size:.9rem}
+.hist-empty{color:var(--muted);text-align:center;padding:28px 8px;display:grid;gap:8px;justify-items:center;font-size:14px}
 .hist-empty .i{width:28px;height:28px}
-.hist-foot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:.78rem;color:var(--muted)}
-.hist-foot button{border:1px solid var(--line);background:none;border-radius:8px;padding:5px 10px;font-size:.78rem;font-weight:700;color:var(--muted);cursor:pointer}
-.hist-foot button.arm{border-color:var(--warn);color:var(--warn)}
-.toast{width:max-content;max-width:calc(100vw - 32px);position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:.86rem;font-weight:700;z-index:60;display:flex;gap:6px;align-items:center;box-shadow:0 6px 20px rgba(0,0,0,.2)}
-@media (max-width:520px){.hist-btn span{display:none}.sec-act .btn span{display:none}}
-/* 도구 아래 안내·자주 묻는 질문 */
-.info{margin-top:20px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,3vw,28px)}
-.info h2{font-size:1.15rem;margin:0 0 8px;text-wrap:balance}
-.info h2 + .faq{margin-top:4px}
-.info-lead{color:var(--muted);margin:0 0 18px;max-width:72ch}
-.info-grid{display:grid;gap:16px 20px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-bottom:26px}
-.info-grid > div{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:start;align-content:start}
-.info-grid .i{width:22px;height:22px;color:var(--accent);grid-row:span 2;margin-top:2px}
-.info-grid h3{font-size:.95rem;margin:0}
-.info-grid p{margin:0;color:var(--muted);font-size:.88rem}
-.faq details{border-top:1px solid var(--line);padding:11px 0}
-.faq details:last-child{border-bottom:1px solid var(--line)}
-.faq summary{cursor:pointer;font-weight:600;list-style:none;display:flex;gap:10px;justify-content:space-between;align-items:center}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font:600 1.1rem var(--f-mono);color:var(--muted);flex:none}
-.faq details[open] summary::after{content:"−"}
-.faq details p{margin:8px 0 2px;color:var(--muted);font-size:.9rem;max-width:72ch}
-.info-more{margin:16px 0 0;font-weight:700}
-.info-more a{color:var(--accent);text-decoration:none}
-.empty{padding:26px;text-align:center;color:var(--muted);display:grid;gap:8px;justify-items:center}
-.empty .i{width:28px;height:28px}
-footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;display:grid;gap:6px}
-.foot-nav{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.foot-nav a{color:var(--muted)}
-@media (max-width:520px){.play{margin-left:0;width:100%;justify-content:center}.keybig .k{font-size:2.2rem}}
-@media (prefers-reduced-motion:no-preference){.pick,.chip,.step,.neck button{transition:border-color .15s,background .15s,box-shadow .15s}}
+.hist-foot{margin-top:16px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--muted)}
+.hist-foot button{border:1px solid var(--line2);background:none;border-radius:8px;padding:5px 10px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.hist-foot button.arm{border-color:var(--hard);color:var(--hard)}
+.toast{width:max-content;max-width:calc(100vw - 32px);position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;font-weight:600;z-index:60;display:flex;gap:6px;align-items:center;box-shadow:var(--shadow)}
+@media (prefers-reduced-motion:reduce){.dict,.dict.open{transition:none}}
+
+/* 반응형: 좁은 화면에선 악보 → 키 → 악보 → 카포 순서로 한 줄 */
+@media (max-width:980px){
+  .grid,.info,.faq-sec{grid-template-columns:1fr}
+  .grid{gap:16px}
+  .side{display:contents}
+  .side > :nth-child(1){order:1} .side > :nth-child(2){order:2} .sheet-card{order:3} .side > :nth-child(3){order:4}
+  .feats{grid-template-columns:1fr}
+  .tagline{display:none}
+  .dict-scrim{display:block}
+}
+@media (min-width:981px){.dict-scrim{display:none}}
+@media (max-width:600px){
+  .top-in{padding:10px 16px}
+  .wrap{padding:16px 16px 32px}
+  .card-h{padding:16px 16px 0} .card-b{padding:12px 16px 16px}
+  .sheet-head{padding:18px 16px 16px} .toolbar,.diag-wrap,.rh-wrap,.used{padding-left:16px;padding-right:16px} .sheet{padding:20px 16px 28px}
+  .sh-title h2{font-size:22px}
+  .sh-tools{margin-left:0}
+  .tb-r{margin-left:0}
+  .ghost span,.tb-r .btn span,.dict-fab span{display:none}
+  .dict-fab{padding:14px}
+  .rh-c b{font-size:1.15rem} .rh-grid{gap:4px}
+  .diags{grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+  .info{margin-top:40px}
+  footer{padding:20px 16px 96px}
+}
+@media print{
+  .top,.side,.info,.faq-sec,footer,.toolbar,.sh-tools,.rh-wrap,.dict-fab,.legend,.dict,.dict-scrim,.toast{display:none!important}
+  html,body{background:#fff}
+  .grid{display:block} .wrap{padding:0} .card{border:0}
+  .diag-wrap{background:none}
+}
 </style>
 </head>
 <body>
 
-<div class="page">
-  <header class="top">
-    <div class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2c6.6 0 12 2.6 12 7.6 0 6.7-6.4 16.4-9.6 20.3a3 3 0 0 1-4.8 0C10.4 26 4 16.3 4 9.6 4 4.6 9.4 2 16 2Z" fill="var(--accent)"/><path d="M11 10v9M16 10v9M21 10v9M9 14h14" stroke="var(--accent-ink)" stroke-width="2" stroke-linecap="round"/></svg><b data-i18n-html="brand">쉬운<span>코드</span></b></div>
-    <p class="tag" data-i18n="tagline">키는 내 목소리에, 코드는 쉽게</p>
-    <button class="hist-btn" id="hist-btn" type="button" aria-controls="hist" aria-expanded="false" data-i18n-title="histOpen" data-i18n-aria="histOpen" aria-label="저장한 악보 보기"><i data-ic="clock"></i><span data-i18n="histShort">기록</span><b id="hist-n" hidden></b></button>
-    <div class="lang" role="group" data-i18n-aria="langAria" aria-label="언어 선택"><i data-ic="globe"></i><button type="button" data-lang="ko" aria-pressed="true">KO</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
-  </header>
+<header class="top"><div class="top-in">
+  <a class="logo" href="./"><span class="logo-mark" aria-hidden="true">♪</span><span data-i18n="brandTxt">쉬운코드</span></a>
+  <span class="tagline" data-i18n="tagline">키는 내 목소리에, 코드는 쉽게</span>
+  <div class="top-r">
+    <button class="ghost" id="hist-btn" type="button" aria-controls="hist" aria-expanded="false" data-i18n-title="histOpen" data-i18n-aria="histOpen" aria-label="저장한 악보 보기"><i data-ic="clock"></i><span data-i18n="histShort">저장한 악보</span><b id="hist-n" hidden></b></button>
+    <div class="lang" role="group" data-i18n-aria="langAria" aria-label="언어"><button type="button" data-lang="ko" aria-pressed="true">KO</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  </div>
+</div></header>
 
+<main class="wrap">
   <div class="grid">
-    <section class="input card">
-      <div class="card-h"><i data-ic="music"></i><label for="src" data-i18n="inputLabel">원곡 코드</label><span class="pill" data-i18n-title="lyricsTip"><i data-ic="check"></i><span data-i18n="lyricsOk">가사 섞여도 OK</span></span></div>
-      <textarea id="src" spellcheck="false" autocomplete="off" data-i18n-ph="placeholder"></textarea>
-      <div class="tools">
-        <button class="tool" type="button" id="paste" data-i18n-title="pasteTip"><i data-ic="clipboard"></i><span data-i18n="paste">붙여넣기</span></button>
-        <button class="switch" type="button" id="clear" data-i18n-title="clear" data-i18n-aria="clear" aria-label="지우기"><i data-ic="x"></i></button>
-        <label class="switch" for="simp" data-i18n-title="simpTip"><input type="checkbox" id="simp" checked><span class="track"></span><i data-ic="wand"></i><span data-i18n="simpTitle">쉬운 코드로</span></label>
-      </div>
-      <p class="src-tip"><i data-ic="search"></i> <span data-i18n="srcTip">악보는 </span><a href="https://www.ultimate-guitar.com" target="_blank" rel="noopener nofollow">Ultimate Guitar<i data-ic="ext"></i></a><span data-i18n="srcHow">에서 복사해 오세요</span></p>
-      <p class="ocr-status" id="note" hidden></p>
-      <div class="samples" role="group" data-i18n-aria="samplesAria" aria-label="예시">
-        <span class="lbl"><i data-ic="list"></i><span data-i18n="samples">예시</span></span>
-        <button class="chip" type="button" data-sample="3" data-i18n="s3">가사·카포 악보</button>
-        <button class="chip" type="button" data-sample="0" data-i18n="s0">여자 발라드</button>
-        <button class="chip" type="button" data-sample="1" data-i18n="s1">남자 발라드</button>
-        <button class="chip" type="button" data-sample="2" data-i18n="s2">마이너</button>
-        <button class="chip" type="button" data-sample="5" data-i18n="s5">마디·분수 코드</button>
-      </div>
-    </section>
-
-    <div class="results" id="out" aria-live="polite"></div>
+    <aside class="side">
+      <section class="card">
+        <div class="card-h"><span class="step-n">1</span><h2 class="card-t"><label for="src" data-i18n="c1">악보 붙여넣기</label></h2></div>
+        <div class="card-b">
+          <p class="hint" data-i18n="c1hint">코드 줄과 가사 줄을 그대로 붙여 넣으세요. 어떤 사이트의 악보든 괜찮아요.</p>
+          <textarea id="src" spellcheck="false" autocomplete="off" data-i18n-ph="placeholder"></textarea>
+          <div class="row mt">
+            <button class="btn primary" type="button" id="paste" data-i18n-title="pasteTip"><i data-ic="clipboard"></i><span data-i18n="paste">붙여넣기</span></button>
+            <button class="btn" type="button" id="clear"><span data-i18n="clear">지우기</span></button>
+          </div>
+          <p class="src-tip"><span data-i18n="srcTip">추천 사이트: </span><a href="https://www.ultimate-guitar.com" target="_blank" rel="noopener nofollow">Ultimate Guitar<i data-ic="ext"></i></a></p>
+          <p class="note" id="note" hidden></p>
+          <div class="samples" role="group" data-i18n-aria="samplesAria" aria-label="예시">
+            <span class="lbl" data-i18n="samples">예시</span>
+            <button class="chip-btn" type="button" data-sample="3" data-i18n="s3">가사·카포 악보</button>
+            <button class="chip-btn" type="button" data-sample="0" data-i18n="s0">여자 발라드</button>
+            <button class="chip-btn" type="button" data-sample="1" data-i18n="s1">남자 발라드</button>
+            <button class="chip-btn" type="button" data-sample="2" data-i18n="s2">마이너</button>
+            <button class="chip-btn" type="button" data-sample="5" data-i18n="s5">마디·분수 코드</button>
+          </div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="card-h"><span class="step-n">2</span><h2 class="card-t" data-i18n="c2">내 목소리에 맞게 키 조절</h2></div>
+        <div class="card-b" id="keycard"></div>
+      </section>
+      <section class="card">
+        <div class="card-h"><span class="step-n">3</span><h2 class="card-t" data-i18n="c3">카포 위치 고르기</h2></div>
+        <div class="card-b"><p class="hint" data-i18n-html="c3hint">같은 소리를 내는 연주법이에요. <span class="hard">주황색</span>은 바레 코드예요.</p><div class="capos" id="capos" role="group"></div></div>
+      </section>
+    </aside>
+    <section class="card sheet-card" id="out"></section>
   </div>
 
   <section class="info" aria-labelledby="info-h">
-    <h2 id="info-h" data-i18n="infoH">쉬운코드는 이럴 때 필요해요</h2>
-    <p class="info-lead" data-i18n="infoP">노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.</p>
-    <div class="info-grid"><div><i data-ic="mic"></i><h3 data-i18n="i1h">키 바꾸기</h3><p data-i18n="i1p">악보를 붙여 넣고 ▲▼로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고 코드만 바꾸며, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.</p></div><div><i data-ic="capo"></i><h3 data-i18n="i2h">카포 추천</h3><p data-i18n="i2p">같은 높이로 소리 나는 카포 0~7번 조합을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 카포별 난이도 막대를 보고 직접 고를 수도 있어요.</p></div><div><i data-ic="book"></i><h3 data-i18n="i3h">운지와 코드 사전</h3><p data-i18n="i3p">곡에 나온 코드는 운지 그림으로 모아 보여 줘요. Bmadd9, C♯m7♭5처럼 낯선 코드는 코드 사전에서 구성음, 잡기 쉬운 운지, 하이코드까지 확인할 수 있어요.</p></div><div><i data-ic="metro"></i><h3 data-i18n="i4h">리듬 가이드</h3><p data-i18n="i4p">칼립소, 8비트 고고, 16비트 슬로우 고고, 셔플 패턴을 화살표로 보여 주고, 메트로놈처럼 박자에 맞춰 칸마다 불이 들어와요.</p></div></div>
-    <h2 data-i18n="faqH">자주 묻는 질문</h2>
-    <div class="faq"><details><summary data-i18n="q1">어느 사이트의 악보를 붙여 넣어야 하나요?</summary><p data-i18n="a1">코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요.</p></details><details><summary data-i18n="q2">여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?</summary><p data-i18n="a2">보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. &quot;여 → 남&quot; 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요.</p></details><details><summary data-i18n="q3">카포를 끼우면 소리가 달라지나요?</summary><p data-i18n="a3">음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요.</p></details><details><summary data-i18n="q4">&quot;쉬운 코드로&quot;를 켜면 무엇이 바뀌나요?</summary><p data-i18n="a4">Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요.</p></details><details><summary data-i18n="q5">원곡 키가 다르게 나와요.</summary><p data-i18n="a5">원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.</p></details><details><summary data-i18n="q6">붙여 넣은 악보가 저장되나요?</summary><p data-i18n="a6">서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요.</p></details><details><summary data-i18n="q7">무료인가요?</summary><p data-i18n="a7">네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.</p></details></div>
-    <p class="info-more"><a href="guide/" data-i18n="infoMore">기타 가이드 더 보기 →</a></p>
+    <div><h2 id="info-h" data-i18n="infoH">쉬운코드는 이럴 때 필요해요</h2><p class="lead" data-i18n="infoP">노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.</p><p class="more"><a href="guide/" data-i18n="infoMore">기타 가이드 더 보기 →</a></p></div>
+    <div class="feats"><div class="feat"><h3><i data-ic="mic"></i><span data-i18n="i1h">키 바꾸기</span></h3><p data-i18n="i1p">악보를 붙여 넣고 −/+로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.</p></div><div class="feat"><h3><i data-ic="capo"></i><span data-i18n="i2h">카포 추천</span></h3><p data-i18n="i2p">같은 높이로 소리 나는 카포 0~7번을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 목록에서 다른 위치를 직접 고를 수도 있어요.</p></div><div class="feat"><h3><i data-ic="book"></i><span data-i18n="i3h">운지와 코드 사전</span></h3><p data-i18n="i3p">곡에 나온 코드는 운지 그림으로 모아 보여 줘요. Bmadd9, C♯m7♭5처럼 낯선 코드는 코드 사전에서 구성음, 잡기 쉬운 운지, 하이코드까지 확인할 수 있어요.</p></div><div class="feat"><h3><i data-ic="metro"></i><span data-i18n="i4h">리듬 가이드</span></h3><p data-i18n="i4p">칼립소, 8비트 고고, 16비트 슬로우 고고, 셔플 패턴을 화살표로 보여 주고, 메트로놈처럼 박자에 맞춰 칸마다 불이 들어와요.</p></div></div>
   </section>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "어느 사이트의 악보를 붙여 넣어야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요."}}, {"@type": "Question", "name": "여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. \"여 → 남\" 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요."}}, {"@type": "Question", "name": "카포를 끼우면 소리가 달라지나요?", "acceptedAnswer": {"@type": "Answer", "text": "음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요."}}, {"@type": "Question", "name": "\"쉬운 코드로\"를 켜면 무엇이 바뀌나요?", "acceptedAnswer": {"@type": "Answer", "text": "Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요."}}, {"@type": "Question", "name": "원곡 키가 다르게 나와요.", "acceptedAnswer": {"@type": "Answer", "text": "원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요."}}, {"@type": "Question", "name": "붙여 넣은 악보가 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요."}}, {"@type": "Question", "name": "무료인가요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요."}}]}</script>
+  <section class="faq-sec" aria-labelledby="faq-h">
+    <div><h2 id="faq-h" data-i18n="faqH">자주 묻는 질문</h2></div>
+    <div class="faq-list"><details><summary data-i18n="q1">어느 사이트의 악보를 붙여 넣어야 하나요?</summary><p data-i18n="a1">코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요.</p></details><details><summary data-i18n="q2">여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?</summary><p data-i18n="a2">보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. &quot;여 → 남&quot; 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요.</p></details><details><summary data-i18n="q3">카포를 끼우면 소리가 달라지나요?</summary><p data-i18n="a3">음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요.</p></details><details><summary data-i18n="q4">&quot;쉬운 코드로&quot;를 켜면 무엇이 바뀌나요?</summary><p data-i18n="a4">Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요.</p></details><details><summary data-i18n="q5">원곡 키가 다르게 나와요.</summary><p data-i18n="a5">원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.</p></details><details><summary data-i18n="q6">붙여 넣은 악보가 저장되나요?</summary><p data-i18n="a6">서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘저장한 악보’에서 언제든 지울 수 있어요.</p></details><details><summary data-i18n="q7">무료인가요?</summary><p data-i18n="a7">네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.</p></details></div>
+  </section>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "어느 사이트의 악보를 붙여 넣어야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "코드가 글자로 적힌 악보라면 어느 사이트든 괜찮아요. 코드가 가사 위 줄에 있는 형식과 [C]처럼 괄호 안에 있는 형식을 모두 읽어요. 악보에 적힌 카포 위치는 자동으로 반영하고, 튜닝·타브 줄은 코드로 읽지 않아요. 사진이나 이미지로 된 악보는 읽지 못해요."}}, {"@type": "Question", "name": "여자 노래를 남자가 부르려면 몇 키를 내려야 하나요?", "acceptedAnswer": {"@type": "Answer", "text": "보통 5키 정도 내리는 데서 시작하지만 목소리마다 달라요. \"여 → 남\" 버튼으로 출발점을 잡고, ▶ 듣기로 들어 보면서 한 키씩 맞추세요. 기타 코드는 옥타브를 구분하지 않아서 5키 내린 것과 7키 올린 것은 같은 코드예요."}}, {"@type": "Question", "name": "카포를 끼우면 소리가 달라지나요?", "acceptedAnswer": {"@type": "Answer", "text": "음 높이는 같아요. 다만 개방현이 함께 울려서 바레 코드로 칠 때보다 맑고 풍성하게 들려요. 7프렛을 넘으면 소리가 얇아지고 프렛 간격이 좁아져서 추천하지 않아요."}}, {"@type": "Question", "name": "\"쉬운 코드로\"를 켜면 무엇이 바뀌나요?", "acceptedAnswer": {"@type": "Answer", "text": "Cmaj7 → C, B♭7sus4 → B♭7처럼 소리가 비슷하면서 더 쉬운 모양이 있는 코드를 바꿔 보여 줘요. 원래 코드를 그대로 보고 싶으면 끄면 돼요. 끈 상태에서도 모양이 없는 코드는 운지를 계산해서 보여 줘요."}}, {"@type": "Question", "name": "원곡 키가 다르게 나와요.", "acceptedAnswer": {"@type": "Answer", "text": "원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요."}}, {"@type": "Question", "name": "붙여 넣은 악보가 저장되나요?", "acceptedAnswer": {"@type": "Answer", "text": "서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘저장한 악보’에서 언제든 지울 수 있어요."}}, {"@type": "Question", "name": "무료인가요?", "acceptedAnswer": {"@type": "Answer", "text": "네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요."}}]}</script>
+</main>
+<footer><a href="guide/" data-i18n="navGuide">기타 가이드</a><a href="about.html" data-i18n="navAbout">소개·문의</a><a href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a><div data-i18n="footer"></div></footer>
+<input type="checkbox" id="simp" checked hidden>
   <button class="dict-fab" id="dict-fab" type="button" aria-controls="dict" aria-expanded="false" data-i18n-aria="dictOpen" aria-label="코드 사전 열기"><i data-ic="search"></i><span data-i18n="dictFab">코드 사전</span></button>
   <div class="dict-scrim" id="dict-scrim" hidden></div>
   <aside class="dict" id="dict" role="dialog" aria-labelledby="dict-h" inert>
@@ -356,8 +409,7 @@ footer{margin-top:18px;color:var(--muted);font-size:.78rem;text-align:center;dis
     <div class="dict-h"><h2 id="hist-h"><i data-ic="clock"></i><span data-i18n="histTitle">저장한 악보</span></h2><button class="icon-btn" type="button" id="hist-x" data-i18n-aria="close" data-i18n-title="close" aria-label="닫기"><i data-ic="x"></i></button></div>
     <div id="hist-out"></div>
   </aside>
-  <footer><nav class="foot-nav"><a href="guide/" data-i18n="navGuide">기타 가이드</a><a href="about.html" data-i18n="navAbout">소개·문의</a><a href="privacy.html" data-i18n="navPrivacy">개인정보처리방침</a></nav><div data-i18n="footer"></div></footer>
-</div>
+
 
 <script>
 (()=>{
@@ -382,6 +434,7 @@ const IC={
  globe:'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/>',
  up:'<path d="m18 15-6-6-6 6"/>', down:'<path d="m6 9 6 6 6-6"/>',
  reset:'<path d="M3 12a9 9 0 1 0 9-9 9.8 9.8 0 0 0-6.7 2.7L3 8"/><path d="M3 3v5h5"/>',
+ print:'<path d="M6 9V2h12v7"/><rect x="6" y="14" width="12" height="8" rx="1"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>',
  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  bookmark:'<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
  trash:'<path d="M3 6h18M8 6V4h8v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>',
@@ -413,14 +466,41 @@ const I18N={
   inputLabel:'원곡 코드', lyricsOk:'가사 섞여도 OK', lyricsTip:'코드만 바뀌고 가사·줄바꿈은 그대로예요. 카포 표시도 자동 반영돼요.',
   placeholder:'[Verse]\nG          D/F#\n코드 사이트에서 복사한 악보를\n그대로 붙여 넣으세요',
   navGuide:'기타 가이드', navAbout:'소개·문의', navPrivacy:'개인정보처리방침',
-  srcTip:'어느 사이트의 악보든 붙여 넣을 수 있어요 · 추천 ', srcHow:'',
+  srcTip:'추천 사이트: ', srcHow:'',
   paste:'붙여넣기', pasteTip:'코드 악보 사이트에서 복사한 악보를 붙여 넣어요', clear:'지우기', pasteFail:'Ctrl+V(휴대폰은 길게 눌러 붙여넣기)로 넣어 주세요', srcCapo:c=>`악보의 카포 ${c} 반영됨`,
   photo:'악보 사진', photoTip:'사진·캡처에서 코드와 가사(한국어·영어)를 읽어요. Ctrl+V로 붙여넣어도 돼요.',
   simpTitle:'쉬운 코드로', simpTip:'더 쉬운 모양이 있으면 바꿔요 (Cmaj7 → C, Bb7sus4 → Bb7)',
   compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
   samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너', s5:'마디·분수 코드',
   rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
-  histShort:'기록', histOpen:'저장한 악보 보기', histTitle:'저장한 악보', save:'저장', saved:'저장됨', savedToast:'저장했어요 · 위쪽 ‘기록’에서 다시 볼 수 있어요',
+  brandTxt:"쉬운코드",
+  c1:"악보 붙여넣기",
+  c1hint:"코드 줄과 가사 줄을 그대로 붙여 넣으세요. 어떤 사이트의 악보든 괜찮아요.",
+  c2:"내 목소리에 맞게 키 조절",
+  c3:"카포 위치 고르기",
+  c3hint:"같은 소리를 내는 연주법이에요. <span class=\"hard\">주황색</span>은 바레 코드예요.",
+  fromKey:"원래 키",
+  toKey:"바꾼 키",
+  keyEmpty:"악보를 넣으면 원래 키와 바꾼 키가 나와요.",
+  lvHard:"어려움",
+  ebRec:"추천 연주법",
+  ebSel:"선택한 연주법",
+  viewAria:"보기 방식",
+  viewBoth:"가사 + 코드",
+  viewChords:"코드만",
+  sizeDown:"글자 작게",
+  sizeUp:"글자 크게",
+  sizeGlyph:"가",
+  diagToggle:"코드 운지 보기",
+  print:"인쇄",
+  diagH:"이 곡에 쓰는 코드",
+  usedNote:"코드는 가사 바로 위, 바뀌는 글자에 맞춰 표시돼요.",
+  legEasy:"쉬운 코드",
+  legHard:"바레 코드",
+  legBass:"베이스 음",
+  shH:(c,L)=>c?`카포 <em>${c}</em>프렛 · <em>${L}</em> 코드 모양`:`카포 없이 <em>${L}</em> 키로`,
+  shP:(K,n)=>`실제로 들리는 키는 ${K} · ${n?`바레 코드 ${n}개`:'바레 코드 없이 칠 수 있어요'}`, diagCount:n=>`${n}개 · 이름을 누르면 코드 사전이 열려요`,
+  histShort:'저장한 악보', histOpen:'저장한 악보 보기', histTitle:'저장한 악보', save:'저장', saved:'저장됨', savedToast:'저장했어요 · 위쪽 ‘저장한 악보’에서 다시 볼 수 있어요',
   histEmpty:'아직 저장한 악보가 없어요.<br>변환한 악보에서 ‘저장’을 누르면 여기에 모여요.', histOpenBtn:'열기', histDel:'삭제', histTitleAria:'제목 (눌러서 바꾸기)',
   histLocal:'이 브라우저에만 저장돼요', histClear:'전체 삭제', histClearArm:'한 번 더 누르면 모두 삭제', histNoStore:'이 브라우저에서는 저장할 수 없어요 (시크릿 모드 등)',
   histUntitled:'제목 없는 악보', histCapo:c=>c?`카포 ${c}`:'카포 없이', histSimp:'쉬운 코드',
@@ -432,9 +512,9 @@ const I18N={
   infoH:"쉬운코드는 이럴 때 필요해요",
   infoP:"노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.",
   i1h:"키 바꾸기",
-  i1p:"악보를 붙여 넣고 ▲▼로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고 코드만 바꾸며, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.",
+  i1p:"악보를 붙여 넣고 −/+로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.",
   i2h:"카포 추천",
-  i2p:"같은 높이로 소리 나는 카포 0~7번 조합을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 카포별 난이도 막대를 보고 직접 고를 수도 있어요.",
+  i2p:"같은 높이로 소리 나는 카포 0~7번을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 목록에서 다른 위치를 직접 고를 수도 있어요.",
   i3h:"운지와 코드 사전",
   i3p:"곡에 나온 코드는 운지 그림으로 모아 보여 줘요. Bmadd9, C♯m7♭5처럼 낯선 코드는 코드 사전에서 구성음, 잡기 쉬운 운지, 하이코드까지 확인할 수 있어요.",
   i4h:"리듬 가이드",
@@ -451,7 +531,7 @@ const I18N={
   q5:"원곡 키가 다르게 나와요.",
   a5:"원곡 키는 코드 진행을 보고 추정한 값이라 가끔 다를 수 있어요. 키 이름만 다르게 보일 뿐 코드 변환과 카포 추천 결과에는 영향이 없어요.",
   q6:"붙여 넣은 악보가 저장되나요?",
-  a6:"서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘기록’에서 언제든 지울 수 있어요.",
+  a6:"서버로는 보내지 않아요. 악보와 가사는 사용 중인 브라우저 안에서만 처리돼요. ‘저장’을 누른 악보만 나중에 다시 볼 수 있게 이 브라우저에 보관되고, ‘저장한 악보’에서 언제든 지울 수 있어요.",
   q7:"무료인가요?",
   a7:"네, 회원가입 없이 모든 기능을 무료로 쓸 수 있어요. 사이트 운영비는 광고로 충당해요.",
   infoMore:"기타 가이드 더 보기 →",
@@ -468,7 +548,7 @@ const I18N={
   stepAria:'키 조절', down:'키 내리기', up:'키 올리기', reset:'원키로',
   listen:'듣기', stopShort:'멈춤',
   presets:'빠른 설정', fmS:'여 → 남', mfS:'남 → 여', fToM:'여자 노래를 남자 키로', mToF:'남자 노래를 여자 키로',
-  keynote:'출발점일 뿐이에요. 들어 보고 낮으면 ▲, 높으면 ▼',
+  keynote:'남녀 버튼은 출발점이에요. ▶ 듣기로 들어 보고 낮으면 +, 높으면 −',
   recommended:'추천', noCapo:'카포 없이', capoN:c=>`카포 ${c}`, shapes:L=>`${L} 모양`, sameSound:'같은 높이',
   withoutCapo:'카포 없이', barreN:n=>n?`바레 ${n}`:'바레 없음',
   copy:'복사', copied:'복사됨', selected:'Ctrl+C',
@@ -487,13 +567,40 @@ const I18N={
   inputLabel:'Original chords', lyricsOk:'Lyrics OK', lyricsTip:'Only chords change; lyrics and line breaks stay. A capo note on the sheet is applied automatically.',
   placeholder:'[Verse]\nG          D/F#\nPaste a chord sheet copied\nfrom any chord site',
   navGuide:'Guitar guides (Korean)', navAbout:'About', navPrivacy:'Privacy',
-  srcTip:'Sheets from any site work · Recommended: ', srcHow:'',
+  srcTip:'Recommended: ', srcHow:'',
   paste:'Paste', pasteTip:'Paste a chord sheet copied from a chord site', clear:'Clear', pasteFail:'Press Ctrl+V (or long-press → Paste on mobile)', srcCapo:c=>`Sheet capo ${c} applied`,
   photo:'Sheet photo', photoTip:'Reads chords and lyrics (English, Korean) from a photo or screenshot. Ctrl+V works too.',
   simpTitle:'Simplify', simpTip:'Use an easier shape when one exists (Cmaj7 → C, Bb7sus4 → Bb7)',
   compare:'Show original image', imgAlt:'Uploaded chord sheet',
   samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor', s5:'Bars & slash chords',
   rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
+  brandTxt:"EasyChord",
+  c1:"Paste a chord sheet",
+  c1hint:"Paste the chord and lyric lines as they are. Sheets from any site work.",
+  c2:"Fit the key to your voice",
+  c3:"Pick a capo position",
+  c3hint:"Every option sounds the same. <span class=\"hard\">Orange</span> means a barre chord.",
+  fromKey:"Original key",
+  toKey:"New key",
+  keyEmpty:"Paste a sheet to see the original and new key.",
+  lvHard:"Hard",
+  ebRec:"Recommended",
+  ebSel:"Your choice",
+  viewAria:"View",
+  viewBoth:"Lyrics + chords",
+  viewChords:"Chords only",
+  sizeDown:"Smaller text",
+  sizeUp:"Larger text",
+  sizeGlyph:"A",
+  diagToggle:"Show fingering",
+  print:"Print",
+  diagH:"Chords in this song",
+  usedNote:"Chords sit right above the syllable where they change.",
+  legEasy:"Easy chord",
+  legHard:"Barre chord",
+  legBass:"Bass note",
+  shH:(c,L)=>c?`Capo <em>${c}</em> · <em>${L}</em> shapes`:`No capo · <em>${L}</em>`,
+  shP:(K,n)=>`Sounds in ${K} · ${n?`${n} barre chord${n>1?'s':''}`:'no barre chords'}`, diagCount:n=>`${n} · tap a name to look it up`,
   histShort:'Saved', histOpen:'Show saved sheets', histTitle:'Saved sheets', save:'Save', saved:'Saved', savedToast:'Saved · find it under “Saved” at the top',
   histEmpty:'No saved sheets yet.<br>Press “Save” on a converted sheet to keep it here.', histOpenBtn:'Open', histDel:'Delete', histTitleAria:'Title (tap to rename)',
   histLocal:'Stored only in this browser', histClear:'Delete all', histClearArm:'Press again to delete all', histNoStore:'This browser can’t save (private mode?)',
@@ -506,9 +613,9 @@ const I18N={
   infoH:"When EasyChord helps",
   infoP:"A karaoke machine changes key with one button, but on guitar every chord changes. When the original key doesn’t suit your voice, when a sheet is full of barre chords like F and Bm, or when you hit a chord name you’ve never seen, EasyChord does the math for you.",
   i1h:"Change the key",
-  i1p:"Paste a sheet and press ▲▼ to move every chord by a semitone. Lyrics, line breaks and bar lines stay put, and the bass note of slash chords moves with the correct name.",
+  i1p:"Paste a sheet and press −/+ to move every chord by a semitone. Lyrics, line breaks and bar lines stay put, and the bass note of slash chords moves with the correct name.",
   i2h:"Capo suggestions",
-  i2p:"It compares every capo position from 0 to 7 that sounds at the same pitch and suggests the one with the fewest barre chords. You can also pick from the difficulty bars yourself.",
+  i2p:"It compares every capo position from 0 to 7 that sounds at the same pitch and suggests the one with the fewest barre chords. You can also pick another one from the list.",
   i3h:"Fingering and chord dictionary",
   i3p:"Every chord in the song is shown as a diagram. Unfamiliar chords like Bmadd9 or C♯m7♭5 can be looked up in the chord dictionary with their notes, easy shapes and barre shapes.",
   i4h:"Rhythm guide",
@@ -542,7 +649,7 @@ const I18N={
   stepAria:'Change key', down:'Key down', up:'Key up', reset:'Back to original',
   listen:'Listen', stopShort:'Stop',
   presets:'Quick set', fmS:'Female → Male', mfS:'Male → Female', fToM:'Female song in a male key', mToF:'Male song in a female key',
-  keynote:'Just a starting point. Listen: too low ▲, too high ▼',
+  keynote:'The presets are a starting point. Press ▶ Listen: too low +, too high −',
   recommended:'Best', noCapo:'No capo', capoN:c=>`Capo ${c}`, shapes:L=>`${L} shapes`, sameSound:'Same pitch',
   withoutCapo:'Without capo', barreN:n=>n?`${n} barre`:'No barre',
   copy:'Copy', copied:'Copied', selected:'Ctrl+C',
@@ -873,12 +980,19 @@ function click(){
 document.addEventListener('visibilitychange',()=>{ if(document.hidden&&rh.timer) stopRh(); });
 buildRh();
 
-const $src=document.getElementById('src'), $simp=document.getElementById('simp'), $out=document.getElementById('out');
+const $src=document.getElementById('src'), $simp=document.getElementById('simp'), $out=document.getElementById('out'), $key=document.getElementById('keycard'), $capos=document.getElementById('capos');
 let shift=0, capoSel=null, preset=null;
+const recall=(k,d)=>{ try{ const v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } };
+const store=(k,v)=>{ try{ localStorage.setItem(k,String(v)); }catch(e){} };
+let vmode=recall('easychord-view','both')==='chords'?'chords':'both';
+let scale=Math.min(1.6,Math.max(.8,+recall('easychord-scale',1)||1));
+let showDiag=recall('easychord-diag','1')!=='0';
 
 function render(){
   const P=parse($src.value);
-  if(!P.chords.length){ stopRh(); $out.innerHTML=`<section class="card empty">${ic('music')}<div>${t('empty')}</div></section>`; return; }
+  if(!P.chords.length){ stopRh(); view=null;
+    $key.innerHTML=`<p class="keyempty">${t('keyEmpty')}</p>`; $capos.innerHTML='';
+    $out.innerHTML=`<div class="empty">${ic('music')}<div>${t('empty')}</div></div>`; return; }
   const simplify=$simp.checked, K=detectKey(P.chords);
   const sc=P.srcCapo; // 악보가 카포 기준이면 실제 소리는 그만큼 높음
   const origLabel=keyLabel(mod(K.tonic+sc),K.minor);
@@ -889,123 +1003,136 @@ function render(){
   const bestC=capos.reduce((a,b)=>rank(b)<rank(a)-1e-9?b:a);
   if(capoSel===null) capoSel=bestC.c;
   const cur=capos.find(v=>v.c===capoSel);
-  const maxS=Math.max(...capos.map(v=>v.score));
 
-  const title=cur.c===0?t('titleNoCapo',cur.label):t('titleCapo',cur.c,cur.label);
-  const capoLine=cur.c===0?'':`<span class="capo">${ic('capo')}Capo ${cur.c}</span>\n`;
-  // 코드 이름 길이가 바뀌어도 가사 위 코드 위치가 밀리지 않게 뒤 공백을 늘리거나 줄임
   // [코드]가사 형식 줄은 코드를 가사 위에 올려서 보여 줌(복사할 땐 [코드]가사 그대로)
   const bracketed=(l,i)=>l[i].ci>=0&&i>0&&/\[\s*$/.test(l[i-1].t);
-  const cpOut=(l,html)=>{
-    const segs=[]; let cur={it:null,text:''};
-    l.forEach((t,i)=>{
-      if(bracketed(l,i)){ if(cur.it||cur.text) segs.push(cur); cur={it:cur_items(t.ci),text:''}; }
-      else if(t.ci>=0) cur.text+=cur_items(t.ci).name;
-      else cur.text+=(i%2===1)?t.t.replace(/[\[\]]/g,''):t.t;
-    });
-    if(cur.it||cur.text) segs.push(cur);
-    if(!html) return segs.map(s=>(s.it?`[${s.it.name}]`:'')+s.text).join('');
-    return segs.map(s=>`<span class="cp"><b class="${s.it&&s.it.shape.barre?'hard':''}">${s.it?chordHTML(s.it.name):''}</b><span class="ly">${esc(s.text).replace(/\|/g,'<span class="bar">|</span>')||' '}</span></span>`).join('');
-  };
   const cur_items=ci=>cur.items[ci];
-  // 마디(|)는 연한 회색, 코드만 있는 줄의 박자 표시(- / %)도 연하게
+  const cpOut=(l,html)=>{
+    const segs=[]; let sg={it:null,text:''};
+    l.forEach((x,i)=>{
+      if(bracketed(l,i)){ if(sg.it||sg.text) segs.push(sg); sg={it:cur_items(x.ci),text:''}; }
+      else if(x.ci>=0) sg.text+=cur_items(x.ci).name;
+      else sg.text+=(i%2===1)?x.t.replace(/[\[\]]/g,''):x.t;
+    });
+    if(sg.it||sg.text) segs.push(sg);
+    if(!html) return segs.map(z=>(z.it?`[${z.it.name}]`:'')+z.text).join('');
+    return segs.map(z=>`<span class="cp"><b class="${z.it&&z.it.shape.barre?'hard':''}">${z.it?chordHTML(z.it.name):''}</b><span class="ly">${esc(z.text).replace(/\|/g,'<span class="bar">|</span>')||' '}</span></span>`).join('');
+  };
+  // 마디(|)는 연하게, 코드만 있는 줄의 박자 표시(- / %)도 연하게
   const delim=(x,html,cl)=>!html?x:esc(x).replace(/\|/g,'<span class="bar">|</span>').replace(/-+/g,m=>cl?`<span class="beat">${m}</span>`:m);
-  const lineOut=(l,html)=>{ if(l.some((t,i)=>bracketed(l,i))) return cpOut(l,html);
-    const cl=l.some(x=>x.ci>=0)&&!l.some((x,i)=>i%2===0&&x.ci<0&&/[A-Za-z가-힣]/.test(x.t));
-    let out='',debt=0;
-    l.forEach((t,i)=>{
-      if(t.ci>=0){ const it=cur.items[t.ci]; debt+=it.name.length-t.t.length;
+  const isCL=l=>l.some(x=>x.ci>=0)&&!l.some((x,i)=>i%2===0&&x.ci<0&&/[A-Za-z가-힣]/.test(x.t));
+  // 코드 이름 길이가 바뀌어도 마디·가사 위치가 밀리지 않게 뒤 공백을 늘리거나 줄임 (복사용 글자 악보·코드 줄)
+  const lineOut=(l,html)=>{ if(l.some((x,i)=>bracketed(l,i))) return cpOut(l,html);
+    const cl=isCL(l); let out='',debt=0;
+    l.forEach((x,i)=>{
+      if(x.ci>=0){ const it=cur.items[x.ci]; debt+=it.name.length-x.t.length;
         out+=html?`<span class="ch${it.shape.barre?' hard':''}">${chordHTML(it.name)}</span>`:it.name; return; }
-      if(i%2===1&&debt&&/^ /.test(t.t)){ // 코드 이름 길이가 바뀐 만큼 앞 공백을 줄이거나 늘려 마디·가사 위치 유지
-        const lead=t.t.match(/^ +/)[0].length, want=lead-debt, len=Math.max(1,want); debt=len-want;
-        out+=' '.repeat(len)+delim(t.t.slice(lead),html,cl); return; }
-      if(i%2===1) out+=delim(t.t,html,cl);
-      else out+=html?(cl&&/^[\/%.]+$/.test(t.t)?`<span class="beat">${esc(t.t)}</span>`:esc(t.t)):t.t;
+      if(i%2===1&&debt&&/^ /.test(x.t)){ const lead=x.t.match(/^ +/)[0].length, want=lead-debt, len=Math.max(1,want); debt=len-want;
+        out+=' '.repeat(len)+delim(x.t.slice(lead),html,cl); return; }
+      if(i%2===1) out+=delim(x.t,html,cl);
+      else out+=html?(cl&&/^[\/%.]+$/.test(x.t)?`<span class="beat">${esc(x.t)}</span>`:esc(x.t)):x.t;
     }); return out; };
   const shown=P.lines.filter(l=>!l.meta); while(shown.length&&!shown[0].map(x=>x.t).join('').trim()) shown.shift();
-  const sheetHTML=capoLine+shown.map(l=>lineOut(l,true)).join('\n');
+  // 화면용 악보: 코드 줄 + 바로 아래 가사 줄은 코드를 가사 글자 위에 붙임(한글은 두 칸 폭으로 계산)
+  const txtOf=l=>l.map(x=>x.t).join('');
+  const isSec=l=>!l.some(x=>x.ci>=0)&&/^\s*\[[^\]]+\]\s*$/.test(txtOf(l));
+  const isLyr=l=>l&&!l.meta&&!l.some(x=>x.ci>=0)&&txtOf(l).trim()&&!isSec(l)&&!isTab(txtOf(l));
+  const wch=c=>/[ᄀ-ᇿ⺀-鿿가-힯＀-￯]/.test(c)?2:1;
+  const seg=(it,tx)=>`<span class="sg"><span class="c${it&&it.shape.barre?' h':''}">${it?chordHTML(it.name):''}</span><span class="t">${esc(tx)||' '}</span></span>`;
+  const pairOut=(cl,ly)=>{
+    let col=0; const pos=[]; cl.forEach(x=>{ if(x.ci>=0) pos.push({col,it:cur.items[x.ci]}); col+=x.t.length; });
+    const chars=[...txtOf(ly).replace(/\s+$/,'')]; let c=0; const cols=chars.map(ch=>{const st=c; c+=wch(ch); return st;});
+    const at=k=>{ for(let j=0;j<cols.length;j++) if(cols[j]>=k) return j; return chars.length; };
+    const cut=pos.map(p=>at(p.col)); let h=cut[0]>0?seg(null,chars.slice(0,cut[0]).join('')):'';
+    pos.forEach((p,k)=>{ h+=seg(p.it,chars.slice(cut[k],k+1<cut.length?cut[k+1]:chars.length).join('')); });
+    return `<div class="ln">${h}</div>`;
+  };
+  let sheetBody='', lastBlank=true;
+  for(let i=0;i<shown.length;i++){
+    const l=shown[i], tx=txtOf(l);
+    if(!tx.trim()){ if(!lastBlank) sheetBody+='<div class="blank"></div>'; lastBlank=true; continue; }
+    lastBlank=false;
+    if(isSec(l)){ sheetBody+=`<div class="sec">${esc(tx.trim().slice(1,-1))}</div>`; continue; }
+    if(isTab(tx)){ sheetBody+=`<div class="tabl">${esc(tx)}</div>`; continue; }
+    if(l.some((x,k)=>bracketed(l,k))){
+      sheetBody+=vmode==='chords'?`<div class="cl">${l.filter(x=>x.ci>=0).map(x=>`<span class="ch${cur.items[x.ci].shape.barre?' hard':''}">${chordHTML(cur.items[x.ci].name)}</span>`).join('  ')}</div>`:`<div class="ln">${cpOut(l,true)}</div>`;
+      continue; }
+    if(isCL(l)){
+      const nx=shown[i+1];
+      if(vmode==='both'&&!/\|/.test(tx)&&isLyr(nx)){ sheetBody+=pairOut(l,nx); i++; continue; }
+      sheetBody+=`<div class="cl">${lineOut(l,true)}</div>`;
+      if(vmode==='chords'&&isLyr(nx)) i++;
+      continue; }
+    if(l.some(x=>x.ci>=0)){ sheetBody+=`<div class="cl">${lineOut(l,true)}</div>`; continue; }
+    if(vmode==='both') sheetBody+=`<div class="lyr">${esc(tx)}</div>`;
+  }
   view={orig:origLabel,key:sounding.label,capo:cur.c,preview:uniq(cur.items.map(i=>i.name)).slice(0,8).join('  ')};
   const sheetTXT=(cur.c===0?'':`Capo ${cur.c}\n`)+shown.map(l=>lineOut(l,false)).join('\n');
-  const realLine=cur.c===0?'':`<p class="real">${ic('sound')}${t('realSound')} <b>${uniq(sounding.items.map(i=>i.name)).map(chordHTML).join('&nbsp; ')}</b></p>`;
-  const barreBadge=n=>`<span class="badge ${n?'warn':'good'}">${ic(n?'alert':'check')}${t('barreN',n)}</span>`;
-  const delta=shift<0?`<span class="delta dn">${ic('arrowDown')}${t('keyDown',-shift)}</span>`:shift>0?`<span class="delta upc">${ic('arrowUp')}${t('keyUp',shift)}</span>`:`<span class="delta same">${t('keySame')}</span>`;
+  const accK=L=>esc(L).replace(/([♭♯])/g,'<span class="acc">$1</span>');
+  document.documentElement.style.setProperty('--sheet-scale',scale);
 
-  $out.innerHTML=`
-  <section class="card">
-    <div class="keyrow">
-      <div class="keybig"><span class="k">${sounding.label.replace(/([♭♯])/g,'<span class="acc">$1</span>')}</span><span class="kmeta"><span class="orig">${t('orig')} ${origLabel}</span>${delta}${sc?`<span class="orig">${ic('capo')} ${t('srcCapo',sc)}</span>`:''}</span></div>
-      <div class="stepper" role="group" aria-label="${t('stepAria')}">
-        <button class="step" type="button" id="down" aria-label="${t('down')}" title="${t('down')}" ${shift<=MIN?'disabled':''}>${ic('down')}</button>
-        <span class="stepval" aria-live="polite">${shift>0?'+':''}${shift}</span>
-        <button class="step" type="button" id="up" aria-label="${t('up')}" title="${t('up')}" ${shift>=MAX?'disabled':''}>${ic('up')}</button>
-        <button class="icon-btn" type="button" id="reset" aria-label="${t('reset')}" title="${t('reset')}" ${shift===0?'disabled':''}>${ic('reset')}</button>
-      </div>
+  // 2 키 카드
+  $key.innerHTML=`<div class="keyline"><div class="keybox"><div class="lbl">${t('fromKey')}</div><div class="val">${accK(origLabel)}</div></div><div class="arrow" aria-hidden="true">→</div><div class="keybox to"><div class="lbl">${t('toKey')}</div><div class="val">${accK(sounding.label)}</div></div></div>
+    <div class="row mt">
+      <div class="stepper" role="group" aria-label="${t('stepAria')}"><button type="button" id="down" aria-label="${t('down')}" title="${t('down')}" ${shift<=MIN?'disabled':''}>−</button><output aria-live="polite">${shift===0?t('keySame'):(shift>0?'+':'')+shift}</output><button type="button" id="up" aria-label="${t('up')}" title="${t('up')}" ${shift>=MAX?'disabled':''}>+</button></div>
+      <button class="chip-btn" type="button" id="reset" ${shift===0?'disabled':''}>${t('reset')}</button>
       <button class="play" type="button" id="play">${ic(audio?'stop':'play')}<span>${audio?t('stopShort'):t('listen')}</span></button>
     </div>
-    <div class="presets" role="group" aria-label="${t('presets')}">
-      <button class="chip" type="button" data-preset="-5" aria-pressed="${preset===-5}" title="${t('fToM')}" aria-label="${t('fToM')}">${t('fmS')} <b>−5</b></button>
-      <button class="chip" type="button" data-preset="5" aria-pressed="${preset===5}" title="${t('mToF')}" aria-label="${t('mToF')}">${t('mfS')} <b>+5</b></button>
-      <span class="hint-i" title="${t('keynote')}" aria-label="${t('keynote')}" role="img">${ic('info')}</span>
+    <div class="row mt" role="group" aria-label="${t('presets')}">
+      <button class="chip-btn" type="button" data-preset="-5" aria-pressed="${preset===-5}" title="${t('fToM')}">${t('fmS')} <b>−5</b></button>
+      <button class="chip-btn" type="button" data-preset="5" aria-pressed="${preset===5}" title="${t('mToF')}">${t('mfS')} <b>+5</b></button>
     </div>
-  </section>
+    <p class="hint mt">${sc?`${ic('capo')} ${t('srcCapo',sc)} · `:''}${t('keynote')}</p>`;
 
-  <div class="picks">
-    <button class="pick best" type="button" data-capo="${bestC.c}" aria-pressed="${capoSel===bestC.c}">
-      <span class="pk-ic">${ic(bestC.c?'capo':'guitar')}</span>
-      <span class="pk-body"><span class="eb">${ic('star')}${t('recommended')}</span>
-        <span class="main">${bestC.c===0?t('noCapo'):t('capoN',bestC.c)}</span>
-        <span class="badges">${bestC.c?`<span class="badge">${t('shapes',bestC.label)}</span>`:''}${barreBadge(bestC.barres)}</span></span>
-    </button>
-    ${bestC.c===0?'':`<button class="pick" type="button" data-capo="0" aria-pressed="${capoSel===0}">
-      <span class="pk-ic">${ic('guitar')}</span>
-      <span class="pk-body"><span class="eb">${t('withoutCapo')}</span>
-        <span class="main">${sounding.label}</span>
-        <span class="badges">${barreBadge(capos[0].barres)}</span></span>
-    </button>`}
+  // 3 카포 목록
+  $capos.setAttribute('aria-label',t('neckAria'));
+  $capos.innerHTML=capos.map(v=>{ const [l,b]=v.barres===0?[t('lvEasy'),'b-easy']:v.barres===1?[t('lvMid'),'b-mid']:[t('lvHard'),'b-hard'];
+    return `<button type="button" class="capo" data-capo="${v.c}" aria-pressed="${capoSel===v.c}"><span class="cn">${v.c===0?t('capoNone'):t('capoN',v.c)}${v.c===bestC.c?`<span class="rec">${t('recommended')}</span>`:''}<small>${t('shapes',v.label)}</small></span><span class="chs">${v.unique.map(u=>`<span class="${u.shape.barre?'h':''}">${esc(pretty(u.name))}</span>`).join('')}</span><span class="badge ${b}">${l}</span></button>`; }).join('');
+
+  // 악보 카드
+  const figs=cur.unique.map(u=>{const [tx,c]=level(u.shape.d);
+    return `<figure class="diag${u.shape.barre?' hard':''}"><span class="nm" title="${t('dictView')}">${chordHTML(u.name)}</span>${diagram(u.shape)}<span class="lv ${c}">${tx}</span>${bassHint(u)}${u.approx!==undefined?`<span class="approx">${esc(t('approx',pretty(pcName(u.pc,false)+u.approx)))}</span>`:''}</figure>`;}).join('');
+  $out.innerHTML=`
+  <div class="sheet-head">
+    <div class="sh-title"><div class="eyebrow">${capoSel===bestC.c?t('ebRec'):t('ebSel')}</div><h2>${t('shH',cur.c,esc(cur.label))}</h2><p>${esc(t('shP',sounding.label,cur.barres))}</p></div>
+    <div class="sh-tools">
+      <div class="seg" role="group" aria-label="${t('viewAria')}"><button type="button" data-v="both" aria-pressed="${vmode==='both'}">${t('viewBoth')}</button><button type="button" data-v="chords" aria-pressed="${vmode==='chords'}">${t('viewChords')}</button></div>
+      <div class="size" role="group"><button type="button" id="smaller" aria-label="${t('sizeDown')}" title="${t('sizeDown')}" ${scale<=.8?'disabled':''}>${t('sizeGlyph')}</button><span>${Math.round(scale*100)}%</span><button type="button" id="bigger" aria-label="${t('sizeUp')}" title="${t('sizeUp')}" ${scale>=1.6?'disabled':''}>${t('sizeGlyph')}</button></div>
+    </div>
   </div>
-
-  <section class="card">
-    <div class="sec-h"><h2>${ic('sheet')}${esc(title)}</h2><div class="sec-act">${saveBtn()}<button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button></div></div>
-    <div id="rh-slot"></div>
-    <pre class="sheet" id="sheet">${sheetHTML}</pre>
-    ${realLine}
-  </section>
-
-  <section class="card">
-    <div class="sec-h"><h2>${ic('grid')}${t('fingering')}</h2><span class="count">${cur.unique.length}</span></div>
-    <div class="diagrams">${cur.unique.map(u=>{const [tx,c]=level(u.shape.d);
-      return `<figure class="cd"><span class="nm">${chordHTML(u.name)}</span>${diagram(u.shape)}<span class="lv ${c}">${tx}</span>${bassHint(u)}${u.approx!==undefined?`<span class="approx">${esc(t('approx',pretty(pcName(u.pc,false)+u.approx)))}</span>`:''}</figure>`;}).join('')}</div>
-  </section>
-
-  <section class="card">
-    <div class="sec-h"><h2>${ic('capo')}${t('neckTitle')}</h2><span class="hint-i" title="${t('neckCap')}" aria-label="${t('neckCap')}" role="img">${ic('info')}</span></div>
-    <div class="neck" role="group" aria-label="${t('neckAria')}">${capos.map(v=>`
-      <button type="button" data-capo="${v.c}" aria-pressed="${capoSel===v.c}">
-        <span class="fr">${v.c===0?t('capoNone'):t('capoN',v.c)}${[3,5,7].includes(v.c)?'<i class="inlay"></i>':''}</span>
-        <span class="shape">${v.label}${v.c===bestC.c?ic('star'):''}</span>
-        <span class="bar"><i style="width:${Math.max(4,Math.round(v.score/maxS*100))}%"></i></span>
-        <span class="bc">${ic('barre')}${t('barreShort',v.barres)}</span>
-      </button>`).join('')}</div>
-  </section>`;
-
+  <div class="toolbar">
+    <button type="button" class="toggle" id="t-simp" aria-pressed="${$simp.checked}" title="${t('simpTip')}"><span class="sw"></span>${t('simpTitle')}</button>
+    <button type="button" class="toggle" id="t-diag" aria-pressed="${showDiag}"><span class="sw"></span>${t('diagToggle')}</button>
+    <div class="tb-r">${saveBtn()}<button class="btn" type="button" id="copy">${ic('copy')}<span>${t('copy')}</span></button><button class="btn" type="button" id="print">${ic('print')}<span>${t('print')}</span></button></div>
+  </div>
+  ${showDiag?`<div class="diag-wrap"><div class="diag-top"><h3>${t('diagH')}</h3><span>${t('diagCount',cur.unique.length)}</span></div><div class="diags">${figs}</div></div>`:''}
+  <div class="rh-wrap"><div id="rh-slot"></div></div>
+  <div class="sheet" id="sheet">${sheetBody}</div>
+  <div class="used">${cur.c?`<span class="real">${ic('sound')}${t('realSound')} <b>${uniq(sounding.items.map(i=>i.name)).map(chordHTML).join('&nbsp; ')}</b></span>`:`<span>${t('usedNote')}</span>`}<div class="legend"><span><i style="background:var(--accent)"></i>${t('legEasy')}</span><span><i style="background:var(--hard)"></i>${t('legHard')}</span><span><i style="background:var(--bass)"></i>${t('legBass')}</span></div></div>`;
 
   document.getElementById('rh-slot').replaceWith($rh); // 리듬 가이드는 다시 그려도 상태(재생 중 등)가 유지되게 같은 요소를 옮겨 붙임
-  const set=(s,p=null)=>{shift=Math.max(MIN,Math.min(MAX,s));preset=p;capoSel=null;stopAudio();render();};
+  const set=(v,p=null)=>{shift=Math.max(MIN,Math.min(MAX,v));preset=p;capoSel=null;stopAudio();render();};
   document.getElementById('down').onclick=()=>set(shift-1);
   document.getElementById('up').onclick=()=>set(shift+1);
   document.getElementById('reset').onclick=()=>set(0);
-  $out.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>set(+b.dataset.preset,+b.dataset.preset));
-  $out.querySelectorAll('[data-capo]').forEach(b=>b.onclick=()=>{capoSel=+b.dataset.capo;render();});
+  $key.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>set(+b.dataset.preset,+b.dataset.preset));
+  $capos.querySelectorAll('[data-capo]').forEach(b=>b.onclick=()=>{capoSel=+b.dataset.capo;render();});
   document.getElementById('play').onclick=()=>{
     if(audio){stopAudio();render();return;}
     if(playProgression(sounding.items,()=>render())) render();
   };
+  $out.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{ vmode=b.dataset.v; store('easychord-view',vmode); render(); });
+  const setScale=d=>{ scale=Math.round(Math.min(1.6,Math.max(.8,scale+d))*10)/10; store('easychord-scale',scale); render(); };
+  document.getElementById('smaller').onclick=()=>setScale(-.1);
+  document.getElementById('bigger').onclick=()=>setScale(.1);
+  document.getElementById('t-simp').onclick=()=>{ $simp.checked=!$simp.checked; capoSel=null; render(); };
+  document.getElementById('t-diag').onclick=()=>{ showDiag=!showDiag; store('easychord-diag',showDiag?'1':'0'); render(); };
+  document.getElementById('print').onclick=()=>window.print();
   document.getElementById('save').onclick=saveCurrent;
   document.getElementById('copy').onclick=async e=>{
-    const btn=e.currentTarget;
-    const lb=btn.querySelector('span');
-    try{ await navigator.clipboard.writeText(sheetTXT); lb.textContent=t('copied'); }
-    catch{ const r=document.createRange(); r.selectNodeContents(document.getElementById('sheet')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); lb.textContent=t('selected'); }
+    const lb=e.currentTarget.querySelector('span');
+    try{ await navigator.clipboard.writeText(sheetTXT); lb.textContent=t('copied'); toast(ic('check')+esc(t('copied'))); }
+    catch{ const r=document.createRange(); r.selectNodeContents(document.getElementById('sheet')); const sl=getSelection(); sl.removeAllRanges(); sl.addRange(r); lb.textContent=t('selected'); }
     setTimeout(()=>{lb.textContent=t('copy');},1600);
   };
 }
@@ -1242,7 +1369,7 @@ $dscrim.addEventListener('click',closeDict);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeDict(); });
 $dq.addEventListener('input',dictRender);
 // 악보·운지 카드의 코드 이름을 누르면 사전에서 바로 보기
-$out.addEventListener('click',e=>{ const c=e.target.closest('.sheet .ch, .sheet .cp b, figure.cd .nm'); if(c&&c.textContent.trim()) openDict(c.textContent.trim()); });
+$out.addEventListener('click',e=>{ const c=e.target.closest('.sheet .ch, .sg .c, .sheet .cp b, .diag .nm'); if(c&&c.textContent.trim()) openDict(c.textContent.trim()); });
 
 // ── 저장한 악보(기록) ──
 // 서버 없이 이 브라우저의 localStorage에만 보관. 같은 원본 악보를 다시 저장하면 새로 쌓지 않고 갱신해서 맨 위로 올림
@@ -1252,7 +1379,7 @@ const hLoad=()=>{ try{ const a=JSON.parse(localStorage.getItem(HKEY)||'[]'); ret
 const hSave=a=>{ try{ localStorage.setItem(HKEY,JSON.stringify(a.slice(0,HMAX))); return true; }catch(e){ return false; } };
 const hFind=src=>hLoad().find(e=>e.src===src);
 const isSaved=()=>{ const e=hFind($src.value); return !!(e&&view&&e.shift===shift&&e.capo===view.capo&&e.simp===$simp.checked); };
-const saveBtn=()=>{ const ok=isSaved(); return `<button class="btn ghost${ok?' done':''}" type="button" id="save" aria-pressed="${ok}">${ic(ok?'check':'bookmark')}<span>${ok?t('saved'):t('save')}</span></button>`; };
+const saveBtn=()=>{ const ok=isSaved(); return `<button class="btn${ok?' saved':''}" type="button" id="save" aria-pressed="${ok}">${ic(ok?'check':'bookmark')}<span>${ok?t('saved'):t('save')}</span></button>`; };
 function autoTitle(src){
   // 가사처럼 보이는 첫 줄(코드·섹션·안내 줄이 아닌 줄), 없으면 앞쪽 코드
   const P=parse(src);
@@ -1287,7 +1414,7 @@ function histRender(){
   $hout.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{
     const e=hLoad().find(x=>x.id===b.dataset.open); if(!e) return;
     $src.value=e.src; fresh(); shift=e.shift; capoSel=e.capo; $simp.checked=e.simp; note(''); render(); closeHist();
-    if(innerWidth<900) $out.scrollIntoView({behavior:'smooth',block:'start'});
+    if(innerWidth<=980) $out.scrollIntoView({behavior:'smooth',block:'start'});
   });
   $hout.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ hSave(hLoad().filter(x=>x.id!==b.dataset.del)); hCount(); histRender(); render(); });
   $hout.querySelectorAll('.hi-title').forEach(inp=>{
