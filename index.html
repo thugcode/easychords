@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<title>쉬운코드</title>
+<title>SingKey 씽키 · 내 목소리에 맞춘 기타 코드</title>
 <meta name="description" content="기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-/* 쉬운코드 — 따뜻한 종이 톤 디자인. 왼쪽: 1 악보 → 2 키 → 3 카포, 오른쪽: 악보 */
+/* 씽키 — 따뜻한 종이 톤 디자인. 왼쪽: 1 악보 → 2 키 → 3 카포, 오른쪽: 악보 */
 :root{
   --bg:#F5F3EE; --surface:#FFFFFF; --sunk:#FAF8F4;
   --ink:#1B1A17; --ink2:#45423B; --muted:#78746A; --line:#E5E1D7; --line2:#D6D1C4;
@@ -341,7 +341,7 @@ body.dict-on .dict-fab{opacity:0;pointer-events:none}
 <body>
 
 <header class="top"><div class="top-in">
-  <a class="logo" href="./"><span class="logo-mark" aria-hidden="true">♪</span><span data-i18n="brandTxt">쉬운코드</span></a>
+  <a class="logo" href="./"><span class="logo-mark" aria-hidden="true">♪</span><span data-i18n="brandTxt">SingKey</span></a>
   <span class="tagline" data-i18n="tagline">키는 내 목소리에, 코드는 쉽게</span>
   <div class="top-r">
     <button class="ghost" id="hist-btn" type="button" aria-controls="hist" aria-expanded="false" data-i18n-title="histOpen" data-i18n-aria="histOpen" aria-label="저장한 악보 보기"><i data-ic="clock"></i><span data-i18n="histShort">저장한 악보</span><b id="hist-n" hidden></b></button>
@@ -386,7 +386,7 @@ body.dict-on .dict-fab{opacity:0;pointer-events:none}
   </div>
 
   <section class="info" aria-labelledby="info-h">
-    <div><h2 id="info-h" data-i18n="infoH">쉬운코드는 이럴 때 필요해요</h2><p class="lead" data-i18n="infoP">노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.</p><p class="more"><a href="guide/" data-i18n="infoMore">기타 가이드 더 보기 →</a></p></div>
+    <div><h2 id="info-h" data-i18n="infoH">씽키는 이럴 때 필요해요</h2><p class="lead" data-i18n="infoP">노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 씽키가 대신 계산해 드려요.</p><p class="more"><a href="guide/" data-i18n="infoMore">기타 가이드 더 보기 →</a></p></div>
     <div class="feats"><div class="feat"><h3><i data-ic="mic"></i><span data-i18n="i1h">키 바꾸기</span></h3><p data-i18n="i1p">악보를 붙여 넣고 −/+로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.</p></div><div class="feat"><h3><i data-ic="capo"></i><span data-i18n="i2h">카포 추천</span></h3><p data-i18n="i2p">같은 높이로 소리 나는 카포 0~7번을 모두 비교해서 바레 코드가 가장 적은 위치를 추천해요. 목록에서 다른 위치를 직접 고를 수도 있어요.</p></div><div class="feat"><h3><i data-ic="book"></i><span data-i18n="i3h">운지와 코드 사전</span></h3><p data-i18n="i3p">곡에 나온 코드는 운지 그림으로 모아 보여 줘요. Bmadd9, C♯m7♭5처럼 낯선 코드는 코드 사전에서 구성음, 잡기 쉬운 운지, 하이코드까지 확인할 수 있어요.</p></div><div class="feat"><h3><i data-ic="metro"></i><span data-i18n="i4h">리듬 가이드</span></h3><p data-i18n="i4p">칼립소, 8비트 고고, 16비트 슬로우 고고, 셔플 패턴을 화살표로 보여 주고, 메트로놈처럼 박자에 맞춰 칸마다 불이 들어와요.</p></div></div>
   </section>
   <section class="faq-sec" aria-labelledby="faq-h">
@@ -461,8 +461,8 @@ const ic=n=>`<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${IC[n]||''}<
 // ── 언어(한국어/영어) ──
 const I18N={
  ko:{
-  title:'쉬운코드', desc:'기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.',
-  brand:'쉬운<span>코드</span>', tagline:'키는 내 목소리에, 코드는 쉽게', langAria:'언어',
+  title:'SingKey 씽키 · 내 목소리에 맞춘 기타 코드', desc:'기타 코드를 붙여 넣고 노래방처럼 키를 올리고 내리면, 바뀐 코드와 가장 쉽게 치는 카포 위치, 운지법을 알려 드려요.',
+  brand:'SingKey', tagline:'키는 내 목소리에, 코드는 쉽게', langAria:'언어',
   inputLabel:'원곡 코드', lyricsOk:'가사 섞여도 OK', lyricsTip:'코드만 바뀌고 가사·줄바꿈은 그대로예요. 카포 표시도 자동 반영돼요.',
   placeholder:'[Verse]\nG          D/F#\n코드 사이트에서 복사한 악보를\n그대로 붙여 넣으세요',
   navGuide:'기타 가이드', navAbout:'소개·문의', navPrivacy:'개인정보처리방침',
@@ -473,7 +473,7 @@ const I18N={
   compare:'원본 이미지 보기', imgAlt:'올린 악보 이미지',
   samples:'예시', samplesAria:'예시 불러오기', s0:'여자 발라드', s3:'가사·카포 악보', s1:'남자 발라드', s2:'마이너', s5:'마디·분수 코드',
   rhythm:'리듬', rh_calypso:'칼립소', rh_go8:'8비트 고고', rh_go16:'16비트 슬로우 고고', rh_shuffle:'셔플', rhStart:'시작', rhAcc:'세게', rhPattern:'스트로크 패턴',
-  brandTxt:"쉬운코드",
+  brandTxt:"SingKey",
   c1:"악보 붙여넣기",
   c1hint:"코드 줄과 가사 줄을 그대로 붙여 넣으세요. 어떤 사이트의 악보든 괜찮아요.",
   c2:"내 목소리에 맞게 키 조절",
@@ -509,8 +509,8 @@ const I18N={
   dictOpt:'점선 음은 빼고 쳐도 돼요', dictOptOne:'빼고 쳐도 되는 음', dictNoShape:'초보자용 운지를 찾지 못했어요', posOpen:'개방', posFret:n=>`${n}프렛`, dictBass:'베이스', dictBarre:'하이코드', dictBarreTip:'모양은 그대로 두고 위치만 옮기면 다른 키 코드가 돼요', rootStr:(st,f)=>`${st}번 줄 근음 · ${f}프렛`, dictView:'코드 사전에서 보기',
   bassHint:(n,st,f)=>`베이스 ${n} · ${st}번 줄 ${f?f+'프렛':'개방'}`,
   help:'도움말',
-  infoH:"쉬운코드는 이럴 때 필요해요",
-  infoP:"노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 쉬운코드가 대신 계산해 드려요.",
+  infoH:"씽키는 이럴 때 필요해요",
+  infoP:"노래방에서는 버튼 하나로 키를 바꾸지만, 기타는 키를 바꾸면 코드가 전부 바뀌어요. 원곡 키가 내 목소리에 맞지 않을 때, 인터넷 악보에 F·Bm 같은 바레 코드가 가득할 때, 처음 보는 코드 이름이 나올 때 씽키가 대신 계산해 드려요.",
   i1h:"키 바꾸기",
   i1p:"악보를 붙여 넣고 −/+로 반음씩 조절하면 모든 코드가 함께 바뀌어요. 가사, 줄 바꿈, 마디 기호는 그대로 두고, 분수 코드의 베이스 음까지 올바른 이름으로 옮겨요.",
   i2h:"카포 추천",
@@ -562,8 +562,8 @@ const I18N={
   failImg:'이미지를 읽지 못했어요.'
  },
  en:{
-  title:'Easy Chord', desc:'Paste guitar chords, shift the key like karaoke, and get the new chords, the easiest capo position and fingering diagrams.',
-  brand:'Easy<span>Chord</span>', tagline:'Your key. Easier chords.', langAria:'Language',
+  title:'SingKey · Guitar chords in your key', desc:'Paste guitar chords, shift the key like karaoke, and get the new chords, the easiest capo position and fingering diagrams.',
+  brand:'SingKey', tagline:'Your key. Easier chords.', langAria:'Language',
   inputLabel:'Original chords', lyricsOk:'Lyrics OK', lyricsTip:'Only chords change; lyrics and line breaks stay. A capo note on the sheet is applied automatically.',
   placeholder:'[Verse]\nG          D/F#\nPaste a chord sheet copied\nfrom any chord site',
   navGuide:'Guitar guides (Korean)', navAbout:'About', navPrivacy:'Privacy',
@@ -574,7 +574,7 @@ const I18N={
   compare:'Show original image', imgAlt:'Uploaded chord sheet',
   samples:'Examples', samplesAria:'Load an example', s0:'Female ballad', s3:'Sheet with capo', s1:'Male ballad', s2:'Minor', s5:'Bars & slash chords',
   rhythm:'Rhythm', rh_calypso:'Calypso', rh_go8:'8-beat go-go', rh_go16:'16-beat slow go-go', rh_shuffle:'Shuffle', rhStart:'Start', rhAcc:'Accent', rhPattern:'Strum pattern',
-  brandTxt:"EasyChord",
+  brandTxt:"SingKey",
   c1:"Paste a chord sheet",
   c1hint:"Paste the chord and lyric lines as they are. Sheets from any site work.",
   c2:"Fit the key to your voice",
@@ -610,8 +610,8 @@ const I18N={
   dictOpt:'Dashed notes can be left out', dictOptOne:'Can be left out', dictNoShape:'No beginner-friendly shape found', posOpen:'Open', posFret:n=>`Fret ${n}`, dictBass:'bass', dictBarre:'Barre chords', dictBarreTip:'Keep the shape, slide it, and you get the same chord in another key', rootStr:(st,f)=>`Root on ${st}th · fret ${f}`, dictView:'Look up in chord dictionary',
   bassHint:(n,st,f)=>`Bass ${n} · ${st}${['','st','nd','rd'][st]||'th'} string ${f?'fret '+f:'open'}`,
   help:'Help',
-  infoH:"When EasyChord helps",
-  infoP:"A karaoke machine changes key with one button, but on guitar every chord changes. When the original key doesn’t suit your voice, when a sheet is full of barre chords like F and Bm, or when you hit a chord name you’ve never seen, EasyChord does the math for you.",
+  infoH:"When SingKey helps",
+  infoP:"A karaoke machine changes key with one button, but on guitar every chord changes. When the original key doesn’t suit your voice, when a sheet is full of barre chords like F and Bm, or when you hit a chord name you’ve never seen, SingKey does the math for you.",
   i1h:"Change the key",
   i1p:"Paste a sheet and press −/+ to move every chord by a semitone. Lyrics, line breaks and bar lines stay put, and the bass note of slash chords moves with the correct name.",
   i2h:"Capo suggestions",
